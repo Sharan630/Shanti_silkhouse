@@ -1,0 +1,259 @@
+.marquee-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  background: #1B4D3E;
+  padding: 8px 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.marquee-container.scrolled {
+  background: #1B4D3E;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.marquee-text {
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+}
+
+.marquee-label {
+  color: #059669;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #059669, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.marquee-separator {
+  color: rgba(107, 114, 128, 0.4);
+  font-size: 0.8rem;
+}
+
+.marquee-scroll {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee-track {
+  display: flex;
+  animation: marquee-scroll 30s linear infinite;
+  gap: 40px;
+}
+
+.marquee-group {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 6px 0;
+}
+
+.marquee-icon {
+  color: white;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marquee-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.marquee-highlight {
+  color: #059669;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+}
+
+.marquee-description {
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.marquee-cta {
+  flex-shrink: 0;
+}
+
+.marquee-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(5, 150, 105, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.2);
+}
+
+.marquee-btn:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+}
+
+.marquee-btn svg {
+  font-size: 1rem;
+}
+
+/* Animation */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause animation on hover */
+.marquee-scroll:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .marquee-container {
+    padding: 6px 0;
+  }
+  
+  .marquee-content {
+    gap: 20px;
+  }
+  
+  .marquee-text {
+    display: none;
+  }
+  
+  .marquee-group {
+    gap: 30px;
+  }
+  
+  .marquee-item {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .marquee-container {
+    padding: 6px 0;
+  }
+  
+  .marquee-content {
+    padding: 0 15px;
+    gap: 15px;
+  }
+  
+  .marquee-track {
+    gap: 25px;
+  }
+  
+  .marquee-group {
+    gap: 25px;
+  }
+  
+  .marquee-item {
+    gap: 8px;
+  }
+  
+  .marquee-description {
+    font-size: 0.8rem;
+  }
+  
+  .marquee-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .marquee-container {
+    padding: 4px 0;
+  }
+  
+  .marquee-content {
+    padding: 0 10px;
+    gap: 10px;
+  }
+  
+  .marquee-track {
+    gap: 20px;
+  }
+  
+  .marquee-group {
+    gap: 20px;
+  }
+  
+  .marquee-item {
+    gap: 6px;
+  }
+  
+  .marquee-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .marquee-description {
+    font-size: 0.75rem;
+  }
+  
+  .marquee-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .marquee-btn svg {
+    font-size: 0.9rem;
+  }
+}
