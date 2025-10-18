@@ -55,6 +55,21 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get new arrivals (latest 4 products)
+router.get('/new-arrivals', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM products WHERE is_active = true ORDER BY created_at DESC LIMIT 4'
+    );
+
+    const products = result.rows;
+    res.json({ products });
+  } catch (error) {
+    console.error('Get new arrivals error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Get single product
 router.get('/:id', async (req, res) => {
   try {

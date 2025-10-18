@@ -22,7 +22,10 @@ export const AuthProvider = ({ children }) => {
   // Configure axios defaults
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    const adminToken = localStorage.getItem('adminToken');
+    if (adminToken) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${adminToken}`;
+    } else if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
   }, []);
@@ -31,7 +34,18 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
-      if (token) {
+      const adminToken = localStorage.getItem('adminToken');
+      
+      if (adminToken) {
+        try {
+          // Try to verify admin token by making a request to admin endpoint
+          const response = await axios.get('/api/admin/dashboard');
+          setAdmin({ id: 1, email: 'admin', name: 'Admin' }); // Set admin from token
+        } catch (error) {
+          localStorage.removeItem('adminToken');
+          delete axios.defaults.headers.common['Authorization'];
+        }
+      } else if (token) {
         try {
           const response = await axios.get('/api/auth/profile');
           setUser(response.data.user);
