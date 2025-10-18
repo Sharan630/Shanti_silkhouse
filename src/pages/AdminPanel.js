@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { 
   FiUsers, FiShoppingBag, FiDollarSign, FiTrendingUp, 
-  FiEdit, FiTrash2, FiEye, FiSearch, FiFilter,
+  FiEye, FiSearch, FiFilter,
   FiDownload, FiUpload, FiSettings, FiBarChart2,
   FiPackage, FiTruck, FiCheckCircle, FiXCircle,
   FiPlus, FiRefreshCw, FiCalendar, FiClock
@@ -226,11 +226,42 @@ const AdminPanel = () => {
   // Toggle product status
   const handleToggleProductStatus = async (productId, isActive) => {
     try {
-      await axios.put(`/api/admin/products/${productId}`, { isActive: !isActive });
+      console.log('Toggling product status for ID:', productId, 'Current status:', isActive);
+      
+      // Handle null/undefined is_active values - treat as false (inactive)
+      const currentStatus = isActive === null || isActive === undefined ? false : isActive;
+      const newStatus = !currentStatus;
+      
+      // Immediately update local state for instant UI feedback
+      setProducts(prevProducts => 
+        prevProducts.map(product => 
+          product.id === productId 
+            ? { ...product, is_active: newStatus }
+            : product
+        )
+      );
+      
+      console.log('Making API call to:', `/api/admin/products/${productId}/toggle-status`);
+      console.log('Admin token:', localStorage.getItem('adminToken'));
+      console.log('Axios headers:', axios.defaults.headers.common);
+      const response = await axios.put(`/api/admin/products/${productId}/toggle-status`);
+      console.log('Toggle response:', response.data);
       setSuccess('Product status updated successfully!');
+      
+      // Refresh products to ensure data consistency
       fetchProducts();
     } catch (error) {
-      setError('Error updating product status');
+      console.error('Toggle error:', error);
+      setError('Error updating product status: ' + (error.response?.data?.message || error.message));
+      
+      // Revert local state on error
+      setProducts(prevProducts => 
+        prevProducts.map(product => 
+          product.id === productId 
+            ? { ...product, is_active: isActive }
+            : product
+        )
+      );
     }
   };
 
@@ -262,7 +293,20 @@ const AdminPanel = () => {
       <div className="admin-login">
         <div className="admin-login-container">
           <div className="login-header">
-            <h2>Admin Login</h2>
+            <div className="login-logo-container">
+              <img 
+                src="/logos/logo.jpg" 
+                alt="Shanti Silk House Logo" 
+                className="login-logo-img"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              <div className="login-logo-text" style={{display: 'none'}}>
+                <h2>Admin Login</h2>
+              </div>
+            </div>
             <p>Access your admin dashboard</p>
           </div>
           <form onSubmit={handleLogin}>
@@ -301,7 +345,20 @@ const AdminPanel = () => {
       {/* Header */}
       <div className="admin-header">
         <div className="admin-header-left">
-          <h1>Admin Dashboard</h1>
+          <div className="admin-logo-container">
+            <img 
+              src="/logos/logo.jpg" 
+              alt="Shanti Silk House Logo" 
+              className="admin-logo-img"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'block';
+              }}
+            />
+            <div className="admin-logo-text" style={{display: 'none'}}>
+              <h1>Admin Dashboard</h1>
+            </div>
+          </div>
           <p>Welcome back, {admin.name}</p>
         </div>
         <div className="admin-header-right">
@@ -369,76 +426,237 @@ const AdminPanel = () => {
       {activeTab === 'dashboard' && (
         <div className="admin-content">
           <div className="dashboard-header">
-            <h2>Dashboard Overview</h2>
+            <div className="dashboard-title">
+              <h2>Dashboard Overview</h2>
+              <p>Welcome back, {admin.name}! Here's what's happening with your store.</p>
+            </div>
             <button onClick={fetchDashboardData} className="refresh-btn">
               <FiRefreshCw />
-              Refresh
+              Refresh Data
             </button>
           </div>
 
-          {/* Stats Cards */}
+          {/* Main Stats Grid */}
           <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-icon users">
-                <FiUsers />
+            <div className="stat-card primary">
+              <div className="stat-header">
+                <div className="stat-icon users">
+                  <FiUsers />
+                </div>
+                <div className="stat-trend positive">
+                  <FiTrendingUp />
+                </div>
               </div>
               <div className="stat-content">
-                <h3>{dashboardData.totalUsers}</h3>
-                <p>Total Users</p>
-                <span className="stat-change positive">+12% this month</span>
+                <h3>{dashboardData.totalUsers || 0}</h3>
+                <p>Total Customers</p>
+                <span className="stat-subtitle">Registered users</span>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-icon products">
-                <FiPackage />
+            <div className="stat-card success">
+              <div className="stat-header">
+                <div className="stat-icon products">
+                  <FiPackage />
+                </div>
+                <div className="stat-trend positive">
+                  <FiTrendingUp />
+                </div>
               </div>
               <div className="stat-content">
-                <h3>{dashboardData.totalProducts}</h3>
+                <h3>{dashboardData.totalProducts || 0}</h3>
                 <p>Total Products</p>
-                <span className="stat-change positive">+5 new this week</span>
+                <span className="stat-subtitle">{dashboardData.activeProducts || 0} active</span>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-icon orders">
-                <FiShoppingBag />
+            <div className="stat-card warning">
+              <div className="stat-header">
+                <div className="stat-icon orders">
+                  <FiShoppingBag />
+                </div>
+                <div className="stat-trend positive">
+                  <FiTrendingUp />
+                </div>
               </div>
               <div className="stat-content">
-                <h3>{dashboardData.totalOrders}</h3>
+                <h3>{dashboardData.totalOrders || 0}</h3>
                 <p>Total Orders</p>
-                <span className="stat-change positive">+8% this month</span>
+                <span className="stat-subtitle">{dashboardData.weeklyOrders?.count || 0} this week</span>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-icon revenue">
-                <FiDollarSign />
+            <div className="stat-card revenue">
+              <div className="stat-header">
+                <div className="stat-icon revenue">
+                  <FiDollarSign />
+                </div>
+                <div className={`stat-trend ${dashboardData.revenueGrowth >= 0 ? 'positive' : 'negative'}`}>
+                  <FiTrendingUp />
+                </div>
               </div>
               <div className="stat-content">
-                <h3>₹{dashboardData.totalRevenue?.toLocaleString()}</h3>
+                <h3>₹{dashboardData.totalRevenue?.toLocaleString() || '0'}</h3>
                 <p>Total Revenue</p>
-                <span className="stat-change positive">+15% this month</span>
+                <span className="stat-subtitle">
+                  {dashboardData.revenueGrowth >= 0 ? '+' : ''}{dashboardData.revenueGrowth || 0}% this month
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Recent Orders */}
-          <div className="dashboard-section">
-            <h3>Recent Orders</h3>
-            <div className="recent-orders">
-              {dashboardData.recentOrders?.slice(0, 5).map(order => (
-                <div key={order.id} className="recent-order">
-                  <div className="order-info">
-                    <h4>Order #{order.id}</h4>
-                    <p>{order.first_name} {order.last_name}</p>
+          {/* Secondary Stats */}
+          <div className="secondary-stats">
+            <div className="stat-card secondary">
+              <div className="stat-icon">
+                <FiCalendar />
+              </div>
+              <div className="stat-content">
+                <h3>₹{dashboardData.monthlyRevenue?.toLocaleString() || '0'}</h3>
+                <p>This Month's Revenue</p>
+              </div>
+            </div>
+
+            <div className="stat-card secondary">
+              <div className="stat-icon">
+                <FiDollarSign />
+              </div>
+              <div className="stat-content">
+                <h3>₹{dashboardData.avgOrderValue?.toLocaleString() || '0'}</h3>
+                <p>Average Order Value</p>
+              </div>
+            </div>
+
+            <div className="stat-card secondary">
+              <div className="stat-icon">
+                <FiClock />
+              </div>
+              <div className="stat-content">
+                <h3>{dashboardData.weeklyOrders?.count || 0}</h3>
+                <p>Orders This Week</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Dashboard Sections Grid */}
+          <div className="dashboard-grid">
+            {/* Recent Orders */}
+            <div className="dashboard-section">
+              <div className="section-header">
+                <h3>Recent Orders</h3>
+                <span className="section-count">{dashboardData.recentOrders?.length || 0}</span>
+              </div>
+              <div className="recent-orders">
+                {dashboardData.recentOrders?.slice(0, 5).map(order => (
+                  <div key={order.id} className="recent-order">
+                    <div className="order-info">
+                      <h4>Order #{order.id}</h4>
+                      <p>{order.first_name} {order.last_name}</p>
+                      <span className="order-date">
+                        {new Date(order.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="order-details">
+                      <span className="order-amount">₹{order.total_amount?.toLocaleString()}</span>
+                      <span className={`status status-${order.status}`}>{order.status}</span>
+                    </div>
                   </div>
-                  <div className="order-amount">
-                    <span>₹{order.total_amount}</span>
-                    <span className={`status status-${order.status}`}>{order.status}</span>
+                ))}
+                {(!dashboardData.recentOrders || dashboardData.recentOrders.length === 0) && (
+                  <div className="empty-state">
+                    <FiShoppingBag />
+                    <p>No recent orders</p>
                   </div>
-                </div>
-              ))}
+                )}
+              </div>
+            </div>
+
+            {/* Top Products */}
+            <div className="dashboard-section">
+              <div className="section-header">
+                <h3>Top Products</h3>
+                <span className="section-count">{dashboardData.topProducts?.length || 0}</span>
+              </div>
+              <div className="top-products">
+                {dashboardData.topProducts?.map((product, index) => (
+                  <div key={product.id} className="top-product">
+                    <div className="product-rank">#{index + 1}</div>
+                    <div className="product-info">
+                      <h4>{product.name}</h4>
+                      <p>{product.order_count} orders • {product.total_quantity} sold</p>
+                    </div>
+                    <div className="product-revenue">
+                      ₹{product.price?.toLocaleString()}
+                    </div>
+                  </div>
+                ))}
+                {(!dashboardData.topProducts || dashboardData.topProducts.length === 0) && (
+                  <div className="empty-state">
+                    <FiPackage />
+                    <p>No product data available</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Low Stock Alert */}
+            <div className="dashboard-section">
+              <div className="section-header">
+                <h3>Low Stock Alert</h3>
+                <span className="section-count alert">{dashboardData.lowStockProducts?.length || 0}</span>
+              </div>
+              <div className="low-stock-products">
+                {dashboardData.lowStockProducts?.map(product => (
+                  <div key={product.id} className="low-stock-product">
+                    <div className="product-info">
+                      <h4>{product.name}</h4>
+                      <p>Only {product.stock_quantity} left</p>
+                    </div>
+                    <div className="stock-level">
+                      <div className="stock-bar">
+                        <div 
+                          className="stock-fill" 
+                          style={{width: `${(product.stock_quantity / 10) * 100}%`}}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {(!dashboardData.lowStockProducts || dashboardData.lowStockProducts.length === 0) && (
+                  <div className="empty-state success">
+                    <FiCheckCircle />
+                    <p>All products well stocked</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Order Status Overview */}
+            <div className="dashboard-section">
+              <div className="section-header">
+                <h3>Order Status Overview</h3>
+              </div>
+              <div className="order-status-overview">
+                {dashboardData.ordersByStatus?.map(status => (
+                  <div key={status.status} className="status-item">
+                    <div className="status-info">
+                      <span className={`status-badge status-${status.status}`}>
+                        {status.status}
+                      </span>
+                      <span className="status-count">{status.count} orders</span>
+                    </div>
+                    <div className="status-bar">
+                      <div 
+                        className="status-fill" 
+                        style={{
+                          width: `${(status.count / dashboardData.totalOrders) * 100}%`,
+                          backgroundColor: `var(--status-${status.status}-color)`
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -658,26 +876,86 @@ const AdminPanel = () => {
                       Stock: {product.stock_quantity}
                       {product.stock_quantity < 10 && <span className="low-stock"> (Low Stock)</span>}
                     </p>
-                    <div className="product-actions">
-                      <button onClick={() => handleEditProduct(product)} className="btn-edit">
-                        <FiEdit />
+                    
+                    {/* ACTION BUTTONS */}
+                    <div style={{
+                      display: 'flex',
+                      gap: '10px',
+                      marginTop: '20px',
+                      padding: '15px',
+                      backgroundColor: '#f8f9fa',
+                      borderRadius: '8px',
+                      border: '2px solid #007bff'
+                    }}>
+                      <button 
+                        onClick={() => {
+                          console.log('EDIT CLICKED:', product.id);
+                          handleEditProduct(product);
+                        }}
+                        style={{
+                          backgroundColor: '#007bff',
+                          color: 'white',
+                          border: 'none',
+                          padding: '12px 20px',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}
+                        onMouseOver={(e) => e.target.style.backgroundColor = '#0056b3'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = '#007bff'}
+                      >
                         Edit
                       </button>
+                      
                       <button 
-                        onClick={() => handleToggleProductStatus(product.id, product.is_active)}
-                        className={`btn-toggle ${product.is_active ? 'deactivate' : 'activate'}`}
+                        onClick={() => {
+                          console.log('TOGGLE CLICKED:', product.id, 'Current:', product.is_active);
+                          handleToggleProductStatus(product.id, product.is_active);
+                        }}
+                        style={{
+                          backgroundColor: product.is_active ? '#dc3545' : '#28a745',
+                          color: 'white',
+                          border: 'none',
+                          padding: '12px 20px',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}
+                        onMouseOver={(e) => e.target.style.backgroundColor = product.is_active ? '#c82333' : '#1e7e34'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = product.is_active ? '#dc3545' : '#28a745'}
                       >
                         {product.is_active ? 'Deactivate' : 'Activate'}
                       </button>
+                      
                       <button 
                         onClick={() => {
-                          console.log('Delete button clicked for product:', product.id);
+                          console.log('DELETE CLICKED:', product.id);
                           handleDeleteProduct(product.id);
                         }}
-                        className="btn-delete"
-                        style={{ backgroundColor: '#e74c3c', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer' }}
+                        style={{
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '12px 20px',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}
+                        onMouseOver={(e) => e.target.style.backgroundColor = '#c82333'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = '#dc3545'}
                       >
-                        <FiTrash2 />
                         Delete
                       </button>
                     </div>

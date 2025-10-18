@@ -38,17 +38,36 @@
   transform: scale(1.05);
 }
 
-.lotus-icon {
-  font-size: 2.5rem;
-  color: #DAA520;
-  filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3));
-  line-height: 1;
+.logo-img {
+  height: 60px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
+}
+
+.logo-img:hover {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
 }
 
 .logo-text {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+.logo-text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lotus-icon {
+  font-size: 2.5rem;
+  color: #DAA520;
+  filter: drop-shadow(0 2px 4px rgba(218, 165, 32, 0.3));
+  line-height: 1;
 }
 
 .logo-main {
@@ -247,6 +266,11 @@
 }
 
 @media (max-width: 768px) {
+  .logo-img {
+    height: 50px;
+    max-width: 150px;
+  }
+  
   .lotus-icon {
     font-size: 2rem;
   }
@@ -319,6 +343,11 @@
 }
 
 @media (max-width: 480px) {
+  .logo-img {
+    height: 40px;
+    max-width: 120px;
+  }
+  
   .search-box {
     display: none;
   }

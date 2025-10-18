@@ -93,6 +93,12 @@ const initializeDatabase = async () => {
       )
     `);
 
+    // Ensure all existing products are active (safety measure)
+    await pool.query('UPDATE products SET is_active = true WHERE is_active IS NULL');
+
+    // Add constraint to ensure is_active cannot be null
+    await pool.query('ALTER TABLE products ALTER COLUMN is_active SET NOT NULL');
+
     console.log('Database tables initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);
