@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiFilter, FiGrid, FiList, FiStar, FiHeart, FiShoppingCart } from 'react-icons/fi';
+import { useCart } from '../contexts/CartContext';
 import './ProductList.css';
 
 const ProductList = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('featured');
   const [priceRange, setPriceRange] = useState([0, 100000]);
+  const { addToCart } = useCart();
+  const [message, setMessage] = useState('');
+
+  const handleAddToCart = async (product) => {
+    const result = await addToCart(product.id, 1, null, null, product);
+    
+    if (result.success) {
+      setMessage('Item added to cart successfully!');
+      setTimeout(() => setMessage(''), 3000);
+      // Trigger cart sidebar to open
+      window.dispatchEvent(new CustomEvent('openCartSidebar'));
+    } else {
+      setMessage(result.message);
+      setTimeout(() => setMessage(''), 5000);
+    }
+  };
 
   const products = [
     {
@@ -94,6 +111,13 @@ const ProductList = () => {
 
   return (
     <div className="product-list">
+      {/* Message Display */}
+      {message && (
+        <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
+      
       <div className="container">
         {/* Page Header */}
         <div className="page-header">
@@ -194,7 +218,12 @@ const ProductList = () => {
                       <button className="action-btn wishlist" type="button" aria-label="Add to wishlist">
                         <FiHeart />
                       </button>
-                      <button className="action-btn cart" type="button" aria-label="Add to cart">
+                      <button 
+                        className="action-btn cart" 
+                        type="button" 
+                        aria-label="Add to cart"
+                        onClick={() => handleAddToCart(product)}
+                      >
                         <FiShoppingCart />
                       </button>
                     </div>

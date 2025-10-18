@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiMinus, FiPlus, FiTrash2, FiShoppingBag, FiArrowLeft } from 'react-icons/fi';
+import { FiMinus, FiPlus, FiX, FiShoppingBag, FiArrowLeft, FiTruck } from 'react-icons/fi';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import './Cart.css';
@@ -54,22 +54,11 @@ const Cart = () => {
 
   const { subtotal, originalTotal, savings, shipping, total, itemCount } = getCartTotals();
 
-  if (!user) {
-    return (
-      <div className="cart">
-        <div className="container">
-          <div className="empty-cart">
-            <FiShoppingBag className="empty-icon" />
-            <h2>Please Login</h2>
-            <p>You need to be logged in to view your cart.</p>
-            <Link to="/login" className="btn-primary">
-              Login
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+
+  // Calculate free shipping progress
+  const freeShippingThreshold = 5000;
+  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
+  const progressPercentage = Math.min(100, ((freeShippingThreshold - remainingForFreeShipping) / freeShippingThreshold) * 100);
 
   return (
     <div className="cart">
@@ -81,7 +70,6 @@ const Cart = () => {
             Continue Shopping
           </Link>
           <h1>Shopping Cart</h1>
-          <p>{itemCount} item(s) in your cart</p>
           {message && (
             <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
               {message}
@@ -105,196 +93,100 @@ const Cart = () => {
             </Link>
           </div>
         ) : !loading && (
-          <div className="cart-content">
-            {/* Cart Items Table */}
-            <div className="cart-items">
-              <div className="cart-items-header">
-                <h2>Cart Items</h2>
-                <button className="clear-cart" onClick={handleClearCart}>
-                  Clear All
-                </button>
+          <div className="cart-modal">
+            {/* Cart Header */}
+            <div className="cart-header">
+              <div className="cart-title">
+                <h2>Shopping Cart</h2>
+                <span className="item-count">{itemCount} item{itemCount !== 1 ? 's' : ''}</span>
               </div>
-              
-              <div className="cart-table-container">
-                <table className="cart-table">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th>Total</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map(item => (
-                      <tr key={item.id} className="cart-item-row">
-                        <td className="product-cell">
-                          <div className="product-info">
-                            <div className="item-image">
-                              <img 
-                                src={item.images && item.images.length > 0 ? item.images[0] : '/logos/logo.jpg'} 
-                                alt={item.name} 
-                              />
-                            </div>
-                            <div className="item-details">
-                              <h3>{item.name}</h3>
-                              <div className="item-options">
-                                {item.color && <span className="option">Color: {item.color}</span>}
-                                {item.size && <span className="option">Size: {item.size}</span>}
-                                {item.material && <span className="option">Material: {item.material}</span>}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="price-cell">
-                          <div className="item-price">
-                            <span className="current-price">₹{item.price.toLocaleString()}</span>
-                            <span className="original-price">₹{item.originalPrice.toLocaleString()}</span>
-                          </div>
-                        </td>
-                        <td className="quantity-cell">
-                          <div className="item-quantity">
-                            <button 
-                              type="button" 
-                              aria-label={`Decrease quantity of ${item.name}`} 
-                              onClick={() => handleUpdateQuantity(item.id, -1)}
-                              disabled={loading}
-                            >
-                              <FiMinus />
-                            </button>
-                            <span>{item.quantity}</span>
-                            <button 
-                              type="button" 
-                              aria-label={`Increase quantity of ${item.name}`} 
-                              onClick={() => handleUpdateQuantity(item.id, 1)}
-                              disabled={loading}
-                            >
-                              <FiPlus />
-                            </button>
-                          </div>
-                        </td>
-                        <td className="total-cell">
-                          <span className="total-price">₹{(item.price * item.quantity).toLocaleString()}</span>
-                        </td>
-                        <td className="action-cell">
-                          <button 
-                            className="remove-btn"
-                            type="button"
-                            aria-label={`Remove ${item.name} from cart`}
-                            onClick={() => handleRemoveItem(item.id)}
-                            disabled={loading}
-                          >
-                            <FiTrash2 />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <button className="close-cart">
+                <FiX />
+              </button>
+            </div>
+
+            {/* Free Shipping Progress */}
+            {remainingForFreeShipping > 0 && (
+              <div className="free-shipping-progress">
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                  <FiTruck className="truck-icon" />
+                </div>
+                <p className="progress-text">
+                  Only ₹{remainingForFreeShipping.toLocaleString()} away from Free Shipping
+                </p>
+              </div>
+            )}
+
+            {/* Cart Items */}
+            <div className="cart-items-list">
+              {cartItems.map(item => (
+                <div key={item.id} className="cart-item">
+                  <div className="item-image">
+                    <img 
+                      src={item.images && item.images.length > 0 ? item.images[0] : '/logos/logo.jpg'} 
+                      alt={item.name} 
+                    />
+                  </div>
+                  <div className="item-details">
+                    <h3 className="item-name">{item.name}</h3>
+                    <p className="item-price">₹{item.price.toLocaleString()}</p>
+                    <div className="quantity-controls">
+                      <button 
+                        className="quantity-btn"
+                        onClick={() => handleUpdateQuantity(item.id, -1)}
+                        disabled={loading}
+                      >
+                        <FiMinus />
+                      </button>
+                      <span className="quantity">{item.quantity}</span>
+                      <button 
+                        className="quantity-btn"
+                        onClick={() => handleUpdateQuantity(item.id, 1)}
+                        disabled={loading}
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
+                  </div>
+                  <button 
+                    className="remove-item"
+                    onClick={() => handleRemoveItem(item.id)}
+                    disabled={loading}
+                  >
+                    <FiX />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Cart Summary */}
+            <div className="cart-summary">
+              <div className="summary-row">
+                <span>Subtotal:</span>
+                <span>₹{subtotal.toLocaleString()}</span>
+              </div>
+              <div className="summary-row total">
+                <span>Total:</span>
+                <span>₹{total.toLocaleString()}</span>
               </div>
             </div>
 
-            {/* Order Summary */}
-            <div className="order-summary">
-              <div className="summary-header">
-                <h2>Order Summary</h2>
-              </div>
-              
-              <div className="summary-details">
-                <div className="summary-row">
-                  <span>Subtotal ({itemCount} items)</span>
-                  <span>₹{subtotal.toLocaleString()}</span>
-                </div>
-                
-                <div className="summary-row">
-                  <span>Original Price</span>
-                  <span>₹{originalTotal.toLocaleString()}</span>
-                </div>
-                
-                <div className="summary-row savings">
-                  <span>You Save</span>
-                  <span>₹{savings.toLocaleString()}</span>
-                </div>
-                
-                <div className="summary-row">
-                  <span>Shipping</span>
-                  <span>
-                    {shipping === 0 ? (
-                      <span className="free-shipping">FREE</span>
-                    ) : (
-                      `₹${shipping}`
-                    )}
-                  </span>
-                </div>
-                
-                <div className="summary-divider"></div>
-                
-                <div className="summary-row total">
-                  <span>Total</span>
-                  <span>₹{total.toLocaleString()}</span>
-                </div>
-              </div>
-
-              <div className="summary-actions">
-                <Link to="/checkout" className="btn-primary checkout-btn">
-                  Proceed to Checkout
-                </Link>
-                <Link to="/products" className="btn-secondary">
-                  Continue Shopping
-                </Link>
-              </div>
-
-              <div className="summary-features">
-                <div className="feature">
-                  <span className="feature-icon">🚚</span>
-                  <div>
-                    <h4>Free Shipping</h4>
-                    <p>On orders above ₹5000</p>
-                  </div>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">🔒</span>
-                  <div>
-                    <h4>Secure Payment</h4>
-                    <p>100% secure transactions</p>
-                  </div>
-                </div>
-                <div className="feature">
-                  <span className="feature-icon">↩️</span>
-                  <div>
-                    <h4>Easy Returns</h4>
-                    <p>30-day return policy</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Recommended Products */}
-        {!loading && cartItems.length > 0 && (
-          <div className="recommended-products">
-            <h2>You Might Also Like</h2>
-            <div className="recommended-grid">
-              <div className="recommended-item">
-                <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=250&h=300&fit=crop" alt="Recommended" />
-                <h4>Bridal Collection</h4>
-                <p>₹45,000</p>
-                <button className="add-to-cart-btn">Add to Cart</button>
-              </div>
-              <div className="recommended-item">
-                <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?w=250&h=300&fit=crop" alt="Recommended" />
-                <h4>Traditional Silk</h4>
-                <p>₹32,000</p>
-                <button className="add-to-cart-btn">Add to Cart</button>
-              </div>
-              <div className="recommended-item">
-                <img src="https://images.unsplash.com/photo-1571513722275-4b8b2b8b2b8b?w=250&h=300&fit=crop" alt="Recommended" />
-                <h4>Modern Designer</h4>
-                <p>₹22,000</p>
-                <button className="add-to-cart-btn">Add to Cart</button>
-              </div>
+            {/* Action Buttons */}
+            <div className="cart-actions">
+              <Link 
+                to={user ? "/checkout" : "/login"} 
+                className="checkout-btn"
+                state={{ from: '/cart' }}
+              >
+                {user ? "CHECKOUT" : "LOGIN TO CHECKOUT"}
+              </Link>
+              <Link to="/products" className="view-cart-btn">
+                CONTINUE SHOPPING
+              </Link>
             </div>
           </div>
         )}

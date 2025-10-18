@@ -1,11 +1,11 @@
 const express = require('express');
 const pool = require('../config/database');
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Get user's cart
-router.get('/', auth, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -55,7 +55,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Add item to cart
-router.post('/add', auth, async (req, res) => {
+router.post('/add', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId, quantity = 1, size, color } = req.body;
@@ -133,7 +133,7 @@ router.post('/add', auth, async (req, res) => {
 });
 
 // Update cart item quantity
-router.put('/update/:id', auth, async (req, res) => {
+router.put('/update/:id', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const cartItemId = req.params.id;
@@ -185,7 +185,7 @@ router.put('/update/:id', auth, async (req, res) => {
 });
 
 // Remove item from cart
-router.delete('/remove/:id', auth, async (req, res) => {
+router.delete('/remove/:id', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const cartItemId = req.params.id;
@@ -211,7 +211,7 @@ router.delete('/remove/:id', auth, async (req, res) => {
 });
 
 // Clear entire cart
-router.delete('/clear', auth, async (req, res) => {
+router.delete('/clear', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -225,7 +225,7 @@ router.delete('/clear', auth, async (req, res) => {
 });
 
 // Get cart count
-router.get('/count', auth, async (req, res) => {
+router.get('/count', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 

@@ -85,20 +85,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
         {/* Cart Items */}
         <div className="cart-items-container">
-          {!user ? (
-            <div className="cart-login-prompt">
-              <p>Please login to view your cart</p>
-              <button 
-                className="btn-primary" 
-                onClick={() => {
-                  onClose();
-                  navigate('/login');
-                }}
-              >
-                Login
-              </button>
-            </div>
-          ) : loading ? (
+          {loading ? (
             <div className="cart-loading">
               <p>Loading cart...</p>
             </div>
@@ -161,7 +148,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* Order Summary */}
-        {user && cartItems.length > 0 && (
+        {cartItems.length > 0 && (
           <div className="cart-summary">
             <div className="summary-row">
               <span>Subtotal:</span>
@@ -175,10 +162,15 @@ const CartSidebar = ({ isOpen, onClose }) => {
         )}
 
         {/* Action Buttons */}
-        {user && cartItems.length > 0 && (
+        {cartItems.length > 0 && (
           <div className="cart-actions">
-            <Link to="/checkout" className="btn-primary checkout-btn" onClick={onClose}>
-              CHECKOUT
+            <Link 
+              to={user ? "/checkout" : "/login"} 
+              className="btn-primary checkout-btn" 
+              onClick={onClose}
+              state={{ from: '/cart' }}
+            >
+              {user ? "CHECKOUT" : "LOGIN TO CHECKOUT"}
             </Link>
             <Link to="/cart" className="btn-secondary view-cart-btn" onClick={onClose}>
               VIEW CART
