@@ -88,6 +88,7 @@ const AdminPanel = () => {
     }
   };
 
+
   // Fetch orders
   const fetchOrders = async () => {
     try {
@@ -171,16 +172,25 @@ const AdminPanel = () => {
     }
   };
 
-  // Delete product
-  const handleDeleteProduct = async (id) => {
+  // Delete product function
+  const handleDeleteProduct = async (productId) => {
+    // Show confirmation dialog
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`/api/admin/products/${id}`);
+        // Send DELETE request to backend
+        await axios.delete(`/api/admin/products/${productId}`);
+        
+        // Show success message
         setSuccess('Product deleted successfully!');
+        
+        // Refresh products list without reloading page
         fetchProducts();
         fetchDashboardData();
+        
       } catch (error) {
-        setError('Error deleting product');
+        // Show error message
+        setError('Failed to delete product');
+        console.error('Delete error:', error);
       }
     }
   };
@@ -659,7 +669,14 @@ const AdminPanel = () => {
                       >
                         {product.is_active ? 'Deactivate' : 'Activate'}
                       </button>
-                      <button onClick={() => handleDeleteProduct(product.id)} className="btn-delete">
+                      <button 
+                        onClick={() => {
+                          console.log('Delete button clicked for product:', product.id);
+                          handleDeleteProduct(product.id);
+                        }}
+                        className="btn-delete"
+                        style={{ backgroundColor: '#e74c3c', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer' }}
+                      >
                         <FiTrash2 />
                         Delete
                       </button>
