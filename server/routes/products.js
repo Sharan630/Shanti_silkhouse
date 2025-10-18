@@ -70,6 +70,73 @@ router.get('/new-arrivals', async (req, res) => {
   }
 });
 
+// Get products for celebrate section with price filtering
+router.get('/celebrate', async (req, res) => {
+  try {
+    const { priceFilter = 'all' } = req.query;
+    
+    let query = 'SELECT * FROM products WHERE is_active = true';
+    let params = [];
+    let paramCount = 0;
+
+    // Add price filtering based on the selected filter
+    if (priceFilter !== 'all') {
+      paramCount++;
+      let priceCondition = '';
+      switch (priceFilter) {
+        case '20k':
+          priceCondition = ` AND price <= $${paramCount}`;
+          params.push(20000);
+          break;
+        case '30k':
+          priceCondition = ` AND price <= $${paramCount}`;
+          params.push(30000);
+          break;
+        case '40k':
+          priceCondition = ` AND price <= $${paramCount}`;
+          params.push(40000);
+          break;
+        case '50k':
+          priceCondition = ` AND price <= $${paramCount}`;
+          params.push(50000);
+          break;
+        case '1lac':
+          priceCondition = ` AND price <= $${paramCount}`;
+          params.push(100000);
+          break;
+        default:
+          break;
+      }
+      query += priceCondition;
+    }
+
+    query += ' ORDER BY created_at DESC LIMIT 8';
+
+    const result = await pool.query(query, params);
+    const products = result.rows;
+
+    res.json({ products });
+  } catch (error) {
+    console.error('Get celebrate products error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Get product categories
+router.get('/categories/list', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT DISTINCT category FROM products WHERE is_active = true AND category IS NOT NULL ORDER BY category'
+    );
+
+    const categories = result.rows.map(row => row.category);
+    res.json({ categories });
+  } catch (error) {
+    console.error('Get categories error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Get single product
 router.get('/:id', async (req, res) => {
   try {
@@ -87,21 +154,6 @@ router.get('/:id', async (req, res) => {
     res.json({ product: result.rows[0] });
   } catch (error) {
     console.error('Get product error:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-// Get product categories
-router.get('/categories/list', async (req, res) => {
-  try {
-    const result = await pool.query(
-      'SELECT DISTINCT category FROM products WHERE is_active = true AND category IS NOT NULL ORDER BY category'
-    );
-
-    const categories = result.rows.map(row => row.category);
-    res.json({ categories });
-  } catch (error) {
-    console.error('Get categories error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

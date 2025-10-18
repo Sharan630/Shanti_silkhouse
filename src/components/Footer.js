@@ -11,8 +11,19 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="footer-section">
             <div className="footer-logo">
-              <h3>Shanti Silk House</h3>
-              <p>Premium Collection</p>
+              <img 
+                src="/logos/logo.jpg" 
+                alt="Shanti Silk House Logo" 
+                className="footer-logo-img"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              <div className="footer-logo-text" style={{display: 'none'}}>
+                <h3>Shanti Silk House</h3>
+                <p>Premium Collection</p>
+              </div>
             </div>
             <p className="footer-description">
               Discover the finest collection of traditional and contemporary sarees. 
