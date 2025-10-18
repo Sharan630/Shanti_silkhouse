@@ -277,8 +277,34 @@
 /* Product Actions */
 .product-actions {
   display: flex;
+  flex-direction: column;
   gap: 15px;
   margin-bottom: 40px;
+}
+
+.product-actions .message {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.product-actions .message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.product-actions .message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.product-actions .btn-container {
+  display: flex;
+  gap: 15px;
   flex-wrap: wrap;
 }
 

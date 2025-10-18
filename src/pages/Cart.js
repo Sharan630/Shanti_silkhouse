@@ -1,61 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMinus, FiPlus, FiTrash2, FiShoppingBag, FiArrowLeft } from 'react-icons/fi';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import './Cart.css';
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Royal Silk Saree",
-      price: 25000,
-      originalPrice: 30000,
-      image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop",
-      color: "Red",
-      size: "Free Size",
-      quantity: 1
-    },
-    {
-      id: 2,
-      name: "Designer Cotton Saree",
-      price: 12000,
-      originalPrice: 15000,
-      image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&h=400&fit=crop",
-      color: "Blue",
-      size: "Free Size",
-      quantity: 2
-    },
-    {
-      id: 3,
-      name: "Party Wear Saree",
-      price: 18000,
-      originalPrice: 22000,
-      image: "https://images.unsplash.com/photo-1571513722275-4b8b2b8b2b8b?w=300&h=400&fit=crop",
-      color: "Black",
-      size: "Free Size",
-      quantity: 1
+  const { cartItems, loading, updateQuantity, removeFromCart, clearCart, getCartTotals } = useCart();
+  const { user } = useAuth();
+  const [message, setMessage] = useState('');
+
+  const handleUpdateQuantity = async (cartItemId, change) => {
+    const item = cartItems.find(item => item.id === cartItemId);
+    if (!item) return;
+
+    const newQuantity = Math.max(1, item.quantity + change);
+    const result = await updateQuantity(cartItemId, newQuantity);
+    
+    if (result.success) {
+      setMessage('Cart updated successfully');
+      setTimeout(() => setMessage(''), 3000);
+    } else {
+      setMessage(result.message);
+      setTimeout(() => setMessage(''), 5000);
     }
-  ]);
+  };
 
-  const updateQuantity = (id, change) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + change) }
-          : item
-      )
+  const handleRemoveItem = async (cartItemId) => {
+    const result = await removeFromCart(cartItemId);
+    
+    if (result.success) {
+      setMessage('Item removed from cart');
+      setTimeout(() => setMessage(''), 3000);
+    } else {
+      setMessage(result.message);
+      setTimeout(() => setMessage(''), 5000);
+    }
+  };
+
+  const handleClearCart = async () => {
+    if (window.confirm('Are you sure you want to clear your cart?')) {
+      const result = await clearCart();
+      
+      if (result.success) {
+        setMessage('Cart cleared successfully');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage(result.message);
+        setTimeout(() => setMessage(''), 5000);
+      }
+    }
+  };
+
+  const { subtotal, originalTotal, savings, shipping, total, itemCount } = getCartTotals();
+
+  if (!user) {
+    return (
+      <div className="cart">
+        <div className="container">
+          <div className="empty-cart">
+            <FiShoppingBag className="empty-icon" />
+            <h2>Please Login</h2>
+            <p>You need to be logged in to view your cart.</p>
+            <Link to="/login" className="btn-primary">
+              Login
+            </Link>
+          </div>
+        </div>
+      </div>
     );
-  };
-
-  const removeItem = (id) => {
-    setCartItems(items => items.filter(item => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const originalTotal = cartItems.reduce((sum, item) => sum + (item.originalPrice * item.quantity), 0);
-  const savings = originalTotal - subtotal;
-  const shipping = subtotal > 5000 ? 0 : 200;
-  const total = subtotal + shipping;
+  }
 
   return (
     <div className="cart">
@@ -67,10 +81,21 @@ const Cart = () => {
             Continue Shopping
           </Link>
           <h1>Shopping Cart</h1>
-          <p>{cartItems.length} item(s) in your cart</p>
+          <p>{itemCount} item(s) in your cart</p>
+          {message && (
+            <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
+              {message}
+            </div>
+          )}
         </div>
 
-        {cartItems.length === 0 ? (
+        {loading && (
+          <div className="loading">
+            <p>Loading cart...</p>
+          </div>
+        )}
+
+        {!loading && cartItems.length === 0 ? (
           <div className="empty-cart">
             <FiShoppingBag className="empty-icon" />
             <h2>Your cart is empty</h2>
@@ -79,60 +104,94 @@ const Cart = () => {
               Start Shopping
             </Link>
           </div>
-        ) : (
+        ) : !loading && (
           <div className="cart-content">
-            {/* Cart Items */}
+            {/* Cart Items Table */}
             <div className="cart-items">
               <div className="cart-items-header">
                 <h2>Cart Items</h2>
-                <button className="clear-cart">Clear All</button>
+                <button className="clear-cart" onClick={handleClearCart}>
+                  Clear All
+                </button>
               </div>
               
-              <div className="cart-items-list">
-                {cartItems.map(item => (
-                  <div key={item.id} className="cart-item">
-                    <div className="item-image">
-                      <img src={item.image} alt={item.name} />
-                    </div>
-                    
-                    <div className="item-details">
-                      <h3>{item.name}</h3>
-                      <div className="item-options">
-                        <span className="option">Color: {item.color}</span>
-                        <span className="option">Size: {item.size}</span>
-                      </div>
-                      <div className="item-price">
-                        <span className="current-price">₹{item.price.toLocaleString()}</span>
-                        <span className="original-price">₹{item.originalPrice.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    <div className="item-quantity">
-                      <button type="button" aria-label={`Decrease quantity of ${item.name}`} onClick={() => updateQuantity(item.id, -1)}>
-                        <FiMinus />
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button type="button" aria-label={`Increase quantity of ${item.name}`} onClick={() => updateQuantity(item.id, 1)}>
-                        <FiPlus />
-                      </button>
-                    </div>
-
-                    <div className="item-total">
-                      <span className="total-price">₹{(item.price * item.quantity).toLocaleString()}</span>
-                    </div>
-
-                    <div className="item-actions">
-                      <button 
-                        className="remove-btn"
-                        type="button"
-                        aria-label={`Remove ${item.name} from cart`}
-                        onClick={() => removeItem(item.id)}
-                      >
-                        <FiTrash2 />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              <div className="cart-table-container">
+                <table className="cart-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Total</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cartItems.map(item => (
+                      <tr key={item.id} className="cart-item-row">
+                        <td className="product-cell">
+                          <div className="product-info">
+                            <div className="item-image">
+                              <img 
+                                src={item.images && item.images.length > 0 ? item.images[0] : '/logos/logo.jpg'} 
+                                alt={item.name} 
+                              />
+                            </div>
+                            <div className="item-details">
+                              <h3>{item.name}</h3>
+                              <div className="item-options">
+                                {item.color && <span className="option">Color: {item.color}</span>}
+                                {item.size && <span className="option">Size: {item.size}</span>}
+                                {item.material && <span className="option">Material: {item.material}</span>}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="price-cell">
+                          <div className="item-price">
+                            <span className="current-price">₹{item.price.toLocaleString()}</span>
+                            <span className="original-price">₹{item.originalPrice.toLocaleString()}</span>
+                          </div>
+                        </td>
+                        <td className="quantity-cell">
+                          <div className="item-quantity">
+                            <button 
+                              type="button" 
+                              aria-label={`Decrease quantity of ${item.name}`} 
+                              onClick={() => handleUpdateQuantity(item.id, -1)}
+                              disabled={loading}
+                            >
+                              <FiMinus />
+                            </button>
+                            <span>{item.quantity}</span>
+                            <button 
+                              type="button" 
+                              aria-label={`Increase quantity of ${item.name}`} 
+                              onClick={() => handleUpdateQuantity(item.id, 1)}
+                              disabled={loading}
+                            >
+                              <FiPlus />
+                            </button>
+                          </div>
+                        </td>
+                        <td className="total-cell">
+                          <span className="total-price">₹{(item.price * item.quantity).toLocaleString()}</span>
+                        </td>
+                        <td className="action-cell">
+                          <button 
+                            className="remove-btn"
+                            type="button"
+                            aria-label={`Remove ${item.name} from cart`}
+                            onClick={() => handleRemoveItem(item.id)}
+                            disabled={loading}
+                          >
+                            <FiTrash2 />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -144,7 +203,7 @@ const Cart = () => {
               
               <div className="summary-details">
                 <div className="summary-row">
-                  <span>Subtotal ({cartItems.length} items)</span>
+                  <span>Subtotal ({itemCount} items)</span>
                   <span>₹{subtotal.toLocaleString()}</span>
                 </div>
                 
@@ -214,7 +273,7 @@ const Cart = () => {
         )}
 
         {/* Recommended Products */}
-        {cartItems.length > 0 && (
+        {!loading && cartItems.length > 0 && (
           <div className="recommended-products">
             <h2>You Might Also Like</h2>
             <div className="recommended-grid">

@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const adminRoutes = require('./routes/admin');
 const uploadRoutes = require('./routes/upload');
+const cartRoutes = require('./routes/cart');
 const { initializeDatabase } = require('./models/database');
 
 // Load environment variables from config.env
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

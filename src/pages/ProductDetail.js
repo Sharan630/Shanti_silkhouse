@@ -1,14 +1,44 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FiStar, FiHeart, FiShoppingCart, FiTruck, FiShield, FiRefreshCw, FiMinus, FiPlus, FiShare2 } from 'react-icons/fi';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState('Red');
   const [selectedSize, setSelectedSize] = useState('Free Size');
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [message, setMessage] = useState('');
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      setMessage('Please login to add items to cart');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+
+    setIsAddingToCart(true);
+    const result = await addToCart(product.id, quantity, selectedSize, selectedColor);
+    
+    if (result.success) {
+      setMessage('Item added to cart successfully!');
+      setTimeout(() => setMessage(''), 3000);
+      // Trigger cart sidebar to open by dispatching a custom event
+      window.dispatchEvent(new CustomEvent('openCartSidebar'));
+    } else {
+      setMessage(result.message);
+      setTimeout(() => setMessage(''), 5000);
+    }
+    setIsAddingToCart(false);
+  };
 
   // Mock product data
   const product = {
@@ -187,19 +217,32 @@ const ProductDetail = () => {
 
             {/* Action Buttons */}
             <div className="product-actions">
-              <button className="btn-primary add-to-cart" type="button" aria-label="Add to cart">
-                <FiShoppingCart />
-                Add to Cart
-              </button>
-              <button className="btn-secondary buy-now" type="button" aria-label="Buy now">
-                Buy Now
-              </button>
-              <button className="action-btn wishlist" type="button" aria-label="Add to wishlist">
-                <FiHeart />
-              </button>
-              <button className="action-btn share" type="button" aria-label="Share product">
-                <FiShare2 />
-              </button>
+              {message && (
+                <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
+                  {message}
+                </div>
+              )}
+              <div className="btn-container">
+                <button 
+                  className="btn-primary add-to-cart" 
+                  type="button" 
+                  aria-label="Add to cart"
+                  onClick={handleAddToCart}
+                  disabled={isAddingToCart}
+                >
+                  <FiShoppingCart />
+                  {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+                </button>
+                <button className="btn-secondary buy-now" type="button" aria-label="Buy now">
+                  Buy Now
+                </button>
+                <button className="action-btn wishlist" type="button" aria-label="Add to wishlist">
+                  <FiHeart />
+                </button>
+                <button className="action-btn share" type="button" aria-label="Share product">
+                  <FiShare2 />
+                </button>
+              </div>
             </div>
 
             {/* Features */}

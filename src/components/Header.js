@@ -1,26 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX, FiLogOut } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
-import Login from './Login';
-import Register from './Register';
+import { useCart } from '../contexts/CartContext';
+import CartSidebar from './CartSidebar';
 import './Header.css';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartCount] = useState(3); // This would come from context/state
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
+  const [showCart, setShowCart] = useState(false);
   const { user, logout } = useAuth();
+  const { cartCount } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
+    const handleOpenCartSidebar = () => {
+      setShowCart(true);
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('openCartSidebar', handleOpenCartSidebar);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('openCartSidebar', handleOpenCartSidebar);
+    };
   }, []); 
 
   return (
@@ -66,15 +75,18 @@ const Header = () => {
             ) : (
               <button 
                 className="action-btn"
-                onClick={() => setShowLogin(true)}
+                onClick={() => navigate('/login')}
               >
                 <FiUser />
               </button>
             )}
-            <Link to="/cart" className="action-btn cart-btn">
+            <button 
+              className="action-btn cart-btn"
+              onClick={() => setShowCart(true)}
+            >
               <FiShoppingCart />
               {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
-            </Link>
+            </button>
             <button 
               className="menu-toggle"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -85,27 +97,11 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Login Modal */}
-      {showLogin && (
-        <Login 
-          onClose={() => setShowLogin(false)}
-          showRegister={() => {
-            setShowLogin(false);
-            setShowRegister(true);
-          }}
-        />
-      )}
-      
-      {/* Register Modal */}
-      {showRegister && (
-        <Register 
-          onClose={() => setShowRegister(false)}
-          showLogin={() => {
-            setShowRegister(false);
-            setShowLogin(true);
-          }}
-        />
-      )}
+      {/* Cart Sidebar */}
+      <CartSidebar 
+        isOpen={showCart}
+        onClose={() => setShowCart(false)}
+      />
     </header>
   );
 };
