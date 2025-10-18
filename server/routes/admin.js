@@ -4,6 +4,61 @@ const { authenticateAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Get dashboard statistics
+router.get('/dashboard', authenticateAdmin, async (req, res) => {
+  try {
+    // Get total users
+    const usersResult = await pool.query('SELECT COUNT(*) FROM users');
+    const totalUsers = parseInt(usersResult.rows[0].count);
+
+    // Get total products
+    const productsResult = await pool.query('SELECT COUNT(*) FROM products');
+    const totalProducts = parseInt(productsResult.rows[0].count);
+
+    // Get total orders
+    const ordersResult = await pool.query('SELECT COUNT(*) FROM orders');
+    const totalOrders = parseInt(ordersResult.rows[0].count);
+
+    // Get total revenue
+    const revenueResult = await pool.query('SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != \'cancelled\'');
+    const totalRevenue = parseFloat(revenueResult.rows[0].coalesce);
+
+    // Get recent orders
+    const recentOrdersResult = await pool.query(`
+      SELECT o.*, u.first_name, u.last_name, u.email 
+      FROM orders o 
+      JOIN users u ON o.user_id = u.id
+      ORDER BY o.created_at DESC 
+      LIMIT 10
+    `);
+    const recentOrders = recentOrdersResult.rows;
+
+    // Get top products (by order count)
+    const topProductsResult = await pool.query(`
+      SELECT p.*, COUNT(oi.id) as order_count
+      FROM products p
+      LEFT JOIN order_items oi ON p.id = oi.product_id
+      LEFT JOIN orders o ON oi.order_id = o.id AND o.status != 'cancelled'
+      GROUP BY p.id
+      ORDER BY order_count DESC
+      LIMIT 5
+    `);
+    const topProducts = topProductsResult.rows;
+
+    res.json({
+      totalUsers,
+      totalProducts,
+      totalOrders,
+      totalRevenue,
+      recentOrders,
+      topProducts
+    });
+  } catch (error) {
+    console.error('Get dashboard data error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Get all products (admin)
 router.get('/products', authenticateAdmin, async (req, res) => {
   try {
@@ -213,6 +268,81 @@ router.put('/orders/:id/status', authenticateAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Update order status error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Get all users
+router.get('/users', authenticateAdmin, async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search = '' } = req.query;
+    const offset = (page - 1) * limit;
+
+    let query = 'SELECT id, first_name, last_name, email, phone, created_at FROM users';
+    let countQuery = 'SELECT COUNT(*) FROM users';
+    let params = [];
+    let paramCount = 0;
+
+    if (search) {
+      paramCount++;
+      const searchCondition = ` WHERE (first_name ILIKE $${paramCount} OR last_name ILIKE $${paramCount} OR email ILIKE $${paramCount})`;
+      query += searchCondition;
+      countQuery += searchCondition;
+      params.push(`%${search}%`);
+    }
+
+    query += ` ORDER BY created_at DESC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
+    params.push(limit, offset);
+
+    const result = await pool.query(query, params);
+    const users = result.rows;
+
+    // Get total count
+    const countResult = await pool.query(countQuery, params.slice(0, paramCount));
+    const totalUsers = parseInt(countResult.rows[0].count);
+
+    res.json({
+      users,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalUsers / limit),
+        totalUsers,
+        hasNext: page * limit < totalUsers,
+        hasPrev: page > 1
+      }
+    });
+  } catch (error) {
+    console.error('Get admin users error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Get user details
+router.get('/users/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      'SELECT * FROM users WHERE id = $1',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Get user's orders
+    const ordersResult = await pool.query(
+      'SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC',
+      [id]
+    );
+
+    res.json({
+      user: result.rows[0],
+      orders: ordersResult.rows
+    });
+  } catch (error) {
+    console.error('Get user details error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
