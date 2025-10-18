@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiStar, FiTruck, FiShield, FiHeart, FiChevronLeft, FiChevronRight, FiShare2, FiArrowUp, FiVideo, FiMessageCircle } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
+import axios from 'axios';
 import './Home.css';
 
 const Home = () => {
@@ -10,6 +11,8 @@ const Home = () => {
   const [selectedPriceFilter, setSelectedPriceFilter] = useState('20k');
   const { addToCart } = useCart();
   const [message, setMessage] = useState('');
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [loadingArrivals, setLoadingArrivals] = useState(true);
 
   const handleAddToCart = async (product) => {
     const result = await addToCart(product.id, 1, null, null, product);
@@ -22,6 +25,21 @@ const Home = () => {
     } else {
       setMessage(result.message);
       setTimeout(() => setMessage(''), 5000);
+    }
+  };
+
+  // Fetch new arrivals from API
+  const fetchNewArrivals = async () => {
+    try {
+      setLoadingArrivals(true);
+      const response = await axios.get('/api/products/new-arrivals');
+      setNewArrivals(response.data.products);
+    } catch (error) {
+      console.error('Error fetching new arrivals:', error);
+      setMessage('Error loading new arrivals');
+      setTimeout(() => setMessage(''), 3000);
+    } finally {
+      setLoadingArrivals(false);
     }
   };
 
@@ -83,6 +101,11 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [carouselSlides.length]);
 
+  // Fetch new arrivals on component mount
+  useEffect(() => {
+    fetchNewArrivals();
+  }, []);
+
   const nextSlide = () => {
     setCurrentSlide(currentSlide === carouselSlides.length - 1 ? 0 : currentSlide + 1);
   };
@@ -91,44 +114,6 @@ const Home = () => {
     setCurrentSlide(currentSlide === 0 ? carouselSlides.length - 1 : currentSlide - 1);
   };
 
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Royal Silk Saree",
-      price: 25000,
-      originalPrice: 30000,
-      image: "https://thenmozhidesigns.com/cdn/shop/files/3S2A19061_1_1_copy_1.webp?v=1701505296&width=2048",
-      rating: 4.8,
-      reviews: 124
-    },
-    {
-      id: 2,
-      name: "Designer Cotton Saree",
-      price: 12000,
-      originalPrice: 15000,
-      image: "https://www.koskii.com/cdn/shop/files/koskii-orange-zariwork-puresilk-designer-saree-saus0035896_orange_purple_1_1_1024x1024.jpg?v=1716967729 &width=2048",
-      rating: 4.9,
-      reviews: 89
-    },
-    {
-      id: 3,
-      name: "Bridal Collection",
-      price: 45000,
-      originalPrice: 55000,
-      image: "https://templedesigner.com/cdn/shop/files/DSC09301.jpg?v=1718716907 &width=2048",
-      rating: 4.7,
-      reviews: 156
-    },
-    {
-      id: 4,
-      name: "Party Wear Saree",
-      price: 18000,
-      originalPrice: 22000,
-      image: "https://www.koskii.com/cdn/shop/files/koskii-red-zariwork-puresilk-designer-saree-saus0035818_red_purple_1_1.jpg?v=1716967830",
-      rating: 4.6,
-      reviews: 78
-    }
-  ];
 
   const showcaseSlides = [
     {
@@ -262,42 +247,56 @@ const Home = () => {
       <section className="new-arrivals">
         <div className="container">
           <h2 className="arrivals-title">New Arrivals In Store</h2>
-          <div className="arrivals-grid">
-            {featuredProducts.map(product => (
-              <div key={product.id} className="arrival-item">
-                <div className="arrival-image">
-                  <img src={product.image} alt={product.name} loading="lazy" />
-                </div>
-                <div className="arrival-info">
-                  <div className="arrival-top">
-                    <div className="arrival-price">₹{product.price.toLocaleString()}</div>
-                    <div className="arrival-actions">
-                      <a
-                        className="icon-btn whatsapp"
-                        href={`https://wa.me/?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label="Chat on WhatsApp"
-                        title="Chat on WhatsApp"
-                      >
-                        <FaWhatsapp />
-                      </a>
-                      <button type="button" className="icon-btn like" aria-label="Add to wishlist" title="Add to wishlist">
-                        <FiHeart />
-                      </button>
-                    </div>
+          {loadingArrivals ? (
+            <div className="arrivals-loading">
+              <p>Loading new arrivals...</p>
+            </div>
+          ) : newArrivals.length === 0 ? (
+            <div className="arrivals-empty">
+              <p>No new arrivals available at the moment.</p>
+            </div>
+          ) : (
+            <div className="arrivals-grid">
+              {newArrivals.map(product => (
+                <div key={product.id} className="arrival-item">
+                  <div className="arrival-image">
+                    <img 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.jpg'} 
+                      alt={product.name} 
+                      loading="lazy" 
+                    />
                   </div>
-                  <button 
-                    type="button" 
-                    className="btn-primary card-btn add-to-cart"
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    ADD TO CART
-                  </button>
+                  <div className="arrival-info">
+                    <div className="arrival-top">
+                      <div className="arrival-price">₹{product.price.toLocaleString()}</div>
+                      <div className="arrival-actions">
+                        <a
+                          className="icon-btn whatsapp"
+                          href={`https://wa.me/?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label="Chat on WhatsApp"
+                          title="Chat on WhatsApp"
+                        >
+                          <FaWhatsapp />
+                        </a>
+                        <button type="button" className="icon-btn like" aria-label="Add to wishlist" title="Add to wishlist">
+                          <FiHeart />
+                        </button>
+                      </div>
+                    </div>
+                    <button 
+                      type="button" 
+                      className="btn-primary card-btn add-to-cart"
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           <div className="arrivals-actions">
             <Link to="/products" className="btn-primary">Explore Collection</Link>
           </div>

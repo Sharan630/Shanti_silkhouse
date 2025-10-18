@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiFilter, FiGrid, FiList, FiStar, FiHeart, FiShoppingCart } from 'react-icons/fi';
+import { FiFilter, FiGrid, FiList, FiStar, FiHeart, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 import './ProductList.css';
 
 const ProductList = () => {
@@ -9,6 +11,7 @@ const ProductList = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const { addToCart } = useCart();
+  const { admin } = useAuth();
   const [message, setMessage] = useState('');
 
   const handleAddToCart = async (product) => {
@@ -22,6 +25,21 @@ const ProductList = () => {
     } else {
       setMessage(result.message);
       setTimeout(() => setMessage(''), 5000);
+    }
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        await axios.delete(`/api/admin/products/${productId}`);
+        setMessage('Product deleted successfully!');
+        setTimeout(() => setMessage(''), 3000);
+        // Refresh the page to show updated product list
+        window.location.reload();
+      } catch (error) {
+        setMessage('Error deleting product');
+        setTimeout(() => setMessage(''), 5000);
+      }
     }
   };
 
@@ -226,6 +244,17 @@ const ProductList = () => {
                       >
                         <FiShoppingCart />
                       </button>
+                      {admin && (
+                        <button 
+                          className="action-btn delete" 
+                          type="button" 
+                          aria-label="Delete product"
+                          onClick={() => handleDeleteProduct(product.id)}
+                          title="Delete product (Admin only)"
+                        >
+                          <FiTrash2 />
+                        </button>
+                      )}
                     </div>
                     <div className="product-badge">
                       <span>Sale</span>
