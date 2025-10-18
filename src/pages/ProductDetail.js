@@ -19,19 +19,13 @@ const ProductDetail = () => {
   const { user } = useAuth();
 
   const handleAddToCart = async () => {
-    if (!user) {
-      setMessage('Please login to add items to cart');
-      setTimeout(() => setMessage(''), 3000);
-      return;
-    }
-
     setIsAddingToCart(true);
-    const result = await addToCart(product.id, quantity, selectedSize, selectedColor);
+    const result = await addToCart(product.id, quantity, selectedSize, selectedColor, product);
     
     if (result.success) {
       setMessage('Item added to cart successfully!');
       setTimeout(() => setMessage(''), 3000);
-      // Trigger cart sidebar to open by dispatching a custom event
+      
       window.dispatchEvent(new CustomEvent('openCartSidebar'));
     } else {
       setMessage(result.message);

@@ -18,11 +18,33 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
-  // Fetch cart items from API
+  // Load cart from localStorage for non-authenticated users
+  const loadLocalCart = () => {
+    try {
+      const localCart = localStorage.getItem('localCart');
+      if (localCart) {
+        const items = JSON.parse(localCart);
+        setCartItems(items);
+        setCartCount(items.length);
+      }
+    } catch (error) {
+      console.error('Error loading local cart:', error);
+    }
+  };
+
+  // Save cart to localStorage for non-authenticated users
+  const saveLocalCart = (items) => {
+    try {
+      localStorage.setItem('localCart', JSON.stringify(items));
+    } catch (error) {
+      console.error('Error saving local cart:', error);
+    }
+  };
+
+  // Fetch cart items from API (for authenticated users)
   const fetchCartItems = async () => {
     if (!user) {
-      setCartItems([]);
-      setCartCount(0);
+      loadLocalCart();
       return;
     }
 
@@ -41,9 +63,55 @@ export const CartProvider = ({ children }) => {
   };
 
   // Add item to cart
-  const addToCart = async (productId, quantity = 1, size = null, color = null) => {
+  const addToCart = async (productId, quantity = 1, size = null, color = null, productData = null) => {
     if (!user) {
-      throw new Error('Please login to add items to cart');
+      // For non-authenticated users, store in localStorage
+      try {
+        setLoading(true);
+        
+        // Use provided product data or create a basic structure
+        const newItem = {
+          id: `local_${Date.now()}_${productId}`,
+          productId,
+          quantity,
+          size,
+          color,
+          price: productData?.price || 0,
+          originalPrice: productData?.originalPrice || (productData?.price || 0) * 1.2,
+          name: productData?.name || 'Product',
+          images: productData?.images || [],
+          material: productData?.material || '',
+          category: productData?.category || '',
+          created_at: new Date().toISOString()
+        };
+
+        // Check if item already exists in cart
+        const existingItemIndex = cartItems.findIndex(item => 
+          item.productId === productId && 
+          item.size === size && 
+          item.color === color
+        );
+
+        let updatedItems;
+        if (existingItemIndex >= 0) {
+          // Update existing item quantity
+          updatedItems = [...cartItems];
+          updatedItems[existingItemIndex].quantity += quantity;
+        } else {
+          // Add new item
+          updatedItems = [...cartItems, newItem];
+        }
+
+        setCartItems(updatedItems);
+        setCartCount(updatedItems.length);
+        saveLocalCart(updatedItems);
+        
+        return { success: true, message: 'Item added to cart' };
+      } catch (error) {
+        return { success: false, message: 'Failed to add item to cart' };
+      } finally {
+        setLoading(false);
+      }
     }
 
     try {
@@ -69,7 +137,23 @@ export const CartProvider = ({ children }) => {
 
   // Update cart item quantity
   const updateQuantity = async (cartItemId, quantity) => {
-    if (!user) return { success: false, message: 'Please login' };
+    if (!user) {
+      // For non-authenticated users, update local storage
+      try {
+        setLoading(true);
+        const updatedItems = cartItems.map(item => 
+          item.id === cartItemId ? { ...item, quantity } : item
+        );
+        setCartItems(updatedItems);
+        setCartCount(updatedItems.length);
+        saveLocalCart(updatedItems);
+        return { success: true, message: 'Quantity updated' };
+      } catch (error) {
+        return { success: false, message: 'Failed to update quantity' };
+      } finally {
+        setLoading(false);
+      }
+    }
 
     try {
       setLoading(true);
@@ -91,7 +175,21 @@ export const CartProvider = ({ children }) => {
 
   // Remove item from cart
   const removeFromCart = async (cartItemId) => {
-    if (!user) return { success: false, message: 'Please login' };
+    if (!user) {
+      // For non-authenticated users, update local storage
+      try {
+        setLoading(true);
+        const updatedItems = cartItems.filter(item => item.id !== cartItemId);
+        setCartItems(updatedItems);
+        setCartCount(updatedItems.length);
+        saveLocalCart(updatedItems);
+        return { success: true, message: 'Item removed from cart' };
+      } catch (error) {
+        return { success: false, message: 'Failed to remove item from cart' };
+      } finally {
+        setLoading(false);
+      }
+    }
 
     try {
       setLoading(true);
@@ -111,7 +209,20 @@ export const CartProvider = ({ children }) => {
 
   // Clear entire cart
   const clearCart = async () => {
-    if (!user) return { success: false, message: 'Please login' };
+    if (!user) {
+      // For non-authenticated users, clear local storage
+      try {
+        setLoading(true);
+        setCartItems([]);
+        setCartCount(0);
+        localStorage.removeItem('localCart');
+        return { success: true, message: 'Cart cleared' };
+      } catch (error) {
+        return { success: false, message: 'Failed to clear cart' };
+      } finally {
+        setLoading(false);
+      }
+    }
 
     try {
       setLoading(true);
@@ -168,10 +279,16 @@ export const CartProvider = ({ children }) => {
     if (user) {
       fetchCartItems();
     } else {
-      setCartItems([]);
-      setCartCount(0);
+      loadLocalCart();
     }
   }, [user]);
+
+  // Load local cart on component mount
+  useEffect(() => {
+    if (!user) {
+      loadLocalCart();
+    }
+  }, []);
 
   const value = {
     cartItems,

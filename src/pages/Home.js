@@ -2,11 +2,28 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowRight, FiStar, FiTruck, FiShield, FiHeart, FiChevronLeft, FiChevronRight, FiShare2, FiArrowUp, FiVideo, FiMessageCircle } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useCart } from '../contexts/CartContext';
 import './Home.css';
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedPriceFilter, setSelectedPriceFilter] = useState('20k');
+  const { addToCart } = useCart();
+  const [message, setMessage] = useState('');
+
+  const handleAddToCart = async (product) => {
+    const result = await addToCart(product.id, 1, null, null, product);
+    
+    if (result.success) {
+      setMessage('Item added to cart successfully!');
+      setTimeout(() => setMessage(''), 3000);
+      // Trigger cart sidebar to open
+      window.dispatchEvent(new CustomEvent('openCartSidebar'));
+    } else {
+      setMessage(result.message);
+      setTimeout(() => setMessage(''), 5000);
+    }
+  };
 
   const carouselSlides = [
     {
@@ -173,6 +190,13 @@ const Home = () => {
 
   return (
     <div className="home">
+      {/* Message Display */}
+      {message && (
+        <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
+      
       {/* Side Utility Icons */}
       <div className="side-utilities">
         <button className="utility-btn" title="Share" type="button" aria-label="Share this page">
@@ -263,7 +287,13 @@ const Home = () => {
                       </button>
                     </div>
                   </div>
-                  <button type="button" className="btn-primary card-btn add-to-cart">ADD TO CART</button>
+                  <button 
+                    type="button" 
+                    className="btn-primary card-btn add-to-cart"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    ADD TO CART
+                  </button>
                 </div>
               </div>
             ))}
@@ -380,7 +410,13 @@ const Home = () => {
                       </button>
                     </div>
                   </div>
-                  <button type="button" className="btn-primary card-btn add-to-cart">ADD TO CART</button>
+                  <button 
+                    type="button" 
+                    className="btn-primary card-btn add-to-cart"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    ADD TO CART
+                  </button>
                 </div>
               </div>
             ))}
