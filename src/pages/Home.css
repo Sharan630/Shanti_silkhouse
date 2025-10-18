@@ -462,6 +462,21 @@
   text-align: center;
 }
 
+/* Loading and Empty States */
+.arrivals-loading,
+.arrivals-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.arrivals-loading p,
+.arrivals-empty p {
+  margin: 0;
+  font-weight: 500;
+}
+
 .arrival-meta {
   position: absolute;
   bottom: 10px;
