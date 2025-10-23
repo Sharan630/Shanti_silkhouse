@@ -296,16 +296,32 @@ router.delete('/products/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
+    // First, check if product exists
+    const productCheck = await pool.query(
+      'SELECT id FROM products WHERE id = $1',
+      [id]
+    );
+
+    if (productCheck.rows.length === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Delete all cart items that reference this product
+    await pool.query(
+      'DELETE FROM cart WHERE product_id = $1',
+      [id]
+    );
+
+    // Now delete the product
     const result = await pool.query(
       'DELETE FROM products WHERE id = $1 RETURNING id',
       [id]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    res.json({ message: 'Product deleted successfully' });
+    res.json({ 
+      message: 'Product deleted successfully',
+      note: 'Product has been removed from all user carts'
+    });
   } catch (error) {
     console.error('Delete product error:', error);
     res.status(500).json({ message: 'Internal server error' });
