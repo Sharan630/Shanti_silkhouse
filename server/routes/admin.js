@@ -15,13 +15,49 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const productsResult = await pool.query('SELECT COUNT(*) FROM products');
     const totalProducts = parseInt(productsResult.rows[0].count);
 
+    // Get active products
+    const activeProductsResult = await pool.query('SELECT COUNT(*) FROM products WHERE is_active = true');
+    const activeProducts = parseInt(activeProductsResult.rows[0].count);
+
     // Get total orders
     const ordersResult = await pool.query('SELECT COUNT(*) FROM orders');
     const totalOrders = parseInt(ordersResult.rows[0].count);
 
+    // Get orders by status
+    const ordersByStatusResult = await pool.query(`
+      SELECT status, COUNT(*) as count 
+      FROM orders 
+      GROUP BY status
+    `);
+    const ordersByStatus = ordersByStatusResult.rows;
+
     // Get total revenue
     const revenueResult = await pool.query('SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != \'cancelled\'');
     const totalRevenue = parseFloat(revenueResult.rows[0].coalesce);
+
+    // Get revenue this month
+    const monthlyRevenueResult = await pool.query(`
+      SELECT COALESCE(SUM(total_amount), 0) as revenue 
+      FROM orders 
+      WHERE status != 'cancelled' 
+      AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+    `);
+    const monthlyRevenue = parseFloat(monthlyRevenueResult.rows[0].revenue);
+
+    // Get revenue last month for comparison
+    const lastMonthRevenueResult = await pool.query(`
+      SELECT COALESCE(SUM(total_amount), 0) as revenue 
+      FROM orders 
+      WHERE status != 'cancelled' 
+      AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) - 1
+      AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+    `);
+    const lastMonthRevenue = parseFloat(lastMonthRevenueResult.rows[0].revenue);
+
+    // Calculate revenue growth
+    const revenueGrowth = lastMonthRevenue > 0 ? 
+      ((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1) : 0;
 
     // Get recent orders
     const recentOrdersResult = await pool.query(`
@@ -35,7 +71,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
 
     // Get top products (by order count)
     const topProductsResult = await pool.query(`
-      SELECT p.*, COUNT(oi.id) as order_count
+      SELECT p.*, COUNT(oi.id) as order_count, SUM(oi.quantity) as total_quantity
       FROM products p
       LEFT JOIN order_items oi ON p.id = oi.product_id
       LEFT JOIN orders o ON oi.order_id = o.id AND o.status != 'cancelled'
@@ -45,13 +81,50 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     `);
     const topProducts = topProductsResult.rows;
 
+    // Get low stock products
+    const lowStockResult = await pool.query(`
+      SELECT * FROM products 
+      WHERE stock_quantity < 10 AND is_active = true
+      ORDER BY stock_quantity ASC
+      LIMIT 5
+    `);
+    const lowStockProducts = lowStockResult.rows;
+
+    // Get orders this week
+    const weeklyOrdersResult = await pool.query(`
+      SELECT COUNT(*) as count, 
+             COALESCE(SUM(total_amount), 0) as revenue
+      FROM orders 
+      WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
+      AND status != 'cancelled'
+    `);
+    const weeklyOrders = weeklyOrdersResult.rows[0];
+
+    // Get average order value
+    const avgOrderValueResult = await pool.query(`
+      SELECT COALESCE(AVG(total_amount), 0) as avg_value
+      FROM orders 
+      WHERE status != 'cancelled'
+    `);
+    const avgOrderValue = parseFloat(avgOrderValueResult.rows[0].avg_value);
+
     res.json({
       totalUsers,
       totalProducts,
+      activeProducts,
       totalOrders,
       totalRevenue,
+      monthlyRevenue,
+      revenueGrowth,
+      ordersByStatus,
       recentOrders,
-      topProducts
+      topProducts,
+      lowStockProducts,
+      weeklyOrders: {
+        count: parseInt(weeklyOrders.count),
+        revenue: parseFloat(weeklyOrders.revenue)
+      },
+      avgOrderValue
     });
   } catch (error) {
     console.error('Get dashboard data error:', error);
@@ -132,6 +205,47 @@ router.post('/products', authenticateAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Create product error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Toggle product status
+router.put('/products/:id/toggle-status', authenticateAdmin, async (req, res) => {
+  try {
+    console.log('Toggle status endpoint hit for product ID:', req.params.id);
+    const { id } = req.params;
+
+    // First get the current product to toggle its status
+    const currentProduct = await pool.query(
+      'SELECT is_active FROM products WHERE id = $1',
+      [id]
+    );
+
+    console.log('Current product query result:', currentProduct.rows);
+
+    if (currentProduct.rows.length === 0) {
+      console.log('Product not found with ID:', id);
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    const currentStatus = currentProduct.rows[0].is_active;
+    const newStatus = currentStatus === null ? true : !currentStatus;
+    
+    console.log('Current status:', currentStatus, 'New status:', newStatus);
+
+    const result = await pool.query(
+      'UPDATE products SET is_active = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *',
+      [newStatus, id]
+    );
+
+    console.log('Update result:', result.rows[0]);
+
+    res.json({
+      message: 'Product status updated successfully',
+      product: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Toggle product status error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });

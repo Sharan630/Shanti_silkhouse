@@ -39,13 +39,24 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="logo">
             <div className="logo-container">
-              <div className="lotus-icon">🌸</div>
-              <div className="logo-text">
-                <div className="logo-main">SHANTI</div>
-                <div className="logo-sub">
-                  <span className="line"></span>
-                  <span className="text">SILK HOUSE</span>
-                  <span className="line"></span>
+              <img 
+                src="/logos/logo.jpg" 
+                alt="Shanti Silk House Logo" 
+                className="logo-img"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="logo-text" style={{display: 'none'}}>
+                <div className="lotus-icon">🌸</div>
+                <div className="logo-text-content">
+                  <div className="logo-main">SHANTI</div>
+                  <div className="logo-sub">
+                    <span className="line"></span>
+                    <span className="text">SILK HOUSE</span>
+                    <span className="line"></span>
+                  </div>
                 </div>
               </div>
             </div>

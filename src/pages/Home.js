@@ -13,6 +13,8 @@ const Home = () => {
   const [message, setMessage] = useState('');
   const [newArrivals, setNewArrivals] = useState([]);
   const [loadingArrivals, setLoadingArrivals] = useState(true);
+  const [celebrateProducts, setCelebrateProducts] = useState([]);
+  const [loadingCelebrate, setLoadingCelebrate] = useState(true);
 
   const handleAddToCart = async (product) => {
     const result = await addToCart(product.id, 1, null, null, product);
@@ -40,6 +42,21 @@ const Home = () => {
       setTimeout(() => setMessage(''), 3000);
     } finally {
       setLoadingArrivals(false);
+    }
+  };
+
+  // Fetch celebrate products from API
+  const fetchCelebrateProducts = async (priceFilter = '20k') => {
+    try {
+      setLoadingCelebrate(true);
+      const response = await axios.get(`/api/products/celebrate?priceFilter=${priceFilter}`);
+      setCelebrateProducts(response.data.products);
+    } catch (error) {
+      console.error('Error fetching celebrate products:', error);
+      setMessage('Error loading celebrate products');
+      setTimeout(() => setMessage(''), 3000);
+    } finally {
+      setLoadingCelebrate(false);
     }
   };
 
@@ -104,7 +121,14 @@ const Home = () => {
   // Fetch new arrivals on component mount
   useEffect(() => {
     fetchNewArrivals();
+    fetchCelebrateProducts(selectedPriceFilter);
   }, []);
+
+  // Handle price filter change
+  const handlePriceFilterChange = (filter) => {
+    setSelectedPriceFilter(filter);
+    fetchCelebrateProducts(filter);
+  };
 
   const nextSlide = () => {
     setCurrentSlide(currentSlide === carouselSlides.length - 1 ? 0 : currentSlide + 1);
@@ -145,32 +169,6 @@ const Home = () => {
     return () => clearInterval(t);
   }, [showcaseSlides.length]);
 
-  const giftProducts = [
-    {
-      id: 1,
-      name: "Traditional Silk Saree",
-      price: 22000,
-      image: "https://mavuris.com/cdn/shop/articles/Red_Kanchipuram_Silk_Saree.png?v=1730986195"
-    },
-    {
-      id: 2,
-      name: "Designer Party Saree",
-      price: 15000,
-      image: "https://mavuris.com/cdn/shop/files/1000016656_2.jpg?v=1756219207"
-    },
-    {
-      id: 3,
-      name: "Bridal Collection Saree",
-      price: 35000,
-      image: "https://vivaahasilks.com/cdn/shop/products/DSC09212Kanchipuram_Bridal_Silk_Saree_Pure_Zari_2048x.webp?v=1739463895"
-    },
-    {
-      id: 4,
-      name: "Elegant Evening Saree",
-      price: 19000,
-      image: "https://brandmandir.com/media/catalog/product/cache/411a7c368a356a11933f7218f5d4cdaa/t/m/tmpTGC10378411_1_compressed.jpg"
-    }
-  ];
 
 
   return (
@@ -368,57 +366,71 @@ const Home = () => {
         <div className="container">
           <h2 className="celebrate-title">CELEBRATE & GIFT SAREES</h2>
           <div className="price-filters">
-            <button className={`price-filter ${selectedPriceFilter === '20k' ? 'active' : ''}`} onClick={() => setSelectedPriceFilter('20k')}>
+            <button className={`price-filter ${selectedPriceFilter === '20k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('20k')}>
               Under 20k
             </button>
-            <button className={`price-filter ${selectedPriceFilter === '30k' ? 'active' : ''}`} onClick={() => setSelectedPriceFilter('30k')}>
+            <button className={`price-filter ${selectedPriceFilter === '30k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('30k')}>
               Under 30k
             </button>
-            <button className={`price-filter ${selectedPriceFilter === '40k' ? 'active' : ''}`} onClick={() => setSelectedPriceFilter('40k')}>
+            <button className={`price-filter ${selectedPriceFilter === '40k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('40k')}>
               Under 40k
             </button>
-            <button className={`price-filter ${selectedPriceFilter === '50k' ? 'active' : ''}`} onClick={() => setSelectedPriceFilter('50k')}>
+            <button className={`price-filter ${selectedPriceFilter === '50k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('50k')}>
               Under 50k
             </button>
-            <button className={`price-filter ${selectedPriceFilter === '1lac' ? 'active' : ''}`} onClick={() => setSelectedPriceFilter('1lac')}>
+            <button className={`price-filter ${selectedPriceFilter === '1lac' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('1lac')}>
               Under 1lac
             </button>
           </div>
           <div className="gift-products-grid">
-            {giftProducts.map(product => (
-              <div key={product.id} className="gift-product-card">
-                <div className="gift-product-image">
-                  <img src={product.image} alt={product.name} loading="lazy" />
-                </div>
-                <div className="gift-product-info">
-                  <div className="gift-product-top">
-                    <div className="gift-product-price">₹{product.price.toLocaleString()}</div>
-                    <div className="gift-product-actions">
-                      <a
-                        className="icon-btn whatsapp"
-                        href={`https://wa.me/?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label="Chat on WhatsApp"
-                        title="Chat on WhatsApp"
-                      >
-                        <FaWhatsapp />
-                      </a>
-                      <button type="button" className="icon-btn like" aria-label="Add to wishlist" title="Add to wishlist">
-                        <FiHeart />
-                      </button>
-                    </div>
-                  </div>
-                  <button 
-                    type="button" 
-                    className="btn-primary card-btn add-to-cart"
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    ADD TO CART
-                  </button>
-                </div>
+            {loadingCelebrate ? (
+              <div className="celebrate-loading">
+                <p>Loading celebrate products...</p>
               </div>
-            ))}
+            ) : celebrateProducts.length === 0 ? (
+              <div className="celebrate-empty">
+                <p>No products found for the selected price range.</p>
+              </div>
+            ) : (
+              celebrateProducts.map(product => (
+                <div key={product.id} className="gift-product-card">
+                  <div className="gift-product-image">
+                    <img 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.jpg'} 
+                      alt={product.name} 
+                      loading="lazy" 
+                    />
+                  </div>
+                  <div className="gift-product-info">
+                    <div className="gift-product-top">
+                      <div className="gift-product-price">₹{product.price.toLocaleString()}</div>
+                      <div className="gift-product-actions">
+                        <a
+                          className="icon-btn whatsapp"
+                          href={`https://wa.me/?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label="Chat on WhatsApp"
+                          title="Chat on WhatsApp"
+                        >
+                          <FaWhatsapp />
+                        </a>
+                        <button type="button" className="icon-btn like" aria-label="Add to wishlist" title="Add to wishlist">
+                          <FiHeart />
+                        </button>
+                      </div>
+                    </div>
+                    <button 
+                      type="button" 
+                      className="btn-primary card-btn add-to-cart"
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>

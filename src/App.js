@@ -13,6 +13,7 @@ import Checkout from './pages/Checkout';
 import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import './App.css';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
               <Route path="/admin" element={<AdminPanel />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Routes>
           </main>
           <Footer />

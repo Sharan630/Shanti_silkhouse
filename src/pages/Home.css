@@ -1435,3 +1435,23 @@
     height: 60px;
   }
 }
+
+/* Loading and Empty States for Celebrate Section */
+.celebrate-loading,
+.celebrate-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.celebrate-loading p,
+.celebrate-empty p {
+  margin: 0;
+}
+
+.celebrate-loading {
+  color: #d4af37;
+}
