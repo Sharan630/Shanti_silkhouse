@@ -61,36 +61,55 @@ router.post('/image', authenticateAdmin, upload.single('image'), async (req, res
 // Upload multiple images
 router.post('/images', authenticateAdmin, upload.array('images', 10), async (req, res) => {
   try {
+    console.log('Upload request received:', {
+      filesCount: req.files ? req.files.length : 0,
+      adminId: req.admin?.id
+    });
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'No image files provided' });
     }
 
-    const uploadPromises = req.files.map(file => {
+    console.log('Processing', req.files.length, 'files for upload');
+
+    const uploadPromises = req.files.map((file, index) => {
       return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
+        console.log(`Uploading file ${index + 1}:`, {
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+          size: file.size
+        });
+
+        const uploadStream = cloudinary.uploader.upload_stream(
           {
             resource_type: 'auto',
             folder: 'saree-website',
             transformation: [
               { width: 800, height: 800, crop: 'limit' },
               { quality: 'auto' }
-            ]
+            ],
+            timeout: 120000 // 2 minutes timeout for Cloudinary
           },
           (error, result) => {
             if (error) {
+              console.error(`Cloudinary upload error for file ${index + 1}:`, error);
               reject(error);
             } else {
+              console.log(`File ${index + 1} uploaded successfully:`, result.secure_url);
               resolve({
                 imageUrl: result.secure_url,
                 publicId: result.public_id
               });
             }
           }
-        ).end(file.buffer);
+        );
+
+        uploadStream.end(file.buffer);
       });
     });
 
     const results = await Promise.all(uploadPromises);
+    console.log('All files uploaded successfully:', results.length);
 
     res.json({
       message: 'Images uploaded successfully',
@@ -99,7 +118,14 @@ router.post('/images', authenticateAdmin, upload.array('images', 10), async (req
 
   } catch (error) {
     console.error('Multiple upload error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    
+    if (error.message && error.message.includes('timeout')) {
+      res.status(408).json({ message: 'Upload timeout. Please try with smaller images.' });
+    } else if (error.message && error.message.includes('size')) {
+      res.status(413).json({ message: 'File too large. Maximum size is 10MB per image.' });
+    } else {
+      res.status(500).json({ message: 'Upload failed. Please try again.' });
+    }
   }
 });
 

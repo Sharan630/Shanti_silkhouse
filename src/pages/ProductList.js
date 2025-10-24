@@ -121,7 +121,7 @@ const ProductList = () => {
   const categories = [
     { name: "All", value: "all" },
     { name: "Silk Sarees", value: "silk" },
-    { name: "Cotton Sarees", value: "cotton" },
+    { name: "Banarasi Sarees", value: "banarasi" },
     { name: "Designer Sarees", value: "designer" },
     { name: "Bridal Sarees", value: "bridal" },
     { name: "Party Wear", value: "party" }

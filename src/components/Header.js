@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX, FiLogOut } from 'react-icons/fi';
+import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX, FiLogOut, FiHeart } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
+import { useWishlist } from '../contexts/WishlistContext';
 import CartSidebar from './CartSidebar';
+import WishlistSidebar from './WishlistSidebar';
 import './Header.css';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,10 +68,10 @@ const Header = () => {
 
           {/* Navigation */}
           <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-            <Link to="/products?category=kanjivaram" className="nav-link">KANJIVARAMS</Link>
-            <Link to="/products?category=vintage" className="nav-link">SHANTI VINTAGE</Link>
-            <Link to="/products?category=crafts" className="nav-link">CRAFTS</Link>
-            <Link to="/products?category=fancy" className="nav-link">FANCY & OCCASIONAL</Link>
+            <Link to="/collection/silk-sarees" className="nav-link">SILK SAREES</Link>
+            <Link to="/collection/banarasi-sarees" className="nav-link">BANARASI SAREES</Link>
+            <Link to="/collection/designer-sarees" className="nav-link">DESIGNER SAREES</Link>
+            <Link to="/collection/bridal-sarees" className="nav-link">BRIDAL SAREES</Link>
           </nav>
 
           {/* Header Actions */}
@@ -92,6 +96,13 @@ const Header = () => {
               </button>
             )}
             <button 
+              className="action-btn wishlist-btn"
+              onClick={() => setShowWishlist(true)}
+            >
+              <FiHeart />
+              {wishlistCount > 0 && <span className="wishlist-count">{wishlistCount}</span>}
+            </button>
+            <button 
               className="action-btn cart-btn"
               onClick={() => setShowCart(true)}
             >
@@ -112,6 +123,12 @@ const Header = () => {
       <CartSidebar 
         isOpen={showCart}
         onClose={() => setShowCart(false)}
+      />
+      
+      {/* Wishlist Sidebar */}
+      <WishlistSidebar 
+        isOpen={showWishlist}
+        onClose={() => setShowWishlist(false)}
       />
     </header>
   );

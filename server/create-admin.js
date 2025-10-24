@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const pool = require('./config/database');
+const { pool } = require('./config/database');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, 'config.env') });
 

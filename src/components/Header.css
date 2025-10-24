@@ -105,8 +105,9 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 30px;
-  justify-self: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
 }
 
 .nav-link {
@@ -118,6 +119,9 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.9rem;
+  flex: 1;
+  text-align: center;
+  padding: 10px 5px;
 }
 
 .nav-link:hover {
@@ -240,6 +244,30 @@
   color: #8B0000;
 }
 
+.wishlist-btn {
+  position: relative;
+  color: #ef4444;
+}
+
+.wishlist-btn:hover {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.wishlist-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
 .cart-btn {
   position: relative;
 }
@@ -306,6 +334,8 @@
     box-shadow: 0 10px 40px rgba(47, 79, 79, 0.15);
     border-radius: 0 0 20px 20px;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    justify-content: flex-start;
+    width: auto;
   }
 
   .nav-open {
@@ -321,6 +351,8 @@
     transition: all 0.3s ease;
     background: rgba(5, 150, 105, 0.05);
     border: 1px solid rgba(5, 150, 105, 0.1);
+    flex: none;
+    text-align: left;
   }
 
   .nav-link:hover {
