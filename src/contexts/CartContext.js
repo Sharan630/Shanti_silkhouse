@@ -256,6 +256,33 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Buy now functionality - add to cart and redirect to checkout
+  const buyNow = async (productId, quantity = 1, size = null, color = null, productData = null) => {
+    try {
+      // First add the item to cart
+      const addResult = await addToCart(productId, quantity, size, color, productData);
+      
+      if (addResult.success) {
+        // Clear any existing cart items for buy now (optional - you might want to keep existing items)
+        // await clearCart();
+        
+        // Return success with redirect information
+        return { 
+          success: true, 
+          message: 'Item added to cart. Redirecting to checkout...',
+          redirectTo: '/checkout'
+        };
+      } else {
+        return addResult;
+      }
+    } catch (error) {
+      return { 
+        success: false, 
+        message: 'Failed to process buy now request' 
+      };
+    }
+  };
+
   // Calculate cart totals
   const getCartTotals = () => {
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -295,6 +322,7 @@ export const CartProvider = ({ children }) => {
     cartCount,
     loading,
     addToCart,
+    buyNow,
     updateQuantity,
     removeFromCart,
     clearCart,

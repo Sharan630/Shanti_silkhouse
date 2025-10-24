@@ -42,6 +42,14 @@ const AdminPanel = () => {
     stockQuantity: '',
     images: []
   });
+
+  // Category mapping between navbar routes and database values
+  const categoryOptions = [
+    { value: 'silk-sarees', label: 'Silk Sarees', dbValue: 'silk-sarees' },
+    { value: 'banarasi-sarees', label: 'Banarasi Sarees', dbValue: 'banarasi-sarees' },
+    { value: 'designer-sarees', label: 'Designer Sarees', dbValue: 'designer-sarees' },
+    { value: 'bridal-sarees', label: 'Bridal Sarees', dbValue: 'bridal-sarees' }
+  ];
   const [editingProduct, setEditingProduct] = useState(null);
   const [productSearch, setProductSearch] = useState('');
   const [productFilter, setProductFilter] = useState('all');
@@ -81,7 +89,7 @@ const AdminPanel = () => {
   // Fetch products
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/api/admin/products');
+      const response = await axios.get('/api/admin/products?limit=1000');
       setProducts(response.data.products);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -152,6 +160,11 @@ const AdminPanel = () => {
 
   // Handle image upload
   const handleImageUpload = async (files) => {
+    if (!files || files.length === 0) return;
+    
+    setLoading(true);
+    setError('');
+    
     const formData = new FormData();
     Array.from(files).forEach(file => {
       formData.append('images', file);
@@ -159,17 +172,46 @@ const AdminPanel = () => {
 
     try {
       const response = await axios.post('/api/upload/images', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 60000, // 60 seconds timeout
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          console.log(`Upload Progress: ${percentCompleted}%`);
+        }
       });
       
-      const newImages = response.data.images.map(img => img.imageUrl);
-      setProductForm(prev => ({
-        ...prev,
-        images: [...prev.images, ...newImages]
-      }));
+      if (response.data && response.data.images) {
+        const newImages = response.data.images.map(img => img.imageUrl);
+        setProductForm(prev => ({
+          ...prev,
+          images: [...prev.images, ...newImages]
+        }));
+        setSuccess(`${newImages.length} image(s) uploaded successfully!`);
+      } else {
+        setError('Invalid response from server');
+      }
     } catch (error) {
-      setError('Error uploading images');
+      console.error('Image upload error:', error);
+      if (error.code === 'ECONNABORTED') {
+        setError('Upload timeout. Please try with smaller images or check your connection.');
+      } else if (error.response?.status === 413) {
+        setError('File too large. Please select images smaller than 10MB each.');
+      } else if (error.response?.data?.message) {
+        setError(`Upload failed: ${error.response.data.message}`);
+      } else {
+        setError('Error uploading images. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Remove image from product form
+  const removeImage = (index) => {
+    setProductForm(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
   };
 
   // Delete product function
@@ -730,16 +772,18 @@ const AdminPanel = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Category</label>
+                  <label>Category *</label>
                   <select
                     value={productForm.category}
                     onChange={(e) => setProductForm({...productForm, category: e.target.value})}
+                    required
                   >
                     <option value="">Select Category</option>
-                    <option value="kanjivaram">Kanjivaram</option>
-                    <option value="vintage">Vintage</option>
-                    <option value="crafts">Crafts</option>
-                    <option value="fancy">Fancy & Occasional</option>
+                    {categoryOptions.map(category => (
+                      <option key={category.value} value={category.dbValue}>
+                        {category.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="form-group">
@@ -793,17 +837,23 @@ const AdminPanel = () => {
                   accept="image/*"
                   onChange={(e) => handleImageUpload(e.target.files)}
                   className="file-input"
+                  disabled={loading}
                 />
+                {loading && (
+                  <div style={{ marginTop: '10px', color: '#d4af37', fontWeight: '600' }}>
+                    Uploading images... Please wait.
+                  </div>
+                )}
+                <div style={{ marginTop: '5px', fontSize: '0.9rem', color: '#7f8c8d' }}>
+                  Maximum 10 images, 10MB each. Supported formats: JPG, PNG, GIF, WebP
+                </div>
                 <div className="image-preview">
                   {productForm.images.map((img, index) => (
                     <div key={index} className="preview-image">
                       <img src={img} alt={`Product ${index + 1}`} />
                       <button
                         type="button"
-                        onClick={() => setProductForm(prev => ({
-                          ...prev,
-                          images: prev.images.filter((_, i) => i !== index)
-                        }))}
+                        onClick={() => removeImage(index)}
                         className="remove-image"
                       >
                         <FiXCircle />

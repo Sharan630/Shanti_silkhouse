@@ -8,6 +8,9 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
+  z-index: 50;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .footer::before {
@@ -32,6 +35,7 @@
   gap: 40px;
   margin-bottom: 40px;
 }
+
 
 .footer-section h3 {
   font-size: 1.8rem;
@@ -211,7 +215,36 @@
   color: #8B0000;
 }
 
+/* Handle pages with fixed sidebars */
+body.has-fixed-sidebar .footer {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+}
+
+/* Tablet and smaller screens */
+@media (max-width: 1024px) {
+  .footer {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  body.has-fixed-sidebar .footer {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
+  .footer {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  body.has-fixed-sidebar .footer {
+    margin-left: 0;
+    width: 100%;
+  }
+  
   .footer-logo-img {
     height: 60px;
     max-width: 200px;

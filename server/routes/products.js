@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../config/database');
+const { pool } = require('../config/database');
 
 const router = express.Router();
 
@@ -70,52 +70,115 @@ router.get('/new-arrivals', async (req, res) => {
   }
 });
 
-// Get products for celebrate section with price filtering
+// Test endpoint to verify category mix
+router.get('/celebrate-test', async (req, res) => {
+  try {
+    const categories = ['silk-sarees', 'banarasi-sarees', 'designer-sarees', 'bridal-sarees'];
+    const allProducts = [];
+    
+    console.log('=== TEST ENDPOINT DEBUG ===');
+    
+    // Get 2 products from each category
+    for (const category of categories) {
+      const result = await pool.query(
+        'SELECT id, name, category, price FROM products WHERE is_active = true AND category = $1 ORDER BY RANDOM() LIMIT 2',
+        [category]
+      );
+      allProducts.push(...result.rows);
+      console.log(`Category ${category}: Found ${result.rows.length} products`);
+      if (result.rows.length > 0) {
+        console.log(`  - Products: ${result.rows.map(p => `${p.name} (₹${p.price})`).join(', ')}`);
+      }
+    }
+    
+    // If we don't have 8 products, fill with random ones
+    if (allProducts.length < 8) {
+      const remaining = 8 - allProducts.length;
+      console.log(`Need ${remaining} more products to reach 8 total`);
+      
+      const randomResult = await pool.query(
+        'SELECT id, name, category, price FROM products WHERE is_active = true ORDER BY RANDOM() LIMIT $1',
+        [remaining]
+      );
+      allProducts.push(...randomResult.rows);
+      console.log(`Random fill: Added ${randomResult.rows.length} products`);
+    }
+    
+    console.log(`Final total products: ${allProducts.length}`);
+    console.log('=== END TEST DEBUG ===');
+    
+    // Ensure exactly 8 products
+    const finalProducts = allProducts.slice(0, 8);
+    console.log(`Returning exactly ${finalProducts.length} products`);
+    
+    res.json({ 
+      products: finalProducts, 
+      totalCount: finalProducts.length,
+      message: 'Test endpoint - should show exactly 8 products with mix of categories' 
+    });
+  } catch (error) {
+    console.error('Test endpoint error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Get products for celebrate section with price filtering - SIMPLIFIED VERSION
 router.get('/celebrate', async (req, res) => {
   try {
     const { priceFilter = 'all' } = req.query;
     
-    let query = 'SELECT * FROM products WHERE is_active = true';
-    let params = [];
-    let paramCount = 0;
-
-    // Add price filtering based on the selected filter
+    console.log('=== CELEBRATE SECTION DEBUG ===');
+    console.log('Price filter:', priceFilter);
+    
+    // Build the base query with price filtering
+    let baseQuery = 'SELECT * FROM products WHERE is_active = true';
+    let baseParams = [];
+    
+    // Add price filtering if specified
     if (priceFilter !== 'all') {
-      paramCount++;
-      let priceCondition = '';
+      let priceValue;
       switch (priceFilter) {
         case '20k':
-          priceCondition = ` AND price <= $${paramCount}`;
-          params.push(20000);
+          priceValue = 20000;
           break;
         case '30k':
-          priceCondition = ` AND price <= $${paramCount}`;
-          params.push(30000);
+          priceValue = 30000;
           break;
         case '40k':
-          priceCondition = ` AND price <= $${paramCount}`;
-          params.push(40000);
+          priceValue = 40000;
           break;
         case '50k':
-          priceCondition = ` AND price <= $${paramCount}`;
-          params.push(50000);
+          priceValue = 50000;
           break;
         case '1lac':
-          priceCondition = ` AND price <= $${paramCount}`;
-          params.push(100000);
+          priceValue = 100000;
           break;
         default:
           break;
       }
-      query += priceCondition;
+      if (priceValue) {
+        baseQuery += ' AND price <= $1';
+        baseParams.push(priceValue);
+      }
     }
-
-    query += ' ORDER BY created_at DESC LIMIT 8';
-
-    const result = await pool.query(query, params);
+    
+    // Get exactly 8 products with a single query
+    const finalQuery = baseQuery + ' ORDER BY RANDOM() LIMIT 8';
+    
+    console.log('Final query:', finalQuery);
+    console.log('Query params:', baseParams);
+    
+    const result = await pool.query(finalQuery, baseParams);
     const products = result.rows;
+    
+    console.log(`Found ${products.length} products`);
+    console.log('=== END DEBUG ===');
+    
+    // CRITICAL: Ensure we never return more than 8 products
+    const finalProducts = products.slice(0, 8);
+    console.log(`Returning exactly ${finalProducts.length} products`);
 
-    res.json({ products });
+    res.json({ products: finalProducts });
   } catch (error) {
     console.error('Get celebrate products error:', error);
     res.status(500).json({ message: 'Internal server error' });

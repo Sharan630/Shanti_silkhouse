@@ -1,30 +1,34 @@
 const express = require('express');
-const pool = require('../config/database');
+const { pool } = require('../config/database');
 const { authenticateAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Get dashboard statistics
 router.get('/dashboard', authenticateAdmin, async (req, res) => {
+  let client;
   try {
+    // Get a client from the pool to ensure connection stability
+    client = await pool.connect();
+    
     // Get total users
-    const usersResult = await pool.query('SELECT COUNT(*) FROM users');
+    const usersResult = await client.query('SELECT COUNT(*) FROM users');
     const totalUsers = parseInt(usersResult.rows[0].count);
 
     // Get total products
-    const productsResult = await pool.query('SELECT COUNT(*) FROM products');
+    const productsResult = await client.query('SELECT COUNT(*) FROM products');
     const totalProducts = parseInt(productsResult.rows[0].count);
 
     // Get active products
-    const activeProductsResult = await pool.query('SELECT COUNT(*) FROM products WHERE is_active = true');
+    const activeProductsResult = await client.query('SELECT COUNT(*) FROM products WHERE is_active = true');
     const activeProducts = parseInt(activeProductsResult.rows[0].count);
 
     // Get total orders
-    const ordersResult = await pool.query('SELECT COUNT(*) FROM orders');
+    const ordersResult = await client.query('SELECT COUNT(*) FROM orders');
     const totalOrders = parseInt(ordersResult.rows[0].count);
 
     // Get orders by status
-    const ordersByStatusResult = await pool.query(`
+    const ordersByStatusResult = await client.query(`
       SELECT status, COUNT(*) as count 
       FROM orders 
       GROUP BY status
@@ -32,11 +36,11 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const ordersByStatus = ordersByStatusResult.rows;
 
     // Get total revenue
-    const revenueResult = await pool.query('SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != \'cancelled\'');
+    const revenueResult = await client.query('SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != \'cancelled\'');
     const totalRevenue = parseFloat(revenueResult.rows[0].coalesce);
 
     // Get revenue this month
-    const monthlyRevenueResult = await pool.query(`
+    const monthlyRevenueResult = await client.query(`
       SELECT COALESCE(SUM(total_amount), 0) as revenue 
       FROM orders 
       WHERE status != 'cancelled' 
@@ -46,7 +50,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const monthlyRevenue = parseFloat(monthlyRevenueResult.rows[0].revenue);
 
     // Get revenue last month for comparison
-    const lastMonthRevenueResult = await pool.query(`
+    const lastMonthRevenueResult = await client.query(`
       SELECT COALESCE(SUM(total_amount), 0) as revenue 
       FROM orders 
       WHERE status != 'cancelled' 
@@ -60,7 +64,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
       ((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1) : 0;
 
     // Get recent orders
-    const recentOrdersResult = await pool.query(`
+    const recentOrdersResult = await client.query(`
       SELECT o.*, u.first_name, u.last_name, u.email 
       FROM orders o 
       JOIN users u ON o.user_id = u.id
@@ -70,7 +74,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const recentOrders = recentOrdersResult.rows;
 
     // Get top products (by order count)
-    const topProductsResult = await pool.query(`
+    const topProductsResult = await client.query(`
       SELECT p.*, COUNT(oi.id) as order_count, SUM(oi.quantity) as total_quantity
       FROM products p
       LEFT JOIN order_items oi ON p.id = oi.product_id
@@ -82,7 +86,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const topProducts = topProductsResult.rows;
 
     // Get low stock products
-    const lowStockResult = await pool.query(`
+    const lowStockResult = await client.query(`
       SELECT * FROM products 
       WHERE stock_quantity < 10 AND is_active = true
       ORDER BY stock_quantity ASC
@@ -91,7 +95,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const lowStockProducts = lowStockResult.rows;
 
     // Get orders this week
-    const weeklyOrdersResult = await pool.query(`
+    const weeklyOrdersResult = await client.query(`
       SELECT COUNT(*) as count, 
              COALESCE(SUM(total_amount), 0) as revenue
       FROM orders 
@@ -101,7 +105,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const weeklyOrders = weeklyOrdersResult.rows[0];
 
     // Get average order value
-    const avgOrderValueResult = await pool.query(`
+    const avgOrderValueResult = await client.query(`
       SELECT COALESCE(AVG(total_amount), 0) as avg_value
       FROM orders 
       WHERE status != 'cancelled'
@@ -129,6 +133,11 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
   } catch (error) {
     console.error('Get dashboard data error:', error);
     res.status(500).json({ message: 'Internal server error' });
+  } finally {
+    // Always release the client back to the pool
+    if (client) {
+      client.release();
+    }
   }
 });
 
@@ -189,14 +198,15 @@ router.post('/products', authenticateAdmin, async (req, res) => {
       color,
       material,
       images,
-      stockQuantity
+      stockQuantity,
+      isActive = true
     } = req.body;
 
     const result = await pool.query(
-      `INSERT INTO products (name, description, price, category, size, color, material, images, stock_quantity)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `INSERT INTO products (name, description, price, category, size, color, material, images, stock_quantity, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
-      [name, description, price, category, size, color, material, JSON.stringify(images || []), stockQuantity]
+      [name, description, price, category, size, color, material, JSON.stringify(images || []), stockQuantity, Boolean(isActive)]
     );
 
     res.status(201).json({
@@ -267,6 +277,9 @@ router.put('/products/:id', authenticateAdmin, async (req, res) => {
       isActive
     } = req.body;
 
+    // Ensure isActive is a boolean, default to true if not provided
+    const activeStatus = isActive !== undefined ? Boolean(isActive) : true;
+
     const result = await pool.query(
       `UPDATE products SET 
        name = $1, description = $2, price = $3, category = $4, size = $5, 
@@ -274,7 +287,7 @@ router.put('/products/:id', authenticateAdmin, async (req, res) => {
        is_active = $10, updated_at = CURRENT_TIMESTAMP
        WHERE id = $11 RETURNING *`,
       [name, description, price, category, size, color, material, 
-       JSON.stringify(images || []), stockQuantity, isActive, id]
+       JSON.stringify(images || []), stockQuantity, activeStatus, id]
     );
 
     if (result.rows.length === 0) {

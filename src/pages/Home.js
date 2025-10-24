@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiStar, FiTruck, FiShield, FiHeart, FiChevronLeft, FiChevronRight, FiShare2, FiArrowUp, FiVideo, FiMessageCircle } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
+import { useWishlist } from '../contexts/WishlistContext';
 import axios from 'axios';
 import './Home.css';
 
@@ -10,6 +11,7 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedPriceFilter, setSelectedPriceFilter] = useState('20k');
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [message, setMessage] = useState('');
   const [newArrivals, setNewArrivals] = useState([]);
   const [loadingArrivals, setLoadingArrivals] = useState(true);
@@ -50,7 +52,16 @@ const Home = () => {
     try {
       setLoadingCelebrate(true);
       const response = await axios.get(`/api/products/celebrate?priceFilter=${priceFilter}`);
-      setCelebrateProducts(response.data.products);
+      
+      // CRITICAL: Ensure we never display more than 8 products
+      const products = response.data.products || [];
+      console.log(`Received ${products.length} products from API`);
+      
+      // Force limit to exactly 8 products
+      const limitedProducts = products.slice(0, 8);
+      console.log(`Setting ${limitedProducts.length} products in state`);
+      
+      setCelebrateProducts(limitedProducts);
     } catch (error) {
       console.error('Error fetching celebrate products:', error);
       setMessage('Error loading celebrate products');
@@ -143,20 +154,20 @@ const Home = () => {
     {
       id: 's1',
       image: 'https://images.unsplash.com/photo-1618901185975-d59f7091bcfe?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tYW4lMjBpbiUyMHNhcmVlfGVufDB8fDB8fHww',
-      title: 'KANJEEVARAM',
-      tagline: 'From ₹32,999.00'
+      title: 'ELEGANT SILK SAREES',
+      tagline: 'Timeless Beauty, Modern Grace'
     },
     {
       id: 's2',
       image: 'https://t4.ftcdn.net/jpg/14/92/02/63/360_F_1492026312_spPMOxAHC3jvNvsF43OUPZDPNzLhsqIq.jpg',
-      title: 'HANDLOOM CLASSICS',
-      tagline: 'From ₹14,499.00'
+      title: 'TRADITIONAL WEAVES',
+      tagline: 'Heritage Craftsmanship'
     },
     {
       id: 's3',
       image: 'https://t4.ftcdn.net/jpg/09/72/20/43/360_F_972204343_qxjJTNMhsdMljBCkQpxLslJsklCIDaFy.jpg',
-      title: 'BRIDAL EDIT',
-      tagline: 'From ₹45,999.00'
+      title: 'BRIDAL COLLECTION',
+      tagline: 'Your Perfect Wedding Day'
     }
   ];
 
@@ -270,7 +281,7 @@ const Home = () => {
                       <div className="arrival-actions">
                         <a
                           className="icon-btn whatsapp"
-                          href={`https://wa.me/?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
+                          href={`https://wa.me/919591128327?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
                           target="_blank"
                           rel="noreferrer"
                           aria-label="Chat on WhatsApp"
@@ -278,7 +289,13 @@ const Home = () => {
                         >
                           <FaWhatsapp />
                         </a>
-                        <button type="button" className="icon-btn like" aria-label="Add to wishlist" title="Add to wishlist">
+                        <button 
+                          type="button" 
+                          className={`icon-btn like ${isInWishlist(product.id) ? 'liked' : ''}`}
+                          onClick={() => toggleWishlist(product)}
+                          aria-label="Add to wishlist" 
+                          title="Add to wishlist"
+                        >
                           <FiHeart />
                         </button>
                       </div>
@@ -296,7 +313,7 @@ const Home = () => {
             </div>
           )}
           <div className="arrivals-actions">
-            <Link to="/products" className="btn-primary">Explore Collection</Link>
+            <Link to="/collection/silk-sarees" className="btn-primary">Explore Collection</Link>
           </div>
         </div>
       </section>
@@ -392,7 +409,7 @@ const Home = () => {
                 <p>No products found for the selected price range.</p>
               </div>
             ) : (
-              celebrateProducts.map(product => (
+              celebrateProducts.slice(0, 8).map(product => (
                 <div key={product.id} className="gift-product-card">
                   <div className="gift-product-image">
                     <img 
@@ -407,7 +424,7 @@ const Home = () => {
                       <div className="gift-product-actions">
                         <a
                           className="icon-btn whatsapp"
-                          href={`https://wa.me/?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
+                          href={`https://wa.me/919591128327?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
                           target="_blank"
                           rel="noreferrer"
                           aria-label="Chat on WhatsApp"
@@ -415,7 +432,13 @@ const Home = () => {
                         >
                           <FaWhatsapp />
                         </a>
-                        <button type="button" className="icon-btn like" aria-label="Add to wishlist" title="Add to wishlist">
+                        <button 
+                          type="button" 
+                          className={`icon-btn like ${isInWishlist(product.id) ? 'liked' : ''}`}
+                          onClick={() => toggleWishlist(product)}
+                          aria-label="Add to wishlist" 
+                          title="Add to wishlist"
+                        >
                           <FiHeart />
                         </button>
                       </div>
@@ -549,6 +572,11 @@ const Home = () => {
                   Our mission is to preserve tradition while blending it beautifully with modern elegance, making every 
                   woman feel confident, proud, and connected to her roots.
                 </p>
+                <div className="contact-details">
+                  <p><strong>Visit us at:</strong> 3H5Q+X3C, 1st Main Rd, CQAL Layout, Sahakar Nagar, Byatarayanapura, Bengaluru, Karnataka</p>
+                  <p><strong>Call us:</strong> +91 95911 28327</p>
+                  <p><strong>WhatsApp:</strong> <a href="https://wa.me/919591128327" target="_blank" rel="noopener noreferrer" style={{color: '#25D366', textDecoration: 'none'}}>+91 95911 28327</a></p>
+                </div>
               </div>
             </div>
           </div>

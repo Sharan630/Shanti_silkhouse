@@ -59,7 +59,7 @@ const Footer = () => {
             <h4>Categories</h4>
             <ul className="footer-links">
               <li><Link to="/products?category=silk">Silk Sarees</Link></li>
-              <li><Link to="/products?category=cotton">Cotton Sarees</Link></li>
+              <li><Link to="/products?category=banarasi">Banarasi Sarees</Link></li>
               <li><Link to="/products?category=designer">Designer Sarees</Link></li>
               <li><Link to="/products?category=bridal">Bridal Sarees</Link></li>
               <li><Link to="/products?category=party">Party Wear</Link></li>
@@ -72,15 +72,15 @@ const Footer = () => {
             <div className="contact-info">
               <div className="contact-item">
                 <FiMapPin />
-                <span>123 Fashion Street, Mumbai, India</span>
+                <span>3H5Q+X3C, 1st Main Rd, CQAL Layout, Sahakar Nagar, Byatarayanapura, Bengaluru, Karnataka</span>
               </div>
               <div className="contact-item">
                 <FiPhone />
-                <span>+91 98765 43210</span>
+                <span>+91 95911 28327</span>
               </div>
               <div className="contact-item">
                 <FiMail />
-                <span>info@elegantsarees.com</span>
+                <span>info@shantisilks.com</span>
               </div>
             </div>
           </div>
