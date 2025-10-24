@@ -17,14 +17,10 @@ const Footer = () => {
                 className="footer-logo-img"
                 loading="eager"
                 onError={(e) => {
+                  console.log('SVG logo failed to load');
                   e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'block';
                 }}
               />
-              <div className="footer-logo-text" style={{display: 'none'}}>
-                <h3>Shanti Silk House</h3>
-                <p>Premium Collection</p>
-              </div>
             </div>
             <p className="footer-description">
               Discover the finest collection of traditional and contemporary sarees. 

@@ -75,6 +75,10 @@ const Header = () => {
             alt="Shanti Silk House Logo" 
             className="logo-img"
             loading="eager"
+            onError={(e) => {
+              console.log('SVG logo failed to load');
+              e.target.style.display = 'none';
+            }}
           />
         </Link>
 
@@ -154,6 +158,10 @@ const Header = () => {
               alt="Shanti Silk House Logo" 
               className="mobile-logo-img"
               loading="eager"
+              onError={(e) => {
+                console.log('SVG logo failed to load');
+                e.target.style.display = 'none';
+              }}
             />
           </Link>
 
