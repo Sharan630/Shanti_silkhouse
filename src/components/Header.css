@@ -30,9 +30,9 @@
 
 
 .logo-img {
-  height: 60px;
+  height: 80px;
   width: auto;
-  max-width: 200px;
+  max-width: 300px;
   object-fit: contain;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
   transition: all 0.3s ease;
@@ -315,9 +315,9 @@
 }
 
 .mobile-logo-img {
-  height: 60px;
+  height: 80px;
   width: auto;
-  max-width: 200px;
+  max-width: 300px;
   object-fit: contain;
 }
 
@@ -702,8 +702,8 @@
   }
   
   .mobile-logo-img {
-    height: 50px;
-    max-width: 160px;
+    height: 70px;
+    max-width: 250px;
   }
   
   .mobile-action-btn {
@@ -758,8 +758,8 @@
   }
   
   .mobile-logo-img {
-    height: 45px;
-    max-width: 140px;
+    height: 65px;
+    max-width: 220px;
   }
   
   .mobile-action-btn {
