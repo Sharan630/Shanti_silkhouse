@@ -1,8 +1,14 @@
 const { Pool } = require('pg');
 const path = require('path');
 
-// Load environment variables
-require('dotenv').config({ path: path.join(__dirname, '../config.env') });
+// Load environment variables here as a fallback
+const dotenv = require('dotenv');
+
+// Try to load environment variables if not already loaded
+if (!process.env.DATABASE_URL) {
+  const envPath = path.join(__dirname, '../config.env');
+  dotenv.config({ path: envPath });
+}
 
 // Validate required environment variables
 if (!process.env.DATABASE_URL) {

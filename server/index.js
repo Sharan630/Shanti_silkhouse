@@ -10,7 +10,14 @@ const cartRoutes = require('./routes/cart');
 const { initializeDatabase } = require('./models/database');
 
 // Load environment variables from config.env
-dotenv.config({ path: path.join(__dirname, 'config.env') });
+const envPath = path.join(__dirname, 'config.env');
+dotenv.config({ path: envPath });
+
+// Verify DATABASE_URL is loaded
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL not found in environment variables');
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;

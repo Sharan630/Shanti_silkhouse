@@ -4,7 +4,7 @@ import axios from 'axios';
 // Configure axios base URL for API calls
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? '' // Use relative URLs in production (same domain)
-  : 'http://localhost:5000'; // Use localhost in development
+  : 'http://localhost:3001'; // Use localhost in development
 
 axios.defaults.baseURL = API_BASE_URL;
 
