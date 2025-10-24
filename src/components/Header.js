@@ -70,14 +70,14 @@ const Header = () => {
       <div className="header-content">
           {}
         <Link to="/" className="logo">
-          <img 
+            <img 
             src="/logos/logo.svg" 
-            alt="Shanti Silk House Logo" 
-            className="logo-img"
-            loading="eager"
-            onError={(e) => {
+              alt="Shanti Silk House Logo" 
+              className="logo-img"
+              loading="eager"
+              onError={(e) => {
               console.log('SVG logo failed to load');
-              e.target.style.display = 'none';
+                e.target.style.display = 'none';
             }}
           />
         </Link>

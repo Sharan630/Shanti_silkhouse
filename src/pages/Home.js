@@ -259,7 +259,7 @@ const Home = () => {
                 <div key={product.id} className="arrival-item">
                   <div className="arrival-image">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.svg'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg'} 
                       alt={product.name} 
                       loading="lazy" 
                     />
@@ -402,7 +402,7 @@ const Home = () => {
                 <div key={product.id} className="gift-product-card">
                   <div className="gift-product-image">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.svg'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg'} 
                       alt={product.name} 
                       loading="lazy" 
                     />
