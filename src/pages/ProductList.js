@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiFilter, FiGrid, FiList, FiStar, FiHeart, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
@@ -20,21 +21,18 @@ const ProductList = () => {
     if (result.success) {
       setMessage('Item added to cart successfully!');
       setTimeout(() => setMessage(''), 3000);
-      // Trigger cart sidebar to open
       window.dispatchEvent(new CustomEvent('openCartSidebar'));
     } else {
       setMessage(result.message);
       setTimeout(() => setMessage(''), 5000);
     }
   };
-
   const handleDeleteProduct = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await axios.delete(`/api/admin/products/${productId}`);
         setMessage('Product deleted successfully!');
         setTimeout(() => setMessage(''), 3000);
-        // Refresh the page to show updated product list
         window.location.reload();
       } catch (error) {
         setMessage('Error deleting product');
@@ -129,7 +127,7 @@ const ProductList = () => {
 
   return (
     <div className="product-list">
-      {/* Message Display */}
+      {}
       {message && (
         <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
           {message}
@@ -137,14 +135,14 @@ const ProductList = () => {
       )}
       
       <div className="container">
-        {/* Page Header */}
+        {}
         <div className="page-header">
           <h1>Our Collection</h1>
           <p>Discover our exquisite range of traditional and contemporary sarees</p>
         </div>
 
         <div className="product-list-content">
-          {/* Sidebar Filters */}
+          {}
           <aside className="filters-sidebar">
             <div className="filter-section">
               <h3>Categories</h3>
@@ -188,9 +186,9 @@ const ProductList = () => {
             </div>
           </aside>
 
-          {/* Main Content */}
+          {}
           <main className="products-main">
-            {/* Toolbar */}
+            {}
             <div className="products-toolbar">
               <div className="toolbar-left">
                 <span className="results-count">Showing {products.length} products</span>
@@ -226,13 +224,23 @@ const ProductList = () => {
               </div>
             </div>
 
-            {/* Products Grid/List */}
+            {}
             <div className={`products-container ${viewMode}`}>
               {products.map(product => (
                 <div key={product.id} className="product-item">
                   <div className="product-image">
                     <img src={product.image} alt={product.name} />
                     <div className="product-actions">
+                      <a
+                        className="action-btn whatsapp"
+                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`Hi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price?.toLocaleString() || 'N/A'}. Please provide more details.`)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Chat on WhatsApp"
+                        title="Chat on WhatsApp"
+                      >
+                        <FaWhatsapp />
+                      </a>
                       <button className="action-btn wishlist" type="button" aria-label="Add to wishlist">
                         <FiHeart />
                       </button>
@@ -287,7 +295,7 @@ const ProductList = () => {
               ))}
             </div>
 
-            {/* Pagination */}
+            {}
             <div className="pagination">
               <button className="page-btn">Previous</button>
               <div className="page-numbers">

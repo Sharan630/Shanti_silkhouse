@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FiStar, FiHeart, FiShoppingCart, FiTruck, FiShield, FiRefreshCw, FiMinus, FiPlus, FiShare2 } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import './ProductDetail.css';
@@ -17,24 +18,6 @@ const ProductDetail = () => {
   
   const { addToCart } = useCart();
   const { user } = useAuth();
-
-  const handleAddToCart = async () => {
-    setIsAddingToCart(true);
-    const result = await addToCart(product.id, quantity, selectedSize, selectedColor, product);
-    
-    if (result.success) {
-      setMessage('Item added to cart successfully!');
-      setTimeout(() => setMessage(''), 3000);
-      
-      window.dispatchEvent(new CustomEvent('openCartSidebar'));
-    } else {
-      setMessage(result.message);
-      setTimeout(() => setMessage(''), 5000);
-    }
-    setIsAddingToCart(false);
-  };
-
-  // Mock product data
   const product = {
     id: 1,
     name: "Royal Silk Saree",
@@ -99,7 +82,7 @@ const ProductDetail = () => {
   return (
     <div className="product-detail">
       <div className="container">
-        {/* Breadcrumb */}
+        {}
         <div className="breadcrumb">
           <Link to="/">Home</Link>
           <span>/</span>
@@ -109,7 +92,7 @@ const ProductDetail = () => {
         </div>
 
         <div className="product-detail-content">
-          {/* Product Images */}
+          {}
           <div className="product-images">
             <div className="main-image">
               <img src={product.images[selectedImage]} alt={product.name} />
@@ -132,7 +115,7 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Product Info */}
+          {}
           <div className="product-info">
             <div className="product-header">
               <h1>{product.name}</h1>
@@ -156,7 +139,7 @@ const ProductDetail = () => {
               <p>{product.description}</p>
             </div>
 
-            {/* Color Selection */}
+            {}
             <div className="product-options">
               <div className="option-group">
                 <h3>Color</h3>
@@ -176,7 +159,7 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Size Selection */}
+              {}
               <div className="option-group">
                 <h3>Size</h3>
                 <div className="size-options">
@@ -194,7 +177,7 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Quantity */}
+              {}
               <div className="option-group">
                 <h3>Quantity</h3>
                 <div className="quantity-selector">
@@ -209,7 +192,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {}
             <div className="product-actions">
               {message && (
                 <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
@@ -230,6 +213,16 @@ const ProductDetail = () => {
                 <button className="btn-secondary buy-now" type="button" aria-label="Buy now">
                   Buy Now
                 </button>
+                <a
+                  className="action-btn whatsapp"
+                  href={`https://wa.me/919591128327?text=${encodeURIComponent(`Hi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price?.toLocaleString() || 'N/A'}. Please provide more details.`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Chat on WhatsApp"
+                  title="Chat on WhatsApp"
+                >
+                  <FaWhatsapp />
+                </a>
                 <button className="action-btn wishlist" type="button" aria-label="Add to wishlist">
                   <FiHeart />
                 </button>
@@ -239,7 +232,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Features */}
+            {}
             <div className="product-features">
               <h3>Key Features</h3>
               <ul>
@@ -249,7 +242,7 @@ const ProductDetail = () => {
               </ul>
             </div>
 
-            {/* Shipping Info */}
+            {}
             <div className="shipping-info">
               <div className="shipping-item">
                 <FiTruck />
@@ -276,7 +269,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Product Details Tabs */}
+        {}
         <div className="product-tabs">
           <div className="tab-navigation">
             <button className="tab-btn active">Description</button>
@@ -304,7 +297,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Related Products */}
+        {}
         <div className="related-products">
           <h2>You May Also Like</h2>
           <div className="related-grid">

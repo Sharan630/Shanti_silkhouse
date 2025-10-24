@@ -3,43 +3,29 @@ const { pool } = require('../config/database');
 const { authenticateAdmin } = require('../middleware/auth');
 
 const router = express.Router();
-
-// Get dashboard statistics
 router.get('/dashboard', authenticateAdmin, async (req, res) => {
   let client;
   try {
-    // Get a client from the pool to ensure connection stability
+
     client = await pool.connect();
     
-    // Get total users
+
     const usersResult = await client.query('SELECT COUNT(*) FROM users');
     const totalUsers = parseInt(usersResult.rows[0].count);
-
-    // Get total products
     const productsResult = await client.query('SELECT COUNT(*) FROM products');
     const totalProducts = parseInt(productsResult.rows[0].count);
-
-    // Get active products
     const activeProductsResult = await client.query('SELECT COUNT(*) FROM products WHERE is_active = true');
     const activeProducts = parseInt(activeProductsResult.rows[0].count);
-
-    // Get total orders
     const ordersResult = await client.query('SELECT COUNT(*) FROM orders');
     const totalOrders = parseInt(ordersResult.rows[0].count);
-
-    // Get orders by status
     const ordersByStatusResult = await client.query(`
       SELECT status, COUNT(*) as count 
       FROM orders 
       GROUP BY status
     `);
     const ordersByStatus = ordersByStatusResult.rows;
-
-    // Get total revenue
     const revenueResult = await client.query('SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != \'cancelled\'');
     const totalRevenue = parseFloat(revenueResult.rows[0].coalesce);
-
-    // Get revenue this month
     const monthlyRevenueResult = await client.query(`
       SELECT COALESCE(SUM(total_amount), 0) as revenue 
       FROM orders 
@@ -48,8 +34,6 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
       AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
     `);
     const monthlyRevenue = parseFloat(monthlyRevenueResult.rows[0].revenue);
-
-    // Get revenue last month for comparison
     const lastMonthRevenueResult = await client.query(`
       SELECT COALESCE(SUM(total_amount), 0) as revenue 
       FROM orders 
@@ -58,12 +42,8 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
       AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
     `);
     const lastMonthRevenue = parseFloat(lastMonthRevenueResult.rows[0].revenue);
-
-    // Calculate revenue growth
     const revenueGrowth = lastMonthRevenue > 0 ? 
       ((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1) : 0;
-
-    // Get recent orders
     const recentOrdersResult = await client.query(`
       SELECT o.*, u.first_name, u.last_name, u.email 
       FROM orders o 
@@ -72,8 +52,6 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
       LIMIT 10
     `);
     const recentOrders = recentOrdersResult.rows;
-
-    // Get top products (by order count)
     const topProductsResult = await client.query(`
       SELECT p.*, COUNT(oi.id) as order_count, SUM(oi.quantity) as total_quantity
       FROM products p
@@ -84,8 +62,6 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
       LIMIT 5
     `);
     const topProducts = topProductsResult.rows;
-
-    // Get low stock products
     const lowStockResult = await client.query(`
       SELECT * FROM products 
       WHERE stock_quantity < 10 AND is_active = true
@@ -93,8 +69,6 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
       LIMIT 5
     `);
     const lowStockProducts = lowStockResult.rows;
-
-    // Get orders this week
     const weeklyOrdersResult = await client.query(`
       SELECT COUNT(*) as count, 
              COALESCE(SUM(total_amount), 0) as revenue
@@ -103,8 +77,6 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
       AND status != 'cancelled'
     `);
     const weeklyOrders = weeklyOrdersResult.rows[0];
-
-    // Get average order value
     const avgOrderValueResult = await client.query(`
       SELECT COALESCE(AVG(total_amount), 0) as avg_value
       FROM orders 
@@ -134,14 +106,12 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     console.error('Get dashboard data error:', error);
     res.status(500).json({ message: 'Internal server error' });
   } finally {
-    // Always release the client back to the pool
+
     if (client) {
       client.release();
     }
   }
 });
-
-// Get all products (admin)
 router.get('/products', authenticateAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 10, search = '' } = req.query;
@@ -165,8 +135,6 @@ router.get('/products', authenticateAdmin, async (req, res) => {
 
     const result = await pool.query(query, params);
     const products = result.rows;
-
-    // Get total count
     const countResult = await pool.query(countQuery, params.slice(0, paramCount));
     const totalProducts = parseInt(countResult.rows[0].count);
 
@@ -185,8 +153,6 @@ router.get('/products', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Create product
 router.post('/products', authenticateAdmin, async (req, res) => {
   try {
     const {
@@ -218,14 +184,10 @@ router.post('/products', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Toggle product status
 router.put('/products/:id/toggle-status', authenticateAdmin, async (req, res) => {
   try {
     console.log('Toggle status endpoint hit for product ID:', req.params.id);
     const { id } = req.params;
-
-    // First get the current product to toggle its status
     const currentProduct = await pool.query(
       'SELECT is_active FROM products WHERE id = $1',
       [id]
@@ -259,8 +221,6 @@ router.put('/products/:id/toggle-status', authenticateAdmin, async (req, res) =>
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Update product
 router.put('/products/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -276,8 +236,6 @@ router.put('/products/:id', authenticateAdmin, async (req, res) => {
       stockQuantity,
       isActive
     } = req.body;
-
-    // Ensure isActive is a boolean, default to true if not provided
     const activeStatus = isActive !== undefined ? Boolean(isActive) : true;
 
     const result = await pool.query(
@@ -303,13 +261,9 @@ router.put('/products/:id', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Delete product
 router.delete('/products/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-
-    // First, check if product exists
     const productCheck = await pool.query(
       'SELECT id FROM products WHERE id = $1',
       [id]
@@ -318,14 +272,10 @@ router.delete('/products/:id', authenticateAdmin, async (req, res) => {
     if (productCheck.rows.length === 0) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
-    // Delete all cart items that reference this product
     await pool.query(
       'DELETE FROM cart WHERE product_id = $1',
       [id]
     );
-
-    // Now delete the product
     const result = await pool.query(
       'DELETE FROM products WHERE id = $1 RETURNING id',
       [id]
@@ -340,8 +290,6 @@ router.delete('/products/:id', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get all orders
 router.get('/orders', authenticateAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 10, status } = req.query;
@@ -369,8 +317,6 @@ router.get('/orders', authenticateAdmin, async (req, res) => {
 
     const result = await pool.query(query, params);
     const orders = result.rows;
-
-    // Get total count
     const countResult = await pool.query(countQuery, params.slice(0, paramCount));
     const totalOrders = parseInt(countResult.rows[0].count);
 
@@ -389,8 +335,6 @@ router.get('/orders', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Update order status
 router.put('/orders/:id/status', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -414,8 +358,6 @@ router.put('/orders/:id/status', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get all users
 router.get('/users', authenticateAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 10, search = '' } = req.query;
@@ -439,8 +381,6 @@ router.get('/users', authenticateAdmin, async (req, res) => {
 
     const result = await pool.query(query, params);
     const users = result.rows;
-
-    // Get total count
     const countResult = await pool.query(countQuery, params.slice(0, paramCount));
     const totalUsers = parseInt(countResult.rows[0].count);
 
@@ -459,8 +399,6 @@ router.get('/users', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get user details
 router.get('/users/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -473,8 +411,6 @@ router.get('/users/:id', authenticateAdmin, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    // Get user's orders
     const ordersResult = await pool.query(
       'SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC',
       [id]

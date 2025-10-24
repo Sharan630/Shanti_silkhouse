@@ -8,8 +8,6 @@ const createAdmin = async () => {
     const email = 'shanthisilk@saree.com';
     const password = 'shantisilks123';
     const name = 'Admin User';
-
-    // Check if admin already exists
     const existingAdmin = await pool.query(
       'SELECT id FROM admins WHERE email = $1',
       [email]
@@ -19,12 +17,8 @@ const createAdmin = async () => {
       console.log('Admin user already exists!');
       return;
     }
-
-    // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Create admin
     const result = await pool.query(
       'INSERT INTO admins (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name',
       [email, hashedPassword, name, 'admin']

@@ -28,8 +28,6 @@
   color: #2c2c2c;
   margin-bottom: 10px;
 }
-
-/* Message Styles */
 .message {
   margin-top: 15px;
   padding: 12px 20px;
@@ -49,8 +47,6 @@
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
-
-/* Loading Styles */
 .loading {
   text-align: center;
   padding: 40px 20px;
@@ -63,8 +59,6 @@
   font-size: 1.1rem;
   color: #666;
 }
-
-/* Empty Cart */
 .empty-cart {
   text-align: center;
   padding: 80px 20px;
@@ -90,8 +84,6 @@
   color: #666;
   margin-bottom: 30px;
 }
-
-/* Cart Modal Design */
 .cart-modal {
   max-width: 500px;
   margin: 0 auto;
@@ -100,8 +92,6 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
-
-/* Cart Header */
 .cart-header {
   display: flex;
   justify-content: space-between;
@@ -139,8 +129,6 @@
   background: #f0f0f0;
   color: #333;
 }
-
-/* Free Shipping Progress */
 .free-shipping-progress {
   padding: 20px 25px;
   background: #f8f9fa;
@@ -181,8 +169,6 @@
   margin: 0;
   text-align: center;
 }
-
-/* Cart Items List */
 .cart-items-list {
   padding: 20px 25px;
 }
@@ -296,8 +282,6 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-/* Cart Summary */
 .cart-summary {
   padding: 20px 25px;
   border-top: 1px solid #f0f0f0;
@@ -332,8 +316,6 @@
   border-top: 1px solid #ddd;
   margin-top: 10px;
 }
-
-/* Action Buttons */
 .cart-actions {
   padding: 20px 25px;
   display: flex;

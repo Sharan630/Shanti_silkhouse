@@ -47,12 +47,12 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Overlay */}
+      {}
       <div className="cart-overlay" onClick={onClose}></div>
       
-      {/* Cart Sidebar */}
+      {}
       <div className="cart-sidebar">
-        {/* Header */}
+        {}
         <div className="cart-sidebar-header">
           <h2>Shopping Cart</h2>
           <button className="close-btn" onClick={onClose}>
@@ -60,7 +60,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Free Shipping Progress */}
+        {}
         {subtotal > 0 && subtotal < freeShippingThreshold && (
           <div className="free-shipping-progress">
             <div className="progress-bar">
@@ -76,14 +76,14 @@ const CartSidebar = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* Message */}
+        {}
         {message && (
           <div className={`cart-message ${message.includes('success') ? 'success' : 'error'}`}>
             {message}
           </div>
         )}
 
-        {/* Cart Items */}
+        {}
         <div className="cart-items-container">
           {loading ? (
             <div className="cart-loading">
@@ -147,7 +147,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        {/* Order Summary */}
+        {}
         {cartItems.length > 0 && (
           <div className="cart-summary">
             <div className="summary-row">
@@ -161,7 +161,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* Action Buttons */}
+        {}
         {cartItems.length > 0 && (
           <div className="cart-actions">
             <Link 

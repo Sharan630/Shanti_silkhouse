@@ -36,24 +36,24 @@ const Checkout = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
+
     console.log('Order submitted:', formData);
   };
 
   return (
     <div className="checkout">
       <div className="container">
-        {/* Page Header */}
+        {}
         <div className="page-header">
           <h1>Checkout</h1>
           <p>Complete your order securely</p>
         </div>
 
         <div className="checkout-content">
-          {/* Checkout Form */}
+          {}
           <div className="checkout-form-section">
             <form onSubmit={handleSubmit} className="checkout-form" aria-label="Checkout form">
-              {/* Personal Information */}
+              {}
               <div className="form-section">
                 <h2>
                   <FiUser />
@@ -119,7 +119,7 @@ const Checkout = () => {
                 </div>
               </div>
 
-              {/* Shipping Address */}
+              {}
               <div className="form-section">
                 <h2>
                   <FiMapPin />
@@ -177,7 +177,7 @@ const Checkout = () => {
                 </div>
               </div>
 
-              {/* Payment Method */}
+              {}
               <div className="form-section">
                 <h2>
                   <FiCreditCard />
@@ -234,7 +234,7 @@ const Checkout = () => {
                   </label>
                 </div>
 
-                {/* Card Details */}
+                {}
                 {formData.paymentMethod === 'card' && (
                   <div className="card-details">
                     <div className="form-group">
@@ -259,13 +259,13 @@ const Checkout = () => {
                 )}
               </div>
 
-              {/* Security Notice */}
+              {}
               <div className="security-notice">
                 <FiLock />
                 <span>Your payment information is secure and encrypted</span>
               </div>
 
-              {/* Submit Button */}
+              {}
               <button type="submit" className="btn-primary place-order-btn">
                 <FiCheck />
                 Place Order - ₹{orderSummary.total.toLocaleString()}
@@ -273,7 +273,7 @@ const Checkout = () => {
             </form>
           </div>
 
-          {/* Order Summary */}
+          {}
           <div className="order-summary-section">
             <div className="order-summary">
               <h2>Order Summary</h2>

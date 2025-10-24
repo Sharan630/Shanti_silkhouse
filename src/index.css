@@ -156,53 +156,51 @@ button {
     font-size: 0.9rem;
   }
 }
-
-/* Mobile-specific optimizations */
 @media (max-width: 768px) {
-  /* Improve touch targets */
+  
   button, a, input, select, textarea {
     min-height: 44px;
     min-width: 44px;
   }
   
-  /* Prevent horizontal scroll */
+  
   html, body {
     overflow-x: hidden;
     width: 100%;
   }
   
-  /* Improve text readability on mobile */
+  
   body {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     font-size: 16px;
   }
   
-  /* Optimize images for mobile */
+  
   img {
     max-width: 100%;
     height: auto;
   }
   
-  /* Improve form usability */
+  
   input, select, textarea {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px; 
   }
 }
 
 @media (max-width: 480px) {
-  /* Further optimize for small screens */
+  
   body {
     font-size: 14px;
   }
   
-  /* Ensure proper touch targets */
+  
   button, a {
     min-height: 40px;
     min-width: 40px;
   }
   
-  /* Optimize spacing for small screens */
+  
   .container {
     padding-left: 15px;
     padding-right: 15px;

@@ -1,10 +1,10 @@
-/* Cart Overlay */
+
 .cart-overlay {
   position: fixed;
-  top: 40px; /* Start below marquee section */
+  top: 40px; 
   left: 0;
   width: 100%;
-  height: calc(100vh - 40px); /* Adjust height to account for marquee */
+  height: calc(100vh - 40px); 
   background: rgba(0, 0, 0, 0.5);
   z-index: 1002;
   backdrop-filter: blur(2px);
@@ -16,7 +16,7 @@
   right: 0;
   width: 400px;
   max-width: 90vw;
-  height: calc(100vh - 40px); /* Adjust height to account for marquee */
+  height: calc(100vh - 40px); 
   background: white;
   z-index: 1003;
   display: flex;
@@ -34,8 +34,6 @@
     transform: translateX(0);
   }
 }
-
-/* Header */
 .cart-sidebar-header {
   display: flex;
   justify-content: space-between;
@@ -77,8 +75,6 @@
   background: #dee2e6;
   color: #333;
 }
-
-/* Free Shipping Progress */
 .free-shipping-progress {
   padding: 20px 25px;
   background: #f8f9fa;
@@ -112,8 +108,6 @@
 .truck-icon {
   color: #28a745;
 }
-
-/* Message */
 .cart-message {
   margin: 15px 25px;
   padding: 10px 15px;
@@ -133,8 +127,6 @@
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
-
-/* Cart Items Container */
 .cart-items-container {
   flex: 1;
   overflow-y: auto;
@@ -155,8 +147,6 @@
   margin-bottom: 20px;
   font-size: 1rem;
 }
-
-/* Cart Items List */
 .cart-items-list {
   padding: 20px 0;
 }
@@ -294,8 +284,6 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-/* Cart Summary */
 .cart-summary {
   padding: 20px 25px;
   border-top: 1px solid #f0f0f0;
@@ -327,8 +315,6 @@
   color: #2c2c2c;
   font-weight: 600;
 }
-
-/* Action Buttons */
 .cart-actions {
   padding: 20px 25px;
   display: flex;
@@ -374,8 +360,6 @@
   background: #218838;
   transform: translateY(-1px);
 }
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .cart-sidebar {
     width: 100%;

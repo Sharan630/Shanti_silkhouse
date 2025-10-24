@@ -406,8 +406,6 @@
     transform: translateY(-10px);
   }
 }
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .login-container {
     grid-template-columns: 1fr;

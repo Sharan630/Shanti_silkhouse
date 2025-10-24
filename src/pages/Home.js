@@ -24,7 +24,7 @@ const Home = () => {
     if (result.success) {
       setMessage('Item added to cart successfully!');
       setTimeout(() => setMessage(''), 3000);
-      // Trigger cart sidebar to open
+      
       window.dispatchEvent(new CustomEvent('openCartSidebar'));
     } else {
       setMessage(result.message);
@@ -32,7 +32,6 @@ const Home = () => {
     }
   };
 
-  // Fetch new arrivals from API
   const fetchNewArrivals = async () => {
     try {
       setLoadingArrivals(true);
@@ -47,17 +46,14 @@ const Home = () => {
     }
   };
 
-  // Fetch celebrate products from API
   const fetchCelebrateProducts = async (priceFilter = '20k') => {
     try {
       setLoadingCelebrate(true);
       const response = await axios.get(`/api/products/celebrate?priceFilter=${priceFilter}`);
       
-      // CRITICAL: Ensure we never display more than 8 products
       const products = response.data.products || [];
       console.log(`Received ${products.length} products from API`);
       
-      // Force limit to exactly 8 products
       const limitedProducts = products.slice(0, 8);
       console.log(`Setting ${limitedProducts.length} products in state`);
       
@@ -129,13 +125,11 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [carouselSlides.length]);
 
-  // Fetch new arrivals on component mount
   useEffect(() => {
     fetchNewArrivals();
     fetchCelebrateProducts(selectedPriceFilter);
   }, []);
 
-  // Handle price filter change
   const handlePriceFilterChange = (filter) => {
     setSelectedPriceFilter(filter);
     fetchCelebrateProducts(filter);
@@ -148,8 +142,6 @@ const Home = () => {
   const prevSlide = () => {
     setCurrentSlide(currentSlide === 0 ? carouselSlides.length - 1 : currentSlide - 1);
   };
-
-
   const showcaseSlides = [
     {
       id: 's1',
@@ -180,18 +172,16 @@ const Home = () => {
     return () => clearInterval(t);
   }, [showcaseSlides.length]);
 
-
-
   return (
     <div className="home">
-      {/* Message Display */}
+      {}
       {message && (
         <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
           {message}
         </div>
       )}
       
-      {/* Side Utility Icons */}
+      {}
       <div className="side-utilities">
         <button className="utility-btn" title="Share" type="button" aria-label="Share this page">
           <FiShare2 />
@@ -207,7 +197,7 @@ const Home = () => {
         </button>
       </div>
 
-      {/* Carousel Section */}
+      {}
       <section className="carousel-section">
         <div className="carousel-container">
           <div className="carousel-slides" style={{ transform: `translateX(-${currentSlide * 20}%)` }}>
@@ -223,13 +213,13 @@ const Home = () => {
                       e.target.style.display = 'none';
                     }}
                   />
-                  {/* Overlay removed to keep images unobstructed */}
+                 
                 </div>
               </div>
             ))}
           </div>
           
-          {/* Navigation Arrows */}
+          {}
           <button className="carousel-nav prev" type="button" aria-label="Previous slide" onClick={prevSlide}>
             <FiChevronLeft />
           </button>
@@ -237,7 +227,7 @@ const Home = () => {
             <FiChevronRight />
           </button>
           
-          {/* Dots Indicator */}
+          {}
           <div className="carousel-dots">
             {carouselSlides.map((_, index) => (
               <button
@@ -252,7 +242,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* New Arrivals Section (clean grid like screenshot) */}
       <section className="new-arrivals">
         <div className="container">
           <h2 className="arrivals-title">New Arrivals In Store</h2>
@@ -339,14 +328,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Shop by Category Section */}
+      {}
       <section className="shop-by-category">
         <div className="container">
           <h2 className="category-title">SHOP BY CATEGORY</h2>
           <div className="category-grid">
             <div className="category-card">
               <div className="category-image">
-                <img src="https://wallpapers.com/images/featured/saree-pictures-2d8qt1hau3xlfjdp.jpg" alt="Formal Sarees" loading="lazy" />
+                <img src="https://swtantra.com/cdn/shop/articles/WhatsApp_Image_2021-03-04_at_12.59.28_PM.jpg?v=1615369851&width=2048" alt="Formal Sarees" loading="lazy" />
               </div>
               <div className="category-label">FORMAL</div>
             </div>
@@ -378,7 +367,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Celebrate & Gift Sarees Section */}
+      {}
       <section className="celebrate-gift-section">
         <div className="container">
           <h2 className="celebrate-title">CELEBRATE & GIFT SAREES</h2>
@@ -424,7 +413,7 @@ const Home = () => {
                       <div className="gift-product-actions">
                         <a
                           className="icon-btn whatsapp"
-                          href={`https://wa.me/919591128327?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
+                          href={`https://wa.me/919591128327?text=${encodeURIComponent(`Hi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price?.toLocaleString() || 'N/A'}. Please provide more details.`)}`}
                           target="_blank"
                           rel="noreferrer"
                           aria-label="Chat on WhatsApp"
@@ -458,12 +447,12 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Styled for Celebrations - 9 Image Collage */}
+      {}
       <section className="styled-celebrations">
         <div className="container">
           <h2 className="celebrations-title">STYLED FOR YOUR CELEBRATIONS</h2>
           <div className="celebrations-collage">
-            {/* Top Row */}
+            {}
             <div className="collage-image top-left">
               <img 
                 src="https://images.unsplash.com/photo-1641699862936-be9f49b1c38d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2lsayUyMHNhcmVlfGVufDB8fDB8fHww&fm=jpg&q=60&w=3000" 
@@ -498,7 +487,7 @@ const Home = () => {
               />
             </div>
             
-            {/* Middle Row */}
+            {}
             <div className="collage-image middle-left">
               <img 
                 src="https://images.unsplash.com/photo-1618901185975-d59f7091bcfe?fm=jpg&q=80&w=400&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tYW4lMjBpbiUyMHNhcmVlfGVufDB8fDB8fHww" 
@@ -521,10 +510,10 @@ const Home = () => {
                 }}
               />
             </div>
-            {/* Bottom Row - Only left image visible */}
+            {}
             <div className="collage-image bottom-left">
               <img 
-                src="https://thesstudioonline.com/cdn/shop/articles/M7_jpg.webp?v=1690172467" 
+                src="https://www.stylesgap.com/wp-content/uploads/2019/11/Indian-Wedding-Formal-Saree-Latest-Designs-18.jpg" 
                 alt="Woman with Fruits" 
                 loading="lazy" 
                 onError={(e) => {
@@ -538,7 +527,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* About Shanti Silks Section */}
+      {}
       <section className="about-shanti-silks">
         <div className="container">
           <h2 className="celebrations-title">ABOUT SHANTI SILKS</h2>
@@ -583,7 +572,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter */}
+      {}
       <section className="newsletter">
         <div className="container">
           <div className="newsletter-content">

@@ -19,18 +19,12 @@ const Login = () => {
   const { login, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate('/', { replace: true });
     }
   }, [user, navigate]);
-
-  // Get the intended destination or default to home
   const from = location.state?.from?.pathname || '/';
-
-  // Load saved credentials if remember me was checked
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) {
@@ -42,14 +36,14 @@ const Login = () => {
   const validateForm = () => {
     const errors = {};
     
-    // Email validation
+
     if (!formData.email) {
       errors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = 'Please enter a valid email address';
     }
     
-    // Password validation
+
     if (!formData.password) {
       errors.password = 'Password is required';
     } else if (formData.password.length < 6) {
@@ -67,7 +61,7 @@ const Login = () => {
       [name]: value
     });
     
-    // Clear specific validation error when user starts typing
+
     if (validationErrors[name]) {
       setValidationErrors({
         ...validationErrors,
@@ -75,7 +69,7 @@ const Login = () => {
       });
     }
     
-    // Clear general error
+
     if (error) setError('');
   };
 
@@ -94,7 +88,7 @@ const Login = () => {
       const result = await login(formData.email, formData.password);
       
       if (result.success) {
-        // Handle remember me
+
         if (rememberMe) {
           localStorage.setItem('rememberedEmail', formData.email);
         } else {
@@ -103,7 +97,7 @@ const Login = () => {
         
         setMessage('Login successful! Redirecting...');
         
-        // Redirect to the intended page or home
+
         setTimeout(() => {
           navigate(from, { replace: true });
         }, 1000);
@@ -128,13 +122,13 @@ const Login = () => {
   return (
     <div className="login-page">
       <div className="login-container">
-        {/* Back Button */}
+        {}
         <Link to="/" className="back-btn">
           <FiArrowLeft />
           Back to Home
         </Link>
 
-        {/* Login Form */}
+        {}
         <div className="login-form-container">
           <div className="login-header">
             <h1>Welcome Back</h1>
@@ -259,7 +253,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Login Image/Decoration */}
+        {}
         <div className="login-image">
           <div className="image-content">
             <h2>SHANTI SILK HOUSE</h2>

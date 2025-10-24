@@ -3,8 +3,6 @@ const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
-
-// Get user's cart
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -53,19 +51,13 @@ router.get('/', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Add item to cart
 router.post('/add', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId, quantity = 1, size, color } = req.body;
-
-    // Validate required fields
     if (!productId) {
       return res.status(400).json({ message: 'Product ID is required' });
     }
-
-    // Check if product exists and is active
     const productResult = await pool.query(
       'SELECT * FROM products WHERE id = $1 AND is_active = true',
       [productId]
@@ -76,22 +68,18 @@ router.post('/add', authenticateToken, async (req, res) => {
     }
 
     const product = productResult.rows[0];
-
-    // Check stock availability
     if (product.stock_quantity < quantity) {
       return res.status(400).json({ 
         message: `Only ${product.stock_quantity} items available in stock` 
       });
     }
-
-    // Check if item already exists in cart
     const existingItem = await pool.query(`
       SELECT * FROM cart 
       WHERE user_id = $1 AND product_id = $2 AND size = $3 AND color = $4
     `, [userId, productId, size || null, color || null]);
 
     if (existingItem.rows.length > 0) {
-      // Update quantity
+
       const newQuantity = existingItem.rows[0].quantity + quantity;
       
       if (newQuantity > product.stock_quantity) {
@@ -114,7 +102,7 @@ router.post('/add', authenticateToken, async (req, res) => {
         }
       });
     } else {
-      // Add new item to cart
+
       const result = await pool.query(`
         INSERT INTO cart (user_id, product_id, quantity, size, color)
         VALUES ($1, $2, $3, $4, $5)
@@ -131,8 +119,6 @@ router.post('/add', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Update cart item quantity
 router.put('/update/:id', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -142,8 +128,6 @@ router.put('/update/:id', authenticateToken, async (req, res) => {
     if (!quantity || quantity < 1) {
       return res.status(400).json({ message: 'Valid quantity is required' });
     }
-
-    // Check if cart item belongs to user
     const cartItem = await pool.query(`
       SELECT c.*, p.stock_quantity 
       FROM cart c
@@ -156,15 +140,11 @@ router.put('/update/:id', authenticateToken, async (req, res) => {
     }
 
     const item = cartItem.rows[0];
-
-    // Check stock availability
     if (quantity > item.stock_quantity) {
       return res.status(400).json({ 
         message: `Only ${item.stock_quantity} items available in stock` 
       });
     }
-
-    // Update quantity
     await pool.query(`
       UPDATE cart 
       SET quantity = $1, updated_at = CURRENT_TIMESTAMP 
@@ -183,14 +163,10 @@ router.put('/update/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Remove item from cart
 router.delete('/remove/:id', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const cartItemId = req.params.id;
-
-    // Check if cart item belongs to user
     const result = await pool.query(
       'SELECT * FROM cart WHERE id = $1 AND user_id = $2',
       [cartItemId, userId]
@@ -199,8 +175,6 @@ router.delete('/remove/:id', authenticateToken, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Cart item not found' });
     }
-
-    // Remove item from cart
     await pool.query('DELETE FROM cart WHERE id = $1', [cartItemId]);
 
     res.json({ message: 'Item removed from cart successfully' });
@@ -209,8 +183,6 @@ router.delete('/remove/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Clear entire cart
 router.delete('/clear', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -223,8 +195,6 @@ router.delete('/clear', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get cart count
 router.get('/count', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;

@@ -1,9 +1,9 @@
 .wishlist-sidebar {
   position: fixed;
-  top: 40px; /* Start below marquee section */
+  top: 40px; 
   right: 0;
   width: 100%;
-  height: calc(100vh - 40px); /* Adjust height to account for marquee */
+  height: calc(100vh - 40px); 
   z-index: 1002;
   display: flex;
   justify-content: flex-end;
@@ -32,11 +32,11 @@
 
 .wishlist-content {
   position: fixed;
-  top: 40px; /* Start below marquee section */
+  top: 40px; 
   right: 0;
   width: 400px;
   max-width: 90vw;
-  height: calc(100vh - 40px); /* Adjust height to account for marquee */
+  height: calc(100vh - 40px); 
   background: white;
   box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
   transform: translateX(100%);
@@ -146,8 +146,6 @@
   background: #dc2626;
 }
 
-/* Removed wishlist-count styles - no longer needed */
-
 .wishlist-items {
   flex: 1;
   overflow-y: auto;
@@ -256,8 +254,6 @@
   background: #229954;
   transform: translateY(-1px);
 }
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .wishlist-sidebar {
     top: 40px;

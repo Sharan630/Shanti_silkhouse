@@ -12,7 +12,7 @@ const authenticateToken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Check if user exists
+
     const userResult = await pool.query(
       'SELECT id, email, first_name, last_name FROM users WHERE id = $1',
       [decoded.userId]
@@ -40,7 +40,7 @@ const authenticateAdmin = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Check if admin exists
+
     const adminResult = await pool.query(
       'SELECT id, email, name, role FROM admins WHERE id = $1',
       [decoded.adminId]

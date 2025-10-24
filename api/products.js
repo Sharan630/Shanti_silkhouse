@@ -2,8 +2,6 @@ const express = require('express');
 const { pool } = require('./database');
 
 const router = express.Router();
-
-// Get all products
 router.get('/', async (req, res) => {
   try {
     const { category, page = 1, limit = 10 } = req.query;
@@ -24,8 +22,6 @@ router.get('/', async (req, res) => {
 
     const result = await pool.query(query, params);
     const products = result.rows;
-
-    // Get total count for pagination
     let countQuery = 'SELECT COUNT(*) FROM products WHERE is_active = true';
     let countParams = [];
     let countParamCount = 0;
@@ -54,8 +50,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get new arrivals (latest 4 products)
 router.get('/new-arrivals', async (req, res) => {
   try {
     const result = await pool.query(
@@ -69,17 +63,15 @@ router.get('/new-arrivals', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get products for celebrate section with price filtering
 router.get('/celebrate', async (req, res) => {
   try {
     const { priceFilter = 'all' } = req.query;
     
-    // Build the base query with price filtering
+
     let baseQuery = 'SELECT * FROM products WHERE is_active = true';
     let baseParams = [];
     
-    // Add price filtering if specified
+
     if (priceFilter !== 'all') {
       let priceValue;
       switch (priceFilter) {
@@ -107,13 +99,13 @@ router.get('/celebrate', async (req, res) => {
       }
     }
     
-    // Get exactly 8 products with a single query
+
     const finalQuery = baseQuery + ' ORDER BY RANDOM() LIMIT 8';
     
     const result = await pool.query(finalQuery, baseParams);
     const products = result.rows;
     
-    // Ensure we never return more than 8 products
+
     const finalProducts = products.slice(0, 8);
 
     res.json({ products: finalProducts });
@@ -122,8 +114,6 @@ router.get('/celebrate', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get product categories
 router.get('/categories/list', async (req, res) => {
   try {
     const result = await pool.query(
@@ -137,8 +127,6 @@ router.get('/categories/list', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get single product
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;

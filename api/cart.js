@@ -29,8 +29,6 @@ router.get('/', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Add item to cart
 router.post('/add', authenticateToken, async (req, res) => {
   try {
     const { productId, quantity = 1, size, color } = req.body;
@@ -51,14 +49,14 @@ router.post('/add', authenticateToken, async (req, res) => {
     );
 
     if (existingItem.rows.length > 0) {
-      // Update quantity
+
       const newQuantity = existingItem.rows[0].quantity + quantity;
       await pool.query(
         'UPDATE cart SET quantity = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
         [newQuantity, existingItem.rows[0].id]
       );
     } else {
-      // Add new item
+
       await pool.query(
         'INSERT INTO cart (user_id, product_id, quantity, size, color) VALUES ($1, $2, $3, $4, $5)',
         [userId, productId, quantity, size, color]
@@ -71,8 +69,6 @@ router.post('/add', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Update cart item quantity
 router.put('/update/:itemId', authenticateToken, async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -98,8 +94,6 @@ router.put('/update/:itemId', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Remove item from cart
 router.delete('/remove/:itemId', authenticateToken, async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -120,8 +114,6 @@ router.delete('/remove/:itemId', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Clear entire cart
 router.delete('/clear', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId;

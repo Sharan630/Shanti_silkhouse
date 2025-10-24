@@ -35,8 +35,6 @@
   gap: 40px;
   margin-bottom: 40px;
 }
-
-
 .footer-section h3 {
   font-size: 1.8rem;
   font-weight: 700;
@@ -214,14 +212,10 @@
 .footer-bottom-links a:hover {
   color: #8B0000;
 }
-
-/* Handle pages with fixed sidebars */
 body.has-fixed-sidebar .footer {
   margin-left: 280px;
   width: calc(100% - 280px);
 }
-
-/* Tablet and smaller screens */
 @media (max-width: 1024px) {
   .footer {
     margin-left: 0;

@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
-// Simple test endpoint
 router.get('/', (req, res) => {
   res.json({ 
     message: 'API is working!', 
@@ -9,8 +7,6 @@ router.get('/', (req, res) => {
     environment: process.env.NODE_ENV || 'development'
   });
 });
-
-// Test database connection
 router.get('/db', async (req, res) => {
   try {
     const { pool } = require('./database');

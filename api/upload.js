@@ -4,15 +4,11 @@ const cloudinary = require('cloudinary').v2;
 const { authenticateAdmin } = require('./middleware');
 
 const router = express.Router();
-
-// Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
-
-// Configure multer for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
@@ -27,15 +23,11 @@ const upload = multer({
     }
   }
 });
-
-// Upload single image
 router.post('/single', authenticateAdmin, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No image file provided' });
     }
-
-    // Upload to Cloudinary
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
@@ -62,8 +54,6 @@ router.post('/single', authenticateAdmin, upload.single('image'), async (req, re
     res.status(500).json({ message: 'Failed to upload image' });
   }
 });
-
-// Upload multiple images
 router.post('/multiple', authenticateAdmin, upload.array('images', 10), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
@@ -102,8 +92,6 @@ router.post('/multiple', authenticateAdmin, upload.array('images', 10), async (r
     res.status(500).json({ message: 'Failed to upload images' });
   }
 });
-
-// Delete image
 router.delete('/:publicId', authenticateAdmin, async (req, res) => {
   try {
     const { publicId } = req.params;

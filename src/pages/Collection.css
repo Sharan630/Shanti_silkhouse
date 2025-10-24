@@ -1,4 +1,4 @@
-/* Collection Page Styles */
+
 .collection-page {
   min-height: 100vh;
   background-color: #ffffff;
@@ -8,10 +8,6 @@
   width: 100vw;
   overflow-x: hidden;
 }
-
-/* Collection page now uses the main header from Header component */
-
-/* Main Content Layout */
 .collection-content {
   display: flex;
   width: 100vw;
@@ -20,19 +16,17 @@
   gap: 0;
   min-height: calc(100vh - 80px);
 }
-
-/* Sidebar Styles */
 .collection-sidebar {
   position: fixed;
-  top: 40px; /* Start below marquee */
+  top: 40px; 
   left: 0;
   width: 280px;
-  height: calc(100vh - 40px); /* Full height minus marquee */
+  height: calc(100vh - 40px); 
   padding: 30px 20px;
   background: #ffffff;
   border-right: 1px solid #e9ecef;
-  overflow-y: auto; /* Allow scrolling if content is too long */
-  z-index: 100; /* Above content but below modals */
+  overflow-y: auto; 
+  z-index: 100; 
 }
 
 .filter-section {
@@ -44,7 +38,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  cursor: pointer;
+  cursor: default;
+}
+@media (max-width: 768px) {
+  .filter-section-header {
+    cursor: pointer;
+  }
 }
 
 .filter-section-header h3 {
@@ -61,6 +60,17 @@
   font-weight: bold;
   color: #2c3e50;
   user-select: none;
+}
+.blouse-options-container {
+  overflow: visible;
+  transition: max-height 0.3s ease;
+}
+.blouse-options-container:not(.expanded) {
+  max-height: 1000px;
+}
+
+.blouse-options-container.expanded {
+  max-height: 1000px;
 }
 
 .filter-options {
@@ -120,8 +130,6 @@
 .show-all:hover {
   text-decoration: underline;
 }
-
-/* Price Filter */
 .price-filter {
   display: flex;
   flex-direction: column;
@@ -238,14 +246,12 @@
 .apply-btn:active {
   transform: translateY(0);
 }
-
-/* Main Content */
 .collection-main {
   flex: 1;
-  margin-left: 280px; /* Account for fixed sidebar width */
+  margin-left: 280px; 
   padding: 30px 20px;
   background: #ffffff;
-  min-height: calc(100vh - 40px); /* Full height minus marquee */
+  min-height: calc(100vh - 40px); 
 }
 
 .collection-header-section {
@@ -299,8 +305,6 @@
   -moz-appearance: none;
   appearance: none;
 }
-
-/* Products Grid - Exact match to arrival section */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(280px, 1fr));
@@ -384,8 +388,6 @@
   font-size: 1.8rem;
   text-align: left;
 }
-
-/* Product pricing styles */
 
 .product-title {
   font-size: 14px;
@@ -500,8 +502,6 @@
   transform: translateY(0);
 }
 
-
-/* Floating Actions */
 .floating-actions {
   position: fixed;
   right: 20px;
@@ -596,16 +596,12 @@
     opacity: 1;
   }
 }
-
-/* Loading State */
 .loading {
   text-align: center;
   padding: 60px;
   font-size: 18px;
   color: #2c3e50;
 }
-
-/* Error State */
 .error-message {
   text-align: center;
   padding: 60px;
@@ -631,8 +627,6 @@
 .retry-btn:hover {
   background: #c0392b;
 }
-
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 80px 20px;
@@ -651,8 +645,6 @@
   line-height: 1.6;
 }
 
-
-/* Out of Stock Button */
 .add-to-cart-btn.out-of-stock {
   background: #95a5a6;
   cursor: not-allowed;
@@ -664,8 +656,6 @@
   transform: none;
   box-shadow: none;
 }
-
-/* Responsive Design - Exact match to arrival section */
 @media (max-width: 1024px) {
   .products-grid { 
     grid-template-columns: repeat(3, 1fr); 
@@ -703,7 +693,7 @@
     left: auto;
     width: 100%;
     height: auto;
-    order: 2;
+    order: 1;
     padding: 20px 15px;
     border-right: none;
     border-bottom: 1px solid #e9ecef;
@@ -711,8 +701,8 @@
   }
   
   .collection-main {
-    order: 1;
-    margin-left: 0; /* Remove margin on mobile */
+    order: 2;
+    margin-left: 0; 
     padding: 20px 15px;
   }
   
@@ -725,6 +715,16 @@
   .sort-controls {
     flex-direction: column;
     gap: 15px;
+  }
+  
+  
+  .blouse-options-container:not(.expanded) {
+    max-height: 0;
+    overflow: hidden;
+  }
+  
+  .blouse-options-container.expanded {
+    max-height: 1000px;
   }
   
   .products-grid { 

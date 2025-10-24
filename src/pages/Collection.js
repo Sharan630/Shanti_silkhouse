@@ -25,11 +25,11 @@ const Collection = () => {
     availability: [],
     blouse: []
   });
+  const [isBlouseExpanded, setIsBlouseExpanded] = useState(false);
   
   const { addToCart, buyNow } = useCart();
   const { user } = useAuth();
 
-  // Add/remove body class for footer positioning
   useEffect(() => {
     document.body.classList.add('has-fixed-sidebar');
     return () => {
@@ -37,7 +37,6 @@ const Collection = () => {
     };
   }, []);
 
-  // Apply price filter
   const applyPriceFilter = () => {
     const filtered = products.filter(product => {
       const price = product.price || 0;
@@ -47,7 +46,6 @@ const Collection = () => {
     console.log(`Filtered ${filtered.length} products within price range ₹${priceRange[0]} - ₹${priceRange[1]}`);
   };
 
-  // Initialize filtered products when products are loaded
   useEffect(() => {
     if (products.length > 0) {
       setFilteredProducts(products);
@@ -57,7 +55,6 @@ const Collection = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
 
-  // Category mapping between URL parameters and database values
   const getCategoryFromCollection = (collectionName) => {
     const categoryMap = {
       'silk-sarees': 'silk-sarees',
@@ -68,7 +65,6 @@ const Collection = () => {
     return categoryMap[collectionName] || collectionName;
   };
 
-  // Fetch products based on collection
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -86,8 +82,6 @@ const Collection = () => {
 
     fetchProducts();
   }, [collectionName]);
-
-
   const handleAddToCart = async (product) => {
     const result = await addToCart(product.id, 1, null, null, product);
     
@@ -100,7 +94,6 @@ const Collection = () => {
       setTimeout(() => setMessage(''), 5000);
     }
   };
-
   const handleBuyNow = async (product) => {
     if (!user) {
       setMessage('Please login to proceed with checkout');
@@ -147,12 +140,10 @@ const Collection = () => {
     "Brick", "Brown", "Burgundy", 
     "Dark-Blue", "Gold Zari", "Green"
   ];
-
-
   return (
     <div className="collection-page">
       <div className="collection-content">
-        {/* Left Sidebar */}
+        {}
         <aside className="collection-sidebar">
           <div className="filter-section">
             <h3>Availability</h3>
@@ -223,36 +214,38 @@ const Collection = () => {
           </div>
 
           <div className="filter-section">
-            <div className="filter-section-header">
+            <div className="filter-section-header" onClick={() => setIsBlouseExpanded(!isBlouseExpanded)}>
               <h3>Blouse</h3>
-              <span className="collapse-icon">—</span>
+              <span className="collapse-icon">{isBlouseExpanded ? '—' : '+'}</span>
             </div>
-            <div className="filter-options">
-              {blouseOptions.map((option, index) => (
-                <label key={index} className="filter-option">
-                  <input 
-                    type="checkbox" 
-                    checked={selectedFilters.blouse.includes(option)}
-                    onChange={() => handleFilterChange('blouse', option)}
-                  />
-                  <span>
-                    {option} (Unstitched)
-                  </span>
-                </label>
-              ))}
-            </div>
-            <div className="currency-selector">
-              <select className="currency-dropdown">
-                <option value="INR">🇮🇳 INR</option>
-              </select>
-            </div>
-            <div className="show-all-link">
-              <a href="#" className="show-all">Show all</a>
+            <div className={`blouse-options-container ${isBlouseExpanded ? 'expanded' : ''}`}>
+              <div className="filter-options">
+                {blouseOptions.map((option, index) => (
+                  <label key={index} className="filter-option">
+                    <input 
+                      type="checkbox" 
+                      checked={selectedFilters.blouse.includes(option)}
+                      onChange={() => handleFilterChange('blouse', option)}
+                    />
+                    <span>
+                      {option} (Unstitched)
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <div className="currency-selector">
+                <select className="currency-dropdown">
+                  <option value="INR">🇮🇳 INR</option>
+                </select>
+              </div>
+              <div className="show-all-link">
+                <a href="#" className="show-all">Show all</a>
+              </div>
             </div>
           </div>
         </aside>
 
-        {/* Main Content */}
+        {}
         <main className="collection-main">
           <div className="collection-header-section">
             <h1 className="collection-title">{getCollectionTitle(collectionName)}</h1>
@@ -291,7 +284,7 @@ const Collection = () => {
             </div>
           </div>
 
-          {/* Products Grid */}
+          {}
           <div className="products-grid">
             {loading ? (
               <div className="loading">Loading products...</div>
@@ -339,7 +332,7 @@ const Collection = () => {
                     <div className="product-actions-right">
                       <a
                         className="icon-btn whatsapp"
-                        href={`https://wa.me/919591128327?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + parseFloat(product.price).toLocaleString())}`}
+                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`Hi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price ? parseFloat(product.price).toLocaleString() : 'N/A'}. Please provide more details.`)}`}
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Chat on WhatsApp"
@@ -378,7 +371,7 @@ const Collection = () => {
         </main>
       </div>
 
-      {/* Floating Action Buttons */}
+      {}
       <div className="floating-actions">
         <button className="floating-btn share-btn">
           <FiShare2 />
@@ -399,7 +392,7 @@ const Collection = () => {
         </div>
       </div>
 
-      {/* Message Display */}
+      {}
       {message && (
         <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
           {message}

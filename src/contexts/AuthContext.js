@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Configure axios base URL for API calls
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? '' // Use relative URLs in production (same domain)
-  : 'http://localhost:3001'; // Use localhost in development
+  : 'http://localhost:5001'; // Use localhost in development
 
 axios.defaults.baseURL = API_BASE_URL;
 
@@ -23,7 +22,6 @@ export const AuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Configure axios defaults
   useEffect(() => {
     const token = localStorage.getItem('token');
     const adminToken = localStorage.getItem('adminToken');
@@ -34,7 +32,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Check if user is logged in on app start
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
@@ -42,7 +39,6 @@ export const AuthProvider = ({ children }) => {
       
       if (adminToken) {
         try {
-          // Try to verify admin token by making a request to admin endpoint
           const response = await axios.get('/api/admin/dashboard');
           setAdmin({ id: 1, email: 'admin', name: 'Admin' }); // Set admin from token
         } catch (error) {

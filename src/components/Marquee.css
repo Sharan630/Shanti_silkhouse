@@ -1,9 +1,5 @@
 .marquee-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1001;
+  position: relative;
   background: #1B4D3E;
   padding: 8px 0;
   overflow: hidden;
@@ -14,8 +10,6 @@
   background: #1B4D3E;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
-
-
 .marquee-content {
   display: flex;
   align-items: center;
@@ -145,8 +139,6 @@
 .marquee-btn svg {
   font-size: 1rem;
 }
-
-/* Animation */
 @keyframes marquee-scroll {
   0% {
     transform: translateX(0);
@@ -155,13 +147,9 @@
     transform: translateX(-100%);
   }
 }
-
-/* Pause animation on hover */
 .marquee-scroll:hover .marquee-track {
   animation-play-state: paused;
 }
-
-/* Responsive Design */
 @media (max-width: 1024px) {
   .marquee-container {
     padding: 6px 0;
@@ -172,7 +160,8 @@
   }
   
   .marquee-text {
-    display: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
   }
   
   .marquee-group {
@@ -186,74 +175,56 @@
 
 @media (max-width: 768px) {
   .marquee-container {
-    padding: 6px 0;
+    padding: 4px 0;
   }
   
   .marquee-content {
-    padding: 0 15px;
-    gap: 15px;
+    padding: 0 12px;
+    gap: 10px;
+  }
+  
+  .marquee-text {
+    font-size: 0.7rem;
+    letter-spacing: 0.3px;
+  }
+  
+  .marquee-icon {
+    font-size: 0.7rem;
   }
   
   .marquee-track {
-    gap: 25px;
+    gap: 20px;
   }
   
   .marquee-group {
-    gap: 25px;
-  }
-  
-  .marquee-item {
-    gap: 8px;
-  }
-  
-  .marquee-description {
-    font-size: 0.8rem;
-  }
-  
-  .marquee-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    gap: 15px;
   }
 }
 
 @media (max-width: 480px) {
   .marquee-container {
-    padding: 4px 0;
+    padding: 3px 0;
   }
   
   .marquee-content {
-    padding: 0 10px;
-    gap: 10px;
+    padding: 0 8px;
+    gap: 8px;
   }
   
-  .marquee-track {
-    gap: 20px;
-  }
-  
-  .marquee-group {
-    gap: 20px;
-  }
-  
-  .marquee-item {
-    gap: 6px;
+  .marquee-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.2px;
   }
   
   .marquee-icon {
-    width: 20px;
-    height: 20px;
-    font-size: 0.9rem;
+    font-size: 0.65rem;
   }
   
-  .marquee-description {
-    font-size: 0.75rem;
+  .marquee-track {
+    gap: 15px;
   }
   
-  .marquee-btn {
-    padding: 5px 10px;
-    font-size: 0.75rem;
-  }
-  
-  .marquee-btn svg {
-    font-size: 0.9rem;
+  .marquee-group {
+    gap: 12px;
   }
 }

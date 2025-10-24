@@ -54,8 +54,6 @@ const Cart = () => {
 
   const { subtotal, originalTotal, savings, shipping, total, itemCount } = getCartTotals();
 
-
-  // Calculate free shipping progress
   const freeShippingThreshold = 5000;
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
   const progressPercentage = Math.min(100, ((freeShippingThreshold - remainingForFreeShipping) / freeShippingThreshold) * 100);
@@ -63,7 +61,7 @@ const Cart = () => {
   return (
     <div className="cart">
       <div className="container">
-        {/* Page Header */}
+        {}
         <div className="page-header">
           <Link to="/products" className="back-btn">
             <FiArrowLeft />
@@ -94,7 +92,7 @@ const Cart = () => {
           </div>
         ) : !loading && (
           <div className="cart-modal">
-            {/* Cart Header */}
+            {}
             <div className="cart-header">
               <div className="cart-title">
                 <h2>Shopping Cart</h2>
@@ -105,7 +103,7 @@ const Cart = () => {
               </button>
             </div>
 
-            {/* Free Shipping Progress */}
+            {}
             {remainingForFreeShipping > 0 && (
               <div className="free-shipping-progress">
                 <div className="progress-bar">
@@ -121,7 +119,7 @@ const Cart = () => {
               </div>
             )}
 
-            {/* Cart Items */}
+            {}
             <div className="cart-items-list">
               {cartItems.map(item => (
                 <div key={item.id} className="cart-item">
@@ -163,7 +161,7 @@ const Cart = () => {
               ))}
             </div>
 
-            {/* Cart Summary */}
+            {}
             <div className="cart-summary">
               <div className="summary-row">
                 <span>Subtotal:</span>
@@ -175,7 +173,7 @@ const Cart = () => {
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {}
             <div className="cart-actions">
               <Link 
                 to={user ? "/checkout" : "/login"} 

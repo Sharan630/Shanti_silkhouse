@@ -8,7 +8,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
-          {/* Brand Section */}
+          {}
           <div className="footer-section">
             <div className="footer-logo">
               <img 
@@ -43,7 +43,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {}
           <div className="footer-section">
             <h4>Quick Links</h4>
             <ul className="footer-links">
@@ -55,7 +55,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Categories */}
+          {}
           <div className="footer-section">
             <h4>Categories</h4>
             <ul className="footer-links">
@@ -67,7 +67,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {}
           <div className="footer-section">
             <h4>Contact Info</h4>
             <div className="contact-info">

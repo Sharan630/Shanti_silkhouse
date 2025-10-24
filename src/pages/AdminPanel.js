@@ -17,8 +17,6 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  // Dashboard data
   const [dashboardData, setDashboardData] = useState({
     totalUsers: 0,
     totalProducts: 0,
@@ -28,8 +26,6 @@ const AdminPanel = () => {
     topProducts: [],
     salesChart: []
   });
-
-  // Products data
   const [products, setProducts] = useState([]);
   const [productForm, setProductForm] = useState({
     name: '',
@@ -42,8 +38,6 @@ const AdminPanel = () => {
     stockQuantity: '',
     images: []
   });
-
-  // Category mapping between navbar routes and database values
   const categoryOptions = [
     { value: 'silk-sarees', label: 'Silk Sarees', dbValue: 'silk-sarees' },
     { value: 'banarasi-sarees', label: 'Banarasi Sarees', dbValue: 'banarasi-sarees' },
@@ -53,17 +47,11 @@ const AdminPanel = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [productSearch, setProductSearch] = useState('');
   const [productFilter, setProductFilter] = useState('all');
-
-  // Orders data
   const [orders, setOrders] = useState([]);
   const [orderSearch, setOrderSearch] = useState('');
   const [orderFilter, setOrderFilter] = useState('all');
-
-  // Users data
   const [users, setUsers] = useState([]);
   const [userSearch, setUserSearch] = useState('');
-
-  // Handle admin login
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -75,8 +63,6 @@ const AdminPanel = () => {
     }
     setLoading(false);
   };
-
-  // Fetch dashboard data
   const fetchDashboardData = async () => {
     try {
       const response = await axios.get('/api/admin/dashboard');
@@ -85,8 +71,6 @@ const AdminPanel = () => {
       console.error('Error fetching dashboard data:', error);
     }
   };
-
-  // Fetch products
   const fetchProducts = async () => {
     try {
       const response = await axios.get('/api/admin/products?limit=1000');
@@ -96,8 +80,6 @@ const AdminPanel = () => {
     }
   };
 
-
-  // Fetch orders
   const fetchOrders = async () => {
     try {
       const response = await axios.get('/api/admin/orders');
@@ -106,8 +88,6 @@ const AdminPanel = () => {
       console.error('Error fetching orders:', error);
     }
   };
-
-  // Fetch users
   const fetchUsers = async () => {
     try {
       const response = await axios.get('/api/admin/users');
@@ -116,8 +96,6 @@ const AdminPanel = () => {
       console.error('Error fetching users:', error);
     }
   };
-
-  // Handle product form submission
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -157,8 +135,6 @@ const AdminPanel = () => {
     }
     setLoading(false);
   };
-
-  // Handle image upload
   const handleImageUpload = async (files) => {
     if (!files || files.length === 0) return;
     
@@ -205,39 +181,33 @@ const AdminPanel = () => {
       setLoading(false);
     }
   };
-
-  // Remove image from product form
   const removeImage = (index) => {
     setProductForm(prev => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
     }));
   };
-
-  // Delete product function
   const handleDeleteProduct = async (productId) => {
-    // Show confirmation dialog
+
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        // Send DELETE request to backend
+
         await axios.delete(`/api/admin/products/${productId}`);
         
-        // Show success message
+
         setSuccess('Product deleted successfully!');
         
-        // Refresh products list without reloading page
+
         fetchProducts();
         fetchDashboardData();
         
       } catch (error) {
-        // Show error message
+
         setError('Failed to delete product');
         console.error('Delete error:', error);
       }
     }
   };
-
-  // Edit product
   const handleEditProduct = (product) => {
     setEditingProduct(product);
     setProductForm({
@@ -252,8 +222,6 @@ const AdminPanel = () => {
       images: product.images || []
     });
   };
-
-  // Update order status
   const handleUpdateOrderStatus = async (orderId, status) => {
     try {
       await axios.put(`/api/admin/orders/${orderId}/status`, { status });
@@ -264,17 +232,15 @@ const AdminPanel = () => {
       setError('Error updating order status');
     }
   };
-
-  // Toggle product status
   const handleToggleProductStatus = async (productId, isActive) => {
     try {
       console.log('Toggling product status for ID:', productId, 'Current status:', isActive);
       
-      // Handle null/undefined is_active values - treat as false (inactive)
+
       const currentStatus = isActive === null || isActive === undefined ? false : isActive;
       const newStatus = !currentStatus;
       
-      // Immediately update local state for instant UI feedback
+
       setProducts(prevProducts => 
         prevProducts.map(product => 
           product.id === productId 
@@ -290,13 +256,13 @@ const AdminPanel = () => {
       console.log('Toggle response:', response.data);
       setSuccess('Product status updated successfully!');
       
-      // Refresh products to ensure data consistency
+
       fetchProducts();
     } catch (error) {
       console.error('Toggle error:', error);
       setError('Error updating product status: ' + (error.response?.data?.message || error.message));
       
-      // Revert local state on error
+
       setProducts(prevProducts => 
         prevProducts.map(product => 
           product.id === productId 
@@ -306,8 +272,6 @@ const AdminPanel = () => {
       );
     }
   };
-
-  // Clear messages
   const clearMessages = () => {
     setError('');
     setSuccess('');
@@ -321,8 +285,6 @@ const AdminPanel = () => {
       fetchUsers();
     }
   }, [admin]);
-
-  // Auto clear messages
   useEffect(() => {
     if (error || success) {
       const timer = setTimeout(clearMessages, 5000);
@@ -384,7 +346,7 @@ const AdminPanel = () => {
 
   return (
     <div className="admin-panel">
-      {/* Header */}
+      {}
       <div className="admin-header">
         <div className="admin-header-left">
           <div className="admin-logo-container">
@@ -411,7 +373,7 @@ const AdminPanel = () => {
         </div>
       </div>
 
-      {/* Navigation */}
+      {}
       <div className="admin-nav">
         <button 
           className={activeTab === 'dashboard' ? 'active' : ''}
@@ -450,7 +412,7 @@ const AdminPanel = () => {
         </button>
       </div>
 
-      {/* Messages */}
+      {}
       {error && (
         <div className="message error">
           <FiXCircle />
@@ -464,7 +426,7 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {/* Dashboard Tab */}
+      {}
       {activeTab === 'dashboard' && (
         <div className="admin-content">
           <div className="dashboard-header">
@@ -478,7 +440,7 @@ const AdminPanel = () => {
             </button>
           </div>
 
-          {/* Main Stats Grid */}
+          {}
           <div className="stats-grid">
             <div className="stat-card primary">
               <div className="stat-header">
@@ -547,7 +509,7 @@ const AdminPanel = () => {
             </div>
           </div>
 
-          {/* Secondary Stats */}
+          {}
           <div className="secondary-stats">
             <div className="stat-card secondary">
               <div className="stat-icon">
@@ -580,9 +542,9 @@ const AdminPanel = () => {
             </div>
           </div>
 
-          {/* Dashboard Sections Grid */}
+          {}
           <div className="dashboard-grid">
-            {/* Recent Orders */}
+            {}
             <div className="dashboard-section">
               <div className="section-header">
                 <h3>Recent Orders</h3>
@@ -613,7 +575,7 @@ const AdminPanel = () => {
               </div>
             </div>
 
-            {/* Top Products */}
+            {}
             <div className="dashboard-section">
               <div className="section-header">
                 <h3>Top Products</h3>
@@ -641,7 +603,7 @@ const AdminPanel = () => {
               </div>
             </div>
 
-            {/* Low Stock Alert */}
+            {}
             <div className="dashboard-section">
               <div className="section-header">
                 <h3>Low Stock Alert</h3>
@@ -673,7 +635,7 @@ const AdminPanel = () => {
               </div>
             </div>
 
-            {/* Order Status Overview */}
+            {}
             <div className="dashboard-section">
               <div className="section-header">
                 <h3>Order Status Overview</h3>
@@ -704,7 +666,7 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {/* Products Tab */}
+      {}
       {activeTab === 'products' && (
         <div className="admin-content">
           <div className="section-header">
@@ -732,7 +694,7 @@ const AdminPanel = () => {
             </div>
           </div>
 
-          {/* Product Form */}
+          {}
           <div className="product-form-section">
             <h3>{editingProduct ? 'Edit Product' : 'Add New Product'}</h3>
             <form onSubmit={handleProductSubmit} className="product-form">
@@ -893,7 +855,7 @@ const AdminPanel = () => {
             </form>
           </div>
 
-          {/* Products List */}
+          {}
           <div className="products-section">
             <h3>Products ({products.length})</h3>
             <div className="products-grid">
@@ -927,7 +889,7 @@ const AdminPanel = () => {
                       {product.stock_quantity < 10 && <span className="low-stock"> (Low Stock)</span>}
                     </p>
                     
-                    {/* ACTION BUTTONS */}
+                    {}
                     <div style={{
                       display: 'flex',
                       gap: '10px',
@@ -1017,7 +979,7 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {/* Orders Tab */}
+      {}
       {activeTab === 'orders' && (
         <div className="admin-content">
           <div className="section-header">
@@ -1105,7 +1067,7 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {/* Users Tab */}
+      {}
       {activeTab === 'users' && (
         <div className="admin-content">
           <div className="section-header">
@@ -1161,7 +1123,7 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {/* Analytics Tab */}
+      {}
       {activeTab === 'analytics' && (
         <div className="admin-content">
           <h2>Analytics & Reports</h2>

@@ -1,6 +1,4 @@
 const { pool } = require('../config/database');
-
-// Initialize database tables
 const initializeDatabase = async () => {
   const maxRetries = 3;
   let retryCount = 0;
@@ -9,12 +7,10 @@ const initializeDatabase = async () => {
     try {
       console.log(`Attempting to initialize database (attempt ${retryCount + 1}/${maxRetries})...`);
       
-      // Test connection first
+
       const client = await pool.connect();
       console.log('Database connection established successfully');
       client.release();
-
-      // Create users table
       await pool.query(`
         CREATE TABLE IF NOT EXISTS users (
           id SERIAL PRIMARY KEY,
@@ -28,8 +24,6 @@ const initializeDatabase = async () => {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
-
-      // Create admins table
       await pool.query(`
         CREATE TABLE IF NOT EXISTS admins (
           id SERIAL PRIMARY KEY,
@@ -41,8 +35,6 @@ const initializeDatabase = async () => {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
-
-      // Create products table
       await pool.query(`
         CREATE TABLE IF NOT EXISTS products (
           id SERIAL PRIMARY KEY,
@@ -60,8 +52,6 @@ const initializeDatabase = async () => {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
-
-      // Create orders table
       await pool.query(`
         CREATE TABLE IF NOT EXISTS orders (
           id SERIAL PRIMARY KEY,
@@ -76,8 +66,6 @@ const initializeDatabase = async () => {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
-
-      // Create order_items table
       await pool.query(`
         CREATE TABLE IF NOT EXISTS order_items (
           id SERIAL PRIMARY KEY,
@@ -88,8 +76,6 @@ const initializeDatabase = async () => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
-
-      // Create cart table
       await pool.query(`
         CREATE TABLE IF NOT EXISTS cart (
           id SERIAL PRIMARY KEY,
@@ -103,15 +89,11 @@ const initializeDatabase = async () => {
           UNIQUE(user_id, product_id, size, color)
         )
       `);
-
-      // Ensure all existing products are active (safety measure)
       await pool.query('UPDATE products SET is_active = true WHERE is_active IS NULL');
-
-      // Add constraint to ensure is_active cannot be null
       try {
         await pool.query('ALTER TABLE products ALTER COLUMN is_active SET NOT NULL');
       } catch (error) {
-        // If constraint already exists, ignore the error
+
         if (!error.message.includes('already exists')) {
           console.log('Note: is_active constraint may already exist');
         }
@@ -129,7 +111,7 @@ const initializeDatabase = async () => {
         throw error;
       }
       
-      // Wait before retrying (exponential backoff)
+
       const delay = Math.pow(2, retryCount) * 1000; // 2s, 4s, 8s
       console.log(`Waiting ${delay}ms before retry...`);
       await new Promise(resolve => setTimeout(resolve, delay));

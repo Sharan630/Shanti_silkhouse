@@ -20,8 +20,6 @@ const WishlistSidebar = ({ isOpen, onClose }) => {
 
     const result = await addToCart(product.id, 1, null, null, product);
     if (result.success) {
-      // Optionally remove from wishlist after adding to cart
-      // removeFromWishlist(product.id);
     }
   };
 

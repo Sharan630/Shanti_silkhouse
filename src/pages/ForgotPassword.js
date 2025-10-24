@@ -16,7 +16,7 @@ const ForgotPassword = () => {
     setMessage('');
 
     try {
-      // Simulate API call
+
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       setMessage('Password reset instructions have been sent to your email address.');

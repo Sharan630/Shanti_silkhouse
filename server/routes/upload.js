@@ -4,8 +4,6 @@ const cloudinary = require('../config/cloudinary');
 const { authenticateAdmin } = require('../middleware/auth');
 
 const router = express.Router();
-
-// Configure multer for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
@@ -20,15 +18,11 @@ const upload = multer({
     }
   }
 });
-
-// Upload single image
 router.post('/image', authenticateAdmin, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No image file provided' });
     }
-
-    // Upload to Cloudinary
     const result = await cloudinary.uploader.upload_stream(
       {
         resource_type: 'auto',
@@ -57,8 +51,6 @@ router.post('/image', authenticateAdmin, upload.single('image'), async (req, res
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Upload multiple images
 router.post('/images', authenticateAdmin, upload.array('images', 10), async (req, res) => {
   try {
     console.log('Upload request received:', {
@@ -128,8 +120,6 @@ router.post('/images', authenticateAdmin, upload.array('images', 10), async (req
     }
   }
 });
-
-// Delete image from Cloudinary
 router.delete('/image/:publicId', authenticateAdmin, async (req, res) => {
   try {
     const { publicId } = req.params;

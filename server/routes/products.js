@@ -2,8 +2,6 @@ const express = require('express');
 const { pool } = require('../config/database');
 
 const router = express.Router();
-
-// Get all products
 router.get('/', async (req, res) => {
   try {
     const { category, page = 1, limit = 10 } = req.query;
@@ -24,8 +22,6 @@ router.get('/', async (req, res) => {
 
     const result = await pool.query(query, params);
     const products = result.rows;
-
-    // Get total count for pagination
     let countQuery = 'SELECT COUNT(*) FROM products WHERE is_active = true';
     let countParams = [];
     let countParamCount = 0;
@@ -54,8 +50,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get new arrivals (latest 4 products)
 router.get('/new-arrivals', async (req, res) => {
   try {
     const result = await pool.query(
@@ -69,8 +63,6 @@ router.get('/new-arrivals', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Test endpoint to verify category mix
 router.get('/celebrate-test', async (req, res) => {
   try {
     const categories = ['silk-sarees', 'banarasi-sarees', 'designer-sarees', 'bridal-sarees'];
@@ -78,7 +70,7 @@ router.get('/celebrate-test', async (req, res) => {
     
     console.log('=== TEST ENDPOINT DEBUG ===');
     
-    // Get 2 products from each category
+
     for (const category of categories) {
       const result = await pool.query(
         'SELECT id, name, category, price FROM products WHERE is_active = true AND category = $1 ORDER BY RANDOM() LIMIT 2',
@@ -91,7 +83,7 @@ router.get('/celebrate-test', async (req, res) => {
       }
     }
     
-    // If we don't have 8 products, fill with random ones
+
     if (allProducts.length < 8) {
       const remaining = 8 - allProducts.length;
       console.log(`Need ${remaining} more products to reach 8 total`);
@@ -107,7 +99,7 @@ router.get('/celebrate-test', async (req, res) => {
     console.log(`Final total products: ${allProducts.length}`);
     console.log('=== END TEST DEBUG ===');
     
-    // Ensure exactly 8 products
+
     const finalProducts = allProducts.slice(0, 8);
     console.log(`Returning exactly ${finalProducts.length} products`);
     
@@ -121,8 +113,6 @@ router.get('/celebrate-test', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get products for celebrate section with price filtering - SIMPLIFIED VERSION
 router.get('/celebrate', async (req, res) => {
   try {
     const { priceFilter = 'all' } = req.query;
@@ -130,11 +120,11 @@ router.get('/celebrate', async (req, res) => {
     console.log('=== CELEBRATE SECTION DEBUG ===');
     console.log('Price filter:', priceFilter);
     
-    // Build the base query with price filtering
+
     let baseQuery = 'SELECT * FROM products WHERE is_active = true';
     let baseParams = [];
     
-    // Add price filtering if specified
+
     if (priceFilter !== 'all') {
       let priceValue;
       switch (priceFilter) {
@@ -162,7 +152,7 @@ router.get('/celebrate', async (req, res) => {
       }
     }
     
-    // Get exactly 8 products with a single query
+
     const finalQuery = baseQuery + ' ORDER BY RANDOM() LIMIT 8';
     
     console.log('Final query:', finalQuery);
@@ -174,7 +164,7 @@ router.get('/celebrate', async (req, res) => {
     console.log(`Found ${products.length} products`);
     console.log('=== END DEBUG ===');
     
-    // CRITICAL: Ensure we never return more than 8 products
+
     const finalProducts = products.slice(0, 8);
     console.log(`Returning exactly ${finalProducts.length} products`);
 
@@ -184,8 +174,6 @@ router.get('/celebrate', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get product categories
 router.get('/categories/list', async (req, res) => {
   try {
     const result = await pool.query(
@@ -199,8 +187,6 @@ router.get('/categories/list', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Get single product
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;

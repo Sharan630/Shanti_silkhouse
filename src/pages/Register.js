@@ -27,7 +27,7 @@ const Register = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
-    // Clear errors when user starts typing
+
     if (error) setError('');
   };
 
@@ -35,8 +35,6 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -76,13 +74,13 @@ const Register = () => {
   return (
     <div className="register-page">
       <div className="register-container">
-        {/* Back Button */}
+        {}
         <Link to="/" className="back-btn">
           <FiArrowLeft />
           Back to Home
         </Link>
 
-        {/* Register Form */}
+        {}
         <div className="register-form-container">
           <div className="register-header">
             <h1>Create Account</h1>
@@ -226,7 +224,7 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Register Image/Decoration */}
+        {}
         <div className="register-image">
           <div className="image-content">
             <h2>SHANTI SILK HOUSE</h2>
