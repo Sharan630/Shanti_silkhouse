@@ -125,7 +125,7 @@ const Cart = () => {
                 <div key={item.id} className="cart-item">
                   <div className="item-image">
                     <img 
-                      src={item.images && item.images.length > 0 ? item.images[0] : process.env.PUBLIC_URL + '/logos/logo.jpg'} 
+                      src={item.images && item.images.length > 0 ? item.images[0] : '/logos/logo.jpg'} 
                       alt={item.name} 
                     />
                   </div>

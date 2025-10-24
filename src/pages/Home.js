@@ -259,7 +259,7 @@ const Home = () => {
                 <div key={product.id} className="arrival-item">
                   <div className="arrival-image">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : process.env.PUBLIC_URL + '/logos/logo.png'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.png'} 
                       alt={product.name} 
                       loading="lazy" 
                     />
@@ -402,7 +402,7 @@ const Home = () => {
                 <div key={product.id} className="gift-product-card">
                   <div className="gift-product-image">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : process.env.PUBLIC_URL + '/logos/logo.png'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.png'} 
                       alt={product.name} 
                       loading="lazy" 
                     />
@@ -534,12 +534,12 @@ const Home = () => {
           <div className="about-content">
             <div className="about-image">
               <img 
-                src={process.env.PUBLIC_URL + "/logos/2.png"} 
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761340163/Screenshot_2025-10-12_042051_lezwvz.png" 
                 alt="Shanti Silk House Logo" 
                 loading="lazy"
                 onError={(e) => {
-                  console.log('2.png failed to load, trying fallback');
-                  e.target.src = process.env.PUBLIC_URL + "/logos/logo.png";
+                  e.target.style.display = 'none';
+                  e.target.parentElement.style.backgroundColor = '#f5f5f5';
                 }}
               />
             </div>

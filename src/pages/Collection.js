@@ -306,11 +306,11 @@ const Collection = () => {
                 <div key={product.id} className="product-card">
                   <div className="product-image-container">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : process.env.PUBLIC_URL + '/logos/logo.jpg'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.jpg'} 
                       alt={product.name} 
                       loading="lazy" 
                       onError={(e) => {
-                        e.target.src = process.env.PUBLIC_URL + '/logos/logo.jpg';
+                        e.target.src = '/logos/logo.jpg';
                       }}
                     />
                   </div>

@@ -70,15 +70,11 @@ const Header = () => {
       <div className="header-content">
           {}
         <Link to="/" className="logo">
-          <img 
-            src={process.env.PUBLIC_URL + "/logos/logo.png"} 
-            alt="Shanti Silk House Logo" 
-            className="logo-img"
-            loading="eager"
-            onError={(e) => {
-              console.log('Logo failed to load, trying fallback');
-              e.target.src = process.env.PUBLIC_URL + "/logos/2.png";
-            }}
+            <img 
+              src="/logos/logo.png" 
+              alt="Shanti Silk House Logo" 
+              className="logo-img"
+              loading="eager"
           />
         </Link>
 
@@ -154,14 +150,10 @@ const Header = () => {
           {}
           <Link to="/" className="mobile-logo">
             <img 
-              src={process.env.PUBLIC_URL + "/logos/logo.png"} 
+              src="/logos/logo.png" 
               alt="Shanti Silk House Logo" 
               className="mobile-logo-img"
               loading="eager"
-              onError={(e) => {
-                console.log('Mobile logo failed to load, trying fallback');
-                e.target.src = process.env.PUBLIC_URL + "/logos/2.png";
-              }}
             />
           </Link>
 

@@ -61,10 +61,10 @@ const WishlistSidebar = ({ isOpen, onClose }) => {
                 <div key={product.id} className="wishlist-item">
                   <div className="item-image">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : process.env.PUBLIC_URL + '/logos/logo.jpg'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.jpg'} 
                       alt={product.name}
                       onError={(e) => {
-                        e.target.src = process.env.PUBLIC_URL + '/logos/logo.jpg';
+                        e.target.src = '/logos/logo.jpg';
                       }}
                     />
                   </div>
