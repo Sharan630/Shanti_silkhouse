@@ -40,7 +40,25 @@ const Header = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      const searchTerm = searchQuery.trim().toLowerCase();
+      
+      if (searchTerm.includes('silk') || searchTerm.includes('silk saree') || searchTerm.includes('pure silk')) {
+        navigate('/collection/silk-sarees');
+      } else if (searchTerm.includes('banarasi') || searchTerm.includes('banarsi') || searchTerm.includes('banaras')) {
+        navigate('/collection/banarasi-sarees');
+      } else if (searchTerm.includes('designer') || searchTerm.includes('design') || searchTerm.includes('fashion')) {
+        navigate('/collection/designer-sarees');
+      } else if (searchTerm.includes('bridal') || searchTerm.includes('wedding') || searchTerm.includes('bride') || searchTerm.includes('marriage')) {
+        navigate('/collection/bridal-sarees');
+      } else if (searchTerm.includes('cotton') || searchTerm.includes('cotton saree')) {
+        navigate('/collection/silk-sarees'); // Default to silk for cotton searches
+      } else if (searchTerm.includes('georgette') || searchTerm.includes('chiffon')) {
+        navigate('/collection/designer-sarees');
+      } else {
+        
+        navigate('/collection/silk-sarees');
+      }
+      
       setSearchQuery('');
     }
   }; 
@@ -49,86 +67,73 @@ const Header = () => {
     <>
       {}
       <header className="header desktop-header">
-        <div className="header-content">
+      <div className="header-content">
           {}
-          <Link to="/" className="logo">
-            <div className="logo-container">
-              <img 
-                src="/logos/logo.png" 
-                alt="Shanti Silk House Logo" 
-                className="logo-img"
-                loading="eager"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <div className="logo-text" style={{display: 'none'}}>
-                <div className="lotus-icon">🌸</div>
-                <div className="logo-text-content">
-                  <div className="logo-main">SHANTI</div>
-                  <div className="logo-sub">
-                    <span className="line"></span>
-                    <span className="text">SILK HOUSE</span>
-                    <span className="line"></span>
-                  </div>
-                </div>
-              </div>
+        <Link to="/" className="logo">
+          <img 
+            src={process.env.PUBLIC_URL + "/logos/logo.png"} 
+            alt="Shanti Silk House Logo" 
+            className="logo-img"
+            loading="eager"
+            onError={(e) => {
+              console.log('Logo failed to load, trying fallback');
+              e.target.src = process.env.PUBLIC_URL + "/logos/2.png";
+            }}
+          />
+        </Link>
+
+          {}
+        <nav className="desktop-nav">
+          <Link to="/collection/silk-sarees" className="nav-link">SILK SAREES</Link>
+          <Link to="/collection/banarasi-sarees" className="nav-link">BANARASI SAREES</Link>
+          <Link to="/collection/designer-sarees" className="nav-link">DESIGNER SAREES</Link>
+          <Link to="/collection/bridal-sarees" className="nav-link">BRIDAL SAREES</Link>
+        </nav>
+
+          {}
+        <div className="header-actions">
+          <form className="search-box" onSubmit={handleSearch}>
+            <input 
+              type="text" 
+              placeholder="Search sarees..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="search-submit">
+              <FiSearch className="search-icon" />
+            </button>
+          </form>
+          {user ? (
+            <div className="user-menu">
+              <span className="user-name">Hi, {user.firstName}</span>
+              <button onClick={logout} className="action-btn logout-btn">
+                <FiLogOut />
+              </button>
             </div>
-          </Link>
-
-          {}
-          <nav className="desktop-nav">
-            <Link to="/collection/silk-sarees" className="nav-link">SILK SAREES</Link>
-            <Link to="/collection/banarasi-sarees" className="nav-link">BANARASI SAREES</Link>
-            <Link to="/collection/designer-sarees" className="nav-link">DESIGNER SAREES</Link>
-            <Link to="/collection/bridal-sarees" className="nav-link">BRIDAL SAREES</Link>
-          </nav>
-
-          {}
-          <div className="header-actions">
-            <form className="search-box" onSubmit={handleSearch}>
-              <input 
-                type="text" 
-                placeholder="Search sarees..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button type="submit" className="search-submit">
-                <FiSearch className="search-icon" />
-              </button>
-            </form>
-            {user ? (
-              <div className="user-menu">
-                <span className="user-name">Hi, {user.firstName}</span>
-                <button onClick={logout} className="action-btn logout-btn">
-                  <FiLogOut />
-                </button>
-              </div>
-            ) : (
-              <button 
-                className="action-btn"
-                onClick={() => navigate('/login')}
-              >
-                <FiUser />
-              </button>
-            )}
+          ) : (
             <button 
-              className="action-btn wishlist-btn"
-              onClick={() => setShowWishlist(true)}
+              className="action-btn"
+              onClick={() => navigate('/login')}
             >
-              <FiHeart />
-              {wishlistCount > 0 && <span className="wishlist-count">{wishlistCount}</span>}
+              <FiUser />
             </button>
-            <button 
-              className="action-btn cart-btn"
-              onClick={() => setShowCart(true)}
-            >
-              <FiShoppingCart />
-              {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
-            </button>
-          </div>
+          )}
+          <button 
+            className="action-btn wishlist-btn"
+            onClick={() => setShowWishlist(true)}
+          >
+            <FiHeart />
+            {wishlistCount > 0 && <span className="wishlist-count">{wishlistCount}</span>}
+          </button>
+          <button 
+            className="action-btn cart-btn"
+            onClick={() => setShowCart(true)}
+          >
+            <FiShoppingCart />
+            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+          </button>
         </div>
+      </div>
       </header>
 
       {}
@@ -149,10 +154,14 @@ const Header = () => {
           {}
           <Link to="/" className="mobile-logo">
             <img 
-              src="/logos/logo.png" 
+              src={process.env.PUBLIC_URL + "/logos/logo.png"} 
               alt="Shanti Silk House Logo" 
               className="mobile-logo-img"
               loading="eager"
+              onError={(e) => {
+                console.log('Mobile logo failed to load, trying fallback');
+                e.target.src = process.env.PUBLIC_URL + "/logos/2.png";
+              }}
             />
           </Link>
 

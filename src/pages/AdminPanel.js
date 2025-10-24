@@ -299,7 +299,7 @@ const AdminPanel = () => {
           <div className="login-header">
             <div className="login-logo-container">
               <img 
-                src="/logos/logo.jpg" 
+                src={process.env.PUBLIC_URL + "/logos/logo.jpg"} 
                 alt="Shanti Silk House Logo" 
                 className="login-logo-img"
                 onError={(e) => {
