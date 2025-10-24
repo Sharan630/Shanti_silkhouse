@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="footer-section">
             <div className="footer-logo">
               <img 
-                src="/logos/logo.png" 
+                src="/logos/logo.svg" 
                 alt="Shanti Silk House Logo" 
                 className="footer-logo-img"
                 loading="eager"
