@@ -12,9 +12,10 @@ const Footer = () => {
           <div className="footer-section">
             <div className="footer-logo">
               <img 
-                src="/logos/logo.jpg" 
+                src="/logos/logo.png" 
                 alt="Shanti Silk House Logo" 
                 className="footer-logo-img"
+                loading="eager"
                 onError={(e) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'block';

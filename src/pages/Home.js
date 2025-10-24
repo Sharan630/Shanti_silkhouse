@@ -270,7 +270,7 @@ const Home = () => {
                 <div key={product.id} className="arrival-item">
                   <div className="arrival-image">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.jpg'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.png'} 
                       alt={product.name} 
                       loading="lazy" 
                     />
@@ -413,7 +413,7 @@ const Home = () => {
                 <div key={product.id} className="gift-product-card">
                   <div className="gift-product-image">
                     <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.jpg'} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.png'} 
                       alt={product.name} 
                       loading="lazy" 
                     />

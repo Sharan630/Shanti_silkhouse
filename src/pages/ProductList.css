@@ -447,6 +447,22 @@
 }
 
 @media (max-width: 768px) {
+  .product-list {
+    padding: 30px 0 60px;
+  }
+
+  .page-header {
+    margin-bottom: 30px;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
   .product-list-content {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -455,10 +471,38 @@
   .filters-sidebar {
     position: static;
     order: 2;
+    padding: 20px;
+    margin: 0 15px;
+  }
+
+  .filter-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+  }
+
+  .filter-section h3 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+
+  .filter-option {
+    font-size: 0.9rem;
+  }
+
+  .color-options {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .color-option {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 
   .products-main {
     order: 1;
+    padding: 20px;
+    margin: 0 15px;
   }
 
   .products-container.grid {
@@ -470,32 +514,225 @@
     grid-template-columns: 1fr;
   }
 
+  .product-item {
+    border-radius: 10px;
+  }
+
+  .product-image img {
+    height: 220px;
+  }
+
+  .product-info {
+    padding: 15px;
+  }
+
+  .product-info h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .product-price {
+    margin-bottom: 10px;
+  }
+
+  .current-price {
+    font-size: 1.1rem;
+  }
+
+  .original-price {
+    font-size: 0.9rem;
+  }
+
+  .view-product-btn {
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+
   .products-toolbar {
     flex-direction: column;
     gap: 15px;
     align-items: flex-start;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
   }
 
   .toolbar-right {
     width: 100%;
     justify-content: space-between;
   }
+
+  .results-count {
+    font-size: 0.9rem;
+  }
+
+  .sort-options select {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .view-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .pagination {
+    margin-top: 30px;
+    gap: 8px;
+  }
+
+  .page-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  .page-number {
+    width: 35px;
+    height: 35px;
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .products-container.grid {
-    grid-template-columns: 1fr;
+  .product-list {
+    padding: 20px 0 50px;
+  }
+
+  .page-header {
+    margin-bottom: 25px;
   }
 
   .page-header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .page-header p {
+    font-size: 0.9rem;
   }
 
   .filters-sidebar {
-    padding: 20px;
+    padding: 15px;
+    margin: 0 10px;
+  }
+
+  .filter-section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+  }
+
+  .filter-section h3 {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+
+  .filter-option {
+    font-size: 0.85rem;
+  }
+
+  .color-options {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .color-option {
+    padding: 5px 8px;
+    font-size: 0.75rem;
   }
 
   .products-main {
-    padding: 20px;
+    padding: 15px;
+    margin: 0 10px;
+  }
+
+  .products-container.grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .product-image img {
+    height: 200px;
+  }
+
+  .product-info {
+    padding: 12px;
+  }
+
+  .product-info h3 {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+
+  .product-rating {
+    margin-bottom: 8px;
+  }
+
+  .stars svg {
+    font-size: 0.8rem;
+  }
+
+  .product-rating span {
+    font-size: 0.8rem;
+  }
+
+  .product-price {
+    margin-bottom: 8px;
+  }
+
+  .current-price {
+    font-size: 1rem;
+  }
+
+  .original-price {
+    font-size: 0.85rem;
+  }
+
+  .product-colors {
+    margin-bottom: 10px;
+  }
+
+  .color-dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  .view-product-btn {
+    padding: 5px 14px;
+    font-size: 0.8rem;
+  }
+
+  .products-toolbar {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+
+  .results-count {
+    font-size: 0.85rem;
+  }
+
+  .sort-options select {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  .view-btn {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
+
+  .pagination {
+    margin-top: 25px;
+    gap: 6px;
+  }
+
+  .page-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .page-number {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
   }
 }

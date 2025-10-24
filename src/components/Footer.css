@@ -238,6 +238,7 @@ body.has-fixed-sidebar .footer {
   .footer {
     margin-left: 0;
     width: 100%;
+    padding: 50px 0 15px;
   }
   
   body.has-fixed-sidebar .footer {
@@ -256,32 +257,144 @@ body.has-fixed-sidebar .footer {
     text-align: center;
   }
 
+  .footer-section h4 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+
+  .footer-description {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    text-align: left;
+  }
+
+  .footer-links li {
+    margin-bottom: 8px;
+  }
+
+  .footer-links a {
+    font-size: 0.9rem;
+  }
+
+  .contact-info {
+    gap: 12px;
+  }
+
+  .contact-item {
+    font-size: 0.9rem;
+    gap: 10px;
+  }
+
+  .contact-item svg {
+    font-size: 1rem;
+  }
+
   .footer-bottom-content {
     flex-direction: column;
     text-align: center;
+    gap: 15px;
   }
 
   .footer-bottom-links {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 15px;
+  }
+
+  .footer-bottom-links a {
+    font-size: 0.85rem;
   }
 
   .social-links {
     justify-content: center;
+    gap: 12px;
+  }
+
+  .social-link {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .footer-logo-img {
-    height: 50px;
-    max-width: 150px;
-  }
-  
   .footer {
     padding: 40px 0 15px;
   }
   
+  .footer-logo-img {
+    height: 45px;
+    max-width: 130px;
+  }
+  
   .footer-content {
     gap: 25px;
+  }
+
+  .footer-section h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .footer-description {
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .footer-links li {
+    margin-bottom: 6px;
+  }
+
+  .footer-links a {
+    font-size: 0.85rem;
+  }
+
+  .contact-info {
+    gap: 10px;
+  }
+
+  .contact-item {
+    font-size: 0.85rem;
+    gap: 8px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .contact-item svg {
+    font-size: 0.9rem;
+  }
+
+  .footer-bottom-content {
+    gap: 12px;
+  }
+
+  .footer-bottom-links {
+    gap: 12px;
+  }
+
+  .footer-bottom-links a {
+    font-size: 0.8rem;
+  }
+
+  .social-links {
+    gap: 10px;
+  }
+
+  .social-link {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
   }
 }
