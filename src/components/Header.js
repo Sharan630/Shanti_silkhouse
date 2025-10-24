@@ -70,14 +70,16 @@ const Header = () => {
       <div className="header-content">
           {}
         <Link to="/" className="logo">
-            <img 
-            src="/logos/logo.svg" 
-              alt="Shanti Silk House Logo" 
-              className="logo-img"
-              loading="eager"
-              onError={(e) => {
-              console.log('SVG logo failed to load');
-                e.target.style.display = 'none';
+          <img 
+            src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg" 
+            alt="Shanti Silk House Logo" 
+            className="logo-img"
+            loading="eager"
+            style={{display: 'block', minWidth: '100px', minHeight: '40px'}}
+            onLoad={() => console.log('Desktop logo loaded successfully')}
+            onError={(e) => {
+              console.log('Cloudinary SVG logo failed to load');
+              e.target.style.display = 'none';
             }}
           />
         </Link>
@@ -154,12 +156,13 @@ const Header = () => {
           {}
           <Link to="/" className="mobile-logo">
             <img 
-              src="/logos/logo.svg" 
+              src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg" 
               alt="Shanti Silk House Logo" 
               className="mobile-logo-img"
               loading="eager"
+              onLoad={() => console.log('Mobile logo loaded successfully')}
               onError={(e) => {
-                console.log('SVG logo failed to load');
+                console.log('Cloudinary SVG logo failed to load');
                 e.target.style.display = 'none';
               }}
             />
