@@ -29,9 +29,13 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/test', testRoutes);
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running!' });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ message: 'API is running!' });
 });
 
 // Export the app for Vercel
