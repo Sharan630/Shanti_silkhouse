@@ -4,6 +4,7 @@ import { FiStar, FiHeart, FiShoppingCart, FiTruck, FiShield, FiRefreshCw, FiMinu
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import ImageCarousel from '../components/ImageCarousel';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -94,24 +95,16 @@ const ProductDetail = () => {
         <div className="product-detail-content">
           {}
           <div className="product-images">
-            <div className="main-image">
-              <img src={product.images[selectedImage]} alt={product.name} />
-              <div className="image-badge">
-                <span>Premium Quality</span>
-              </div>
-            </div>
-            <div className="thumbnail-images">
-              {product.images.map((image, index) => (
-                  <img
-                  key={index}
-                  src={image}
-                  alt={`${product.name} ${index + 1}`}
-                  className={selectedImage === index ? 'active' : ''}
-                  onClick={() => setSelectedImage(index)}
-                    role="button"
-                    aria-label={`View image ${index + 1}`}
-                />
-              ))}
+            <ImageCarousel 
+              images={product.images}
+              autoPlay={true}
+              interval={1350}
+              showThumbnails={true}
+              showControls={true}
+              className="product-carousel"
+            />
+            <div className="image-badge">
+              <span>Premium Quality</span>
             </div>
           </div>
 

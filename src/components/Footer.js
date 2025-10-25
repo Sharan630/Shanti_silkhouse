@@ -43,7 +43,7 @@ const Footer = () => {
           <div className="footer-section">
             <h4>Quick Links</h4>
             <ul className="footer-links">
-              <li><Link to="/">Home</Link></li>
+              <li><Link to="/" className="footer-link" onClick={() => window.scrollTo(0, 0)}>Home</Link></li>
               <li><Link to="/collection/silk-sarees">Collection</Link></li>
               <li><a href="/#about">About Shanti Silks</a></li>
               <li><a href="/#about">Contact</a></li>

@@ -9,6 +9,7 @@ import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useWishlist } from '../contexts/WishlistContext';
+import ImageCarousel from '../components/ImageCarousel';
 import axios from 'axios';
 import './Collection.css';
 
@@ -305,13 +306,13 @@ const Collection = () => {
               filteredProducts.map(product => (
                 <div key={product.id} className="product-card">
                   <div className="product-image-container">
-                    <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : '/logos/logo.jpg'} 
-                      alt={product.name} 
-                      loading="lazy" 
-                      onError={(e) => {
-                        e.target.src = '/logos/logo.jpg';
-                      }}
+                    <ImageCarousel 
+                      images={product.images && product.images.length > 0 ? product.images : ['/logos/logo.jpg']}
+                      autoPlay={true}
+                      interval={1350}
+                      showThumbnails={false}
+                      showControls={false}
+                      className="product-card-carousel"
                     />
                   </div>
                   <div className="product-info">

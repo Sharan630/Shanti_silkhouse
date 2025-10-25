@@ -4,6 +4,7 @@ import { FiArrowRight, FiStar, FiTruck, FiShield, FiHeart, FiChevronLeft, FiChev
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
+import ImageCarousel from '../components/ImageCarousel';
 import axios from 'axios';
 import './Home.css';
 
@@ -258,10 +259,13 @@ const Home = () => {
               {newArrivals.map(product => (
                 <div key={product.id} className="arrival-item">
                   <div className="arrival-image">
-                    <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg'} 
-                      alt={product.name} 
-                      loading="lazy" 
+                    <ImageCarousel 
+                      images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg']}
+                      autoPlay={true}
+                      interval={1350}
+                      showThumbnails={false}
+                      showControls={false}
+                      className="arrival-carousel"
                     />
                   </div>
                   <div className="arrival-info">
@@ -401,10 +405,13 @@ const Home = () => {
               celebrateProducts.slice(0, 8).map(product => (
                 <div key={product.id} className="gift-product-card">
                   <div className="gift-product-image">
-                    <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg'} 
-                      alt={product.name} 
-                      loading="lazy" 
+                    <ImageCarousel 
+                      images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg']}
+                      autoPlay={true}
+                      interval={1350}
+                      showThumbnails={false}
+                      showControls={false}
+                      className="gift-product-carousel"
                     />
                   </div>
                   <div className="gift-product-info">

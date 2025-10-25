@@ -311,11 +311,14 @@
 }
 
 .arrival-image { flex: 1 1 auto; height: 500px; }           
-.arrival-image img {
+
+.arrival-carousel {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
+}
+
+.arrival-carousel .carousel-main-image {
+  min-height: 500px;
 }
 
 .arrival-info {
@@ -553,7 +556,7 @@
 .gift-products-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(280px, 1fr));
-  gap: 50px; 
+  gap: 40px; 
   padding-left: 24px; 
   padding-right: 24px; 
 }
@@ -569,14 +572,16 @@
 
 .gift-product-image { 
   flex: 1 1 auto; 
-  height: 550px; 
+  height: 500px; 
 }           
 
-.gift-product-image img {
+.gift-product-carousel {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
+}
+
+.gift-product-carousel .carousel-main-image {
+  min-height: 500px;
 }
 
 .gift-product-info {
@@ -618,7 +623,11 @@
     aspect-ratio: 3 / 4; 
   }
   .gift-product-image { 
-    height: 450px; 
+    height: 500px; 
+  }
+  
+  .gift-product-carousel .carousel-main-image {
+    min-height: 500px;
   }
 }
 
@@ -646,7 +655,11 @@
     aspect-ratio: 3 / 4; 
   }
   .gift-product-image { 
-    height: 380px; 
+    height: 300px; 
+  }
+  
+  .gift-product-carousel .carousel-main-image {
+    min-height: 300px;
   }
 }
 
@@ -674,7 +687,11 @@
     aspect-ratio: 3 / 4; 
   }
   .gift-product-image { 
-    height: 450px; 
+    height: 350px; 
+  }
+  
+  .gift-product-carousel .carousel-main-image {
+    min-height: 350px;
   }
 }
 .styled-celebrations {
@@ -1666,6 +1683,10 @@
   .arrival-image {
     height: 300px;
   }
+  
+  .arrival-carousel .carousel-main-image {
+    min-height: 300px;
+  }
 
   .arrival-price {
     font-size: 1.2rem;
@@ -1863,6 +1884,10 @@
   .arrival-image {
     height: 350px;
   }
+  
+  .arrival-carousel .carousel-main-image {
+    min-height: 350px;
+  }
 
   .arrival-price {
     font-size: 1.1rem;
@@ -1897,6 +1922,10 @@
 
   .gift-product-image {
     height: 350px;
+  }
+  
+  .gift-product-carousel .carousel-main-image {
+    min-height: 350px;
   }
 
   .gift-product-price {

@@ -77,10 +77,10 @@ router.post('/images', authenticateAdmin, upload.array('images', 10), async (req
             resource_type: 'auto',
             folder: 'saree-website',
             transformation: [
-              { width: 800, height: 800, crop: 'limit' },
-              { quality: 'auto' }
+              { width: 600, height: 600, crop: 'limit' },
+              { quality: 80 }
             ],
-            timeout: 120000 // 2 minutes timeout for Cloudinary
+            timeout: 300000 
           },
           (error, result) => {
             if (error) {
@@ -112,11 +112,25 @@ router.post('/images', authenticateAdmin, upload.array('images', 10), async (req
     console.error('Multiple upload error:', error);
     
     if (error.message && error.message.includes('timeout')) {
-      res.status(408).json({ message: 'Upload timeout. Please try with smaller images.' });
+      res.status(408).json({ 
+        message: 'Upload timeout. Please try with smaller images or check your internet connection.',
+        error: 'TIMEOUT_ERROR'
+      });
     } else if (error.message && error.message.includes('size')) {
-      res.status(413).json({ message: 'File too large. Maximum size is 10MB per image.' });
+      res.status(413).json({ 
+        message: 'File too large. Maximum size is 10MB per image.',
+        error: 'FILE_TOO_LARGE'
+      });
+    } else if (error.http_code === 499) {
+      res.status(408).json({ 
+        message: 'Cloudinary service timeout. Please try again in a few minutes.',
+        error: 'CLOUDINARY_TIMEOUT'
+      });
     } else {
-      res.status(500).json({ message: 'Upload failed. Please try again.' });
+      res.status(500).json({ 
+        message: 'Upload failed. Please try again.',
+        error: 'UPLOAD_FAILED'
+      });
     }
   }
 });
