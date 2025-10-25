@@ -528,7 +528,7 @@ const Home = () => {
       </section>
 
       {}
-      <section className="about-shanti-silks">
+      <section id="about" className="about-shanti-silks">
         <div className="container">
           <h2 className="celebrations-title">ABOUT SHANTI SILKS</h2>
           <div className="about-content">

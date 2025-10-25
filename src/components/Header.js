@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiUser, FiSearch, FiLogOut, FiHeart, FiMenu } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
@@ -61,7 +61,11 @@ const Header = () => {
       
       setSearchQuery('');
     }
-  }; 
+  };
+
+  const toggleMobileMenu = useCallback(() => {
+    setShowMobileMenu(prev => !prev);
+  }, []); 
 
   return (
     <>
@@ -144,7 +148,7 @@ const Header = () => {
           {}
           <button 
             className="mobile-menu-toggle"
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            onClick={toggleMobileMenu}
           >
             <div className={`hamburger ${showMobileMenu ? 'active' : ''}`}>
               <span></span>

@@ -27,13 +27,13 @@ const Footer = () => {
               Each piece is carefully curated to bring you elegance and style.
             </p>
             <div className="social-links">
-              <a href="#" className="social-link">
+              <a href="https://facebook.com/shantisilks" target="_blank" rel="noopener noreferrer" className="social-link">
                 <FiFacebook />
               </a>
-              <a href="#" className="social-link">
+              <a href="https://instagram.com/shantisilks" target="_blank" rel="noopener noreferrer" className="social-link">
                 <FiInstagram />
               </a>
-              <a href="#" className="social-link">
+              <a href="https://twitter.com/shantisilks" target="_blank" rel="noopener noreferrer" className="social-link">
                 <FiTwitter />
               </a>
             </div>
@@ -44,10 +44,9 @@ const Footer = () => {
             <h4>Quick Links</h4>
             <ul className="footer-links">
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/products">Collection</Link></li>
-              <li><Link to="/about">About Us</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
-              <li><Link to="/size-guide">Size Guide</Link></li>
+              <li><Link to="/collection/silk-sarees">Collection</Link></li>
+              <li><a href="/#about">About Shanti Silks</a></li>
+              <li><a href="/#about">Contact</a></li>
             </ul>
           </div>
 
@@ -55,11 +54,11 @@ const Footer = () => {
           <div className="footer-section">
             <h4>Categories</h4>
             <ul className="footer-links">
-              <li><Link to="/products?category=silk">Silk Sarees</Link></li>
-              <li><Link to="/products?category=banarasi">Banarasi Sarees</Link></li>
-              <li><Link to="/products?category=designer">Designer Sarees</Link></li>
-              <li><Link to="/products?category=bridal">Bridal Sarees</Link></li>
-              <li><Link to="/products?category=party">Party Wear</Link></li>
+              <li><Link to="/collection/silk-sarees">Silk Sarees</Link></li>
+              <li><Link to="/collection/banarasi-sarees">Banarasi Sarees</Link></li>
+              <li><Link to="/collection/designer-sarees">Designer Sarees</Link></li>
+              <li><Link to="/collection/bridal-sarees">Bridal Sarees</Link></li>
+              <li><Link to="/collection/party-wear">Party Wear</Link></li>
             </ul>
           </div>
 
@@ -85,11 +84,11 @@ const Footer = () => {
 
         <div className="footer-bottom">
           <div className="footer-bottom-content">
-            <p>&copy; 2024 Shanti Silk House. All rights reserved.</p>
+            <p>&copy; 2025 Shanti Silk House. All rights reserved.</p>
             <div className="footer-bottom-links">
-              <Link to="/privacy">Privacy Policy</Link>
-              <Link to="/terms">Terms of Service</Link>
-              <Link to="/shipping">Shipping Policy</Link>
+              <a href="/#about">Privacy Policy</a>
+              <a href="/#about">Terms of Service</a>
+              <a href="/#about">Shipping Policy</a>
             </div>
           </div>
         </div>
