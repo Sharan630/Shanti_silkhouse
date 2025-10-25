@@ -4,6 +4,10 @@
   padding: 8px 0;
   overflow: hidden;
   transition: all 0.3s ease;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .marquee-container.scrolled {
@@ -50,6 +54,10 @@
   width: 100%;
   overflow: hidden;
   position: relative;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .marquee-track {
@@ -57,6 +65,13 @@
   animation: marquee-scroll 30s linear infinite;
   gap: 40px;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: marquee-scroll 30s linear infinite;
+  animation-fill-mode: both;
+  -webkit-animation-fill-mode: both;
 }
 
 .marquee-group {
@@ -140,12 +155,25 @@
 .marquee-btn svg {
   font-size: 1rem;
 }
-@keyframes marquee-scroll {
+@-webkit-keyframes marquee-scroll {
   0% {
-    transform: translateX(0);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-100%);
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes marquee-scroll {
+  0% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 .marquee-scroll:hover .marquee-track {
