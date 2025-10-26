@@ -1708,6 +1708,7 @@
     aspect-ratio: 3 / 4;
     width: 100%;
     max-width: calc(50vw - 20px);
+    margin-bottom: 24px;
   }
 
   .arrival-image {
@@ -1733,6 +1734,7 @@
     font-size: 0.9rem;
     background: #660000 !important;
     border-color: #660000 !important;
+    margin-top: 8px;
   }
 
   .celebrate-title {
@@ -1761,6 +1763,7 @@
     aspect-ratio: 3 / 4;
     width: 100%;
     max-width: calc(50vw - 20px);
+    margin-bottom: 24px;
   }
 
   .gift-product-image {
@@ -1940,6 +1943,7 @@
     aspect-ratio: 3 / 4;
     width: 100%;
     max-width: calc(50vw - 15px);
+    margin-bottom: 20px;
   }
 
   .arrival-image {
@@ -1965,6 +1969,7 @@
     font-size: 0.85rem;
     background: #660000 !important;
     border-color: #660000 !important;
+    margin-top: 8px;
   }
 
   .celebrate-title {
@@ -1993,6 +1998,7 @@
     aspect-ratio: 3 / 4;
     width: 100%;
     max-width: calc(50vw - 15px);
+    margin-bottom: 20px;
   }
 
   .gift-product-image {
