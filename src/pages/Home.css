@@ -424,9 +424,10 @@
   background: #fef2f2; 
 }
 
-.add-to-cart {
-  background: #660000; 
-  border-color: #660000;
+.add-to-cart,
+.card-btn.add-to-cart {
+  background: #660000 !important; 
+  border-color: #660000 !important;
   padding: 16px 24px;
   width: 100%;
   max-width: none; 
@@ -439,9 +440,10 @@
   transition: all 0.3s ease;
 }
 
-.add-to-cart:hover { 
-  background: #800000; 
-  border-color: #800000;
+.add-to-cart:hover,
+.card-btn.add-to-cart:hover { 
+  background: #800000 !important; 
+  border-color: #800000 !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(102, 0, 0, 0.3);
 }
@@ -1697,7 +1699,7 @@
 
   .arrivals-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 18px;
     padding-left: 10px;
     padding-right: 10px;
   }
@@ -1750,7 +1752,7 @@
 
   .gift-products-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 18px;
     padding-left: 10px;
     padding-right: 10px;
   }
@@ -1929,7 +1931,7 @@
 
   .arrivals-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 15px;
     padding-left: 8px;
     padding-right: 8px;
   }
@@ -1982,7 +1984,7 @@
 
   .gift-products-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 15px;
     padding-left: 8px;
     padding-right: 8px;
   }
