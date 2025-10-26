@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="footer-section">
             <div className="footer-logo">
               <img 
-                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg" 
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg" 
                 alt="Shanti Silk House Logo" 
                 className="footer-logo-img"
                 loading="eager"

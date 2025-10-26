@@ -75,7 +75,7 @@ const Header = () => {
           {}
         <Link to="/" className="logo">
           <img 
-            src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg" 
+            src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg" 
             alt="Shanti Silk House Logo" 
             className="logo-img"
             loading="eager"
@@ -160,7 +160,7 @@ const Header = () => {
           {}
           <Link to="/" className="mobile-logo">
             <img 
-              src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg" 
+              src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg" 
               alt="Shanti Silk House Logo" 
               className="mobile-logo-img"
               loading="eager"

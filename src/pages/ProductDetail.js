@@ -98,7 +98,7 @@ const ProductDetail = () => {
             <ImageCarousel 
               images={product.images}
               autoPlay={true}
-              interval={1350}
+              interval={2000}
               showThumbnails={true}
               showControls={true}
               className="product-carousel"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import './ImageCarousel.css';
 
-const ImageCarousel = ({ images, autoPlay = true, interval = 1350, showThumbnails = true, showControls = true, className = '' }) => {
+const ImageCarousel = ({ images, autoPlay = true, interval = 2000, showThumbnails = true, showControls = true, className = '' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   // Auto-play functionality
   useEffect(() => {

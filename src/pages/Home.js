@@ -260,9 +260,9 @@ const Home = () => {
                 <div key={product.id} className="arrival-item">
                   <div className="arrival-image">
                     <ImageCarousel 
-                      images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg']}
+                      images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
                       autoPlay={true}
-                      interval={1350}
+                      interval={2000}
                       showThumbnails={false}
                       showControls={false}
                       className="arrival-carousel"
@@ -406,9 +406,9 @@ const Home = () => {
                 <div key={product.id} className="gift-product-card">
                   <div className="gift-product-image">
                     <ImageCarousel 
-                      images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761342080/logo_fmeydv.svg']}
+                      images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
                       autoPlay={true}
-                      interval={1350}
+                      interval={2000}
                       showThumbnails={false}
                       showControls={false}
                       className="gift-product-carousel"

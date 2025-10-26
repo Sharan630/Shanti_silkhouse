@@ -333,6 +333,7 @@
 .product-image-container { 
   flex: 1 1 auto; 
   height: 500px; 
+  overflow: hidden;
 }           
 
 .product-card-carousel {
@@ -342,6 +343,18 @@
 
 .product-card-carousel .carousel-main-image {
   min-height: 500px;
+  animation: imageFadeIn 2s ease-in-out;
+}
+
+@keyframes imageFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .product-info {
@@ -477,7 +490,7 @@
 }
 
 .add-to-cart-btn {
-  background: #051f17; 
+  background: #660000; 
   border: none;
   padding: 16px 24px;
   width: 100%;
@@ -495,9 +508,9 @@
 }
 
 .add-to-cart-btn:hover { 
-  background: #174233; 
+  background: #800000; 
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(5, 31, 23, 0.3);
+  box-shadow: 0 4px 12px rgba(102, 0, 0, 0.3);
 }
 
 .add-to-cart-btn:active {
@@ -730,12 +743,49 @@
   }
   
   .products-grid { 
-    grid-template-columns: repeat(2, 1fr); 
-    padding-left: 0;
-    padding-right: 0;
+    grid-template-columns: 1fr; 
+    gap: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
+  
+  .product-card {
+    position: relative;
+    overflow: visible;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
   .product-image-container { 
-    height: 360px; 
+    height: 400px; 
+  }
+  
+  .product-card-carousel .carousel-main-image {
+    min-height: 400px;
+  }
+  
+  .product-info {
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
+    min-height: 90px;
+    width: 100%;
+    background: white;
+    position: relative;
+  }
+  
+  .product-price {
+    font-size: 1.2rem;
+  }
+  
+  .product-actions-right .icon-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
   }
   
   .floating-actions {
@@ -752,9 +802,48 @@
 @media (max-width: 480px) {
   .products-grid { 
     grid-template-columns: 1fr; 
+    gap: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
+  
+  .product-card {
+    position: relative;
+    overflow: visible;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
   .product-image-container { 
-    height: 420px; 
+    height: 380px; 
+  }
+  
+  .product-card-carousel .carousel-main-image {
+    min-height: 380px;
+  }
+  
+  .product-info {
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
+    min-height: 90px;
+    width: 100%;
+    background: white;
+    position: relative;
+  }
+  
+  .product-price {
+    font-size: 1.1rem;
+  }
+  
+  .product-actions-right .icon-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
   }
   
   .collection-title {

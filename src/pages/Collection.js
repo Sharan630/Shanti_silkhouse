@@ -307,9 +307,9 @@ const Collection = () => {
                 <div key={product.id} className="product-card">
                   <div className="product-image-container">
                     <ImageCarousel 
-                      images={product.images && product.images.length > 0 ? product.images : ['/logos/logo.jpg']}
+                      images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
                       autoPlay={true}
-                      interval={1350}
+                      interval={2000}
                       showThumbnails={false}
                       showControls={false}
                       className="product-card-carousel"
