@@ -333,7 +333,7 @@ const Collection = () => {
                     <div className="product-actions-right">
                       <a
                         className="icon-btn whatsapp"
-                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`Hi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price ? parseFloat(product.price).toLocaleString() : 'N/A'}. Please provide more details.`)}`}
+                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`Hi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price ? parseFloat(product.price).toLocaleString() : 'N/A'}. Here is the saree image: ${(product.image || (product.images && product.images[0]))}. Please provide more details.`)}`}
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Chat on WhatsApp"
