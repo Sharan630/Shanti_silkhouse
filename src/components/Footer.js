@@ -12,12 +12,12 @@ const Footer = () => {
           <div className="footer-section">
             <div className="footer-logo">
               <img 
-                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg" 
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png" 
                 alt="Shanti Silk House Logo" 
                 className="footer-logo-img"
                 loading="eager"
                 onError={(e) => {
-                  console.log('Cloudinary SVG logo failed to load');
+                  console.log('Cloudinary logo failed to load');
                   e.target.style.display = 'none';
                 }}
               />

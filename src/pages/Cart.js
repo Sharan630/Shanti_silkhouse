@@ -125,7 +125,7 @@ const Cart = () => {
                 <div key={item.id} className="cart-item">
                   <div className="item-image">
                     <img 
-                      src={item.images && item.images.length > 0 ? item.images[0] : '/logos/logo.jpg'} 
+                      src={item.images && item.images.length > 0 ? item.images[0] : 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png'} 
                       alt={item.name} 
                     />
                   </div>

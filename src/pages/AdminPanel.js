@@ -299,7 +299,7 @@ const AdminPanel = () => {
           <div className="login-header">
             <div className="login-logo-container">
               <img 
-                src="/logos/logo.jpg" 
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png" 
                 alt="Shanti Silk House Logo" 
                 className="login-logo-img"
                 onError={(e) => {
@@ -351,7 +351,7 @@ const AdminPanel = () => {
         <div className="admin-header-left">
           <div className="admin-logo-container">
             <img 
-              src="/logos/logo.jpg" 
+              src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png" 
               alt="Shanti Silk House Logo" 
               className="admin-logo-img"
               onError={(e) => {

@@ -10,7 +10,7 @@ import './Home.css';
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedPriceFilter, setSelectedPriceFilter] = useState('20k');
+  const [selectedPriceFilter, setSelectedPriceFilter] = useState('10k');
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [message, setMessage] = useState('');
@@ -47,7 +47,7 @@ const Home = () => {
     }
   };
 
-  const fetchCelebrateProducts = async (priceFilter = '20k') => {
+  const fetchCelebrateProducts = async (priceFilter = '10k') => {
     try {
       setLoadingCelebrate(true);
       const response = await axios.get(`/api/products/celebrate?priceFilter=${priceFilter}`);
@@ -376,6 +376,12 @@ const Home = () => {
         <div className="container">
           <h2 className="celebrate-title">CELEBRATE & GIFT SAREES</h2>
           <div className="price-filters">
+            <button className={`price-filter ${selectedPriceFilter === '5k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('5k')}>
+              Under 5k
+            </button>
+            <button className={`price-filter ${selectedPriceFilter === '10k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('10k')}>
+              Under 10k
+            </button>
             <button className={`price-filter ${selectedPriceFilter === '20k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('20k')}>
               Under 20k
             </button>
@@ -384,12 +390,6 @@ const Home = () => {
             </button>
             <button className={`price-filter ${selectedPriceFilter === '40k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('40k')}>
               Under 40k
-            </button>
-            <button className={`price-filter ${selectedPriceFilter === '50k' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('50k')}>
-              Under 50k
-            </button>
-            <button className={`price-filter ${selectedPriceFilter === '1lac' ? 'active' : ''}`} onClick={() => handlePriceFilterChange('1lac')}>
-              Under 1lac
             </button>
           </div>
           <div className="gift-products-grid">
@@ -541,7 +541,7 @@ const Home = () => {
           <div className="about-content">
             <div className="about-image">
               <img 
-                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761340163/Screenshot_2025-10-12_042051_lezwvz.png" 
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761814287/Screenshot_2025-10-30_142049_nl2sci.png" 
                 alt="Shanti Silk House Logo" 
                 loading="lazy"
                 onError={(e) => {

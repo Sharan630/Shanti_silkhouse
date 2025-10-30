@@ -75,14 +75,14 @@ const Header = () => {
           {}
         <Link to="/" className="logo">
           <img 
-            src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg" 
+            src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png" 
             alt="Shanti Silk House Logo" 
             className="logo-img"
             loading="eager"
             style={{display: 'block', minWidth: '100px', minHeight: '40px'}}
             onLoad={() => console.log('Desktop logo loaded successfully')}
             onError={(e) => {
-              console.log('Cloudinary SVG logo failed to load');
+              console.log('Cloudinary logo failed to load');
               e.target.style.display = 'none';
             }}
           />
@@ -160,13 +160,13 @@ const Header = () => {
           {}
           <Link to="/" className="mobile-logo">
             <img 
-              src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg" 
+              src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png" 
               alt="Shanti Silk House Logo" 
               className="mobile-logo-img"
               loading="eager"
               onLoad={() => console.log('Mobile logo loaded successfully')}
               onError={(e) => {
-                console.log('Cloudinary SVG logo failed to load');
+                console.log('Cloudinary logo failed to load');
                 e.target.style.display = 'none';
               }}
             />

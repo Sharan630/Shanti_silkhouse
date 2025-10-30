@@ -64,7 +64,7 @@ const ImageCarousel = ({ images, autoPlay = true, interval = 2000, showThumbnail
             alt="Product" 
             loading="lazy"
             onError={(e) => {
-              e.target.src = '/logos/logo.jpg';
+              e.target.src = 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png';
             }}
           />
         </div>
@@ -85,7 +85,7 @@ const ImageCarousel = ({ images, autoPlay = true, interval = 2000, showThumbnail
               className={`carousel-image ${index === currentIndex ? 'active' : ''}`}
               loading="lazy"
               onError={(e) => {
-                e.target.src = '/logos/logo.jpg';
+                e.target.src = 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png';
               }}
             />
           ))}
@@ -132,7 +132,7 @@ const ImageCarousel = ({ images, autoPlay = true, interval = 2000, showThumbnail
                 alt={`Thumbnail ${index + 1}`}
                 loading="lazy"
                 onError={(e) => {
-                  e.target.src = '/logos/logo.jpg';
+                  e.target.src = 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png';
                 }}
               />
             </button>

@@ -128,6 +128,12 @@ router.get('/celebrate', async (req, res) => {
     if (priceFilter !== 'all') {
       let priceValue;
       switch (priceFilter) {
+        case '5k':
+          priceValue = 5000;
+          break;
+        case '10k':
+          priceValue = 10000;
+          break;
         case '20k':
           priceValue = 20000;
           break;
@@ -136,12 +142,6 @@ router.get('/celebrate', async (req, res) => {
           break;
         case '40k':
           priceValue = 40000;
-          break;
-        case '50k':
-          priceValue = 50000;
-          break;
-        case '1lac':
-          priceValue = 100000;
           break;
         default:
           break;
