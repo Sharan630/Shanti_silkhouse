@@ -71,8 +71,8 @@ const Home = () => {
   const carouselSlides = [
     {
       id: 1,
-      image: "https://cliosilks.com/cdn/shop/files/Untitled-1-2.jpg?v=1739348317&width=2400",
-      position: "center center",
+      image: "https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761847331/WhatsApp_Image_2025-10-30_at_23.18.07_aef543c9_nmetje.jpg",
+      position: "center 8%",
       title: "Premium Silk Collection",
       subtitle: "Handwoven with Love, Crafted for Royalty",
       badge: "New Arrival",
@@ -80,8 +80,8 @@ const Home = () => {
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1618901185975-d59f7091bcfe?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tYW4lMjBpbiUyMHNhcmVlfGVufDB8fDB8fHww",
-      position: "center 35%",
+      image: "https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761847330/WhatsApp_Image_2025-10-30_at_23.18.08_022c8b90_tyau3h.jpg",
+      position: "center 20%",
       title: "Designer Sarees",
       subtitle: "Where Tradition Meets Modern Elegance",
       badge: "Best Seller",
@@ -89,8 +89,8 @@ const Home = () => {
     },
     {
       id: 3,
-      image: "https://zuanas.com/wp-content/uploads/2025/08/c-1-1024x682.jpg",
-      position: "center center",
+      image: "https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761847330/WhatsApp_Image_2025-10-30_at_23.18.08_1662bb9a_jl5kko.jpg",
+      position: "center 1%",
       title: "Bridal Collection",
       subtitle: "Make Your Special Day Unforgettable",
       badge: "Exclusive",
@@ -98,8 +98,8 @@ const Home = () => {
     },
     {
       id: 4,
-      image: "https://img.freepik.com/premium-photo/elegant-fabric-with-floral-design-flowers-wooden-surface_653240-51568.jpg",
-      position: "center center",
+      image: "https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761847330/WhatsApp_Image_2025-10-30_at_23.18.08_03778ade_hhvgrl.jpg",
+      position: "center 5%",
       title: "Traditional Weaves",
       subtitle: "Heritage Craftsmanship at its Finest",
       badge: "Heritage",
@@ -339,7 +339,7 @@ const Home = () => {
           <div className="category-grid">
             <div className="category-card">
               <div className="category-image">
-                <img className="category-img formal" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_a9979924_oz0ydd.jpg" alt="Formal Sarees" loading="lazy" />
+                <img className="category-img formal"  src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.25_78377178_xhcdlv.jpg" alt="Special Occasions Sarees" loading="lazy" />
               </div>
               <div className="category-label">FORMAL</div>
             </div>
@@ -351,19 +351,19 @@ const Home = () => {
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img className="category-img casual" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_912a1562_aus7nx.jpg" alt="Casual Sarees" loading="lazy" />
+                <img className="category-img casual"src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_a9979924_oz0ydd.jpg" alt="Formal Sarees" loading="lazy" />"
               </div>
               <div className="category-label">CASUAL</div>
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img className="category-img traditional" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_577863cb_ruqp76.jpg" alt="Traditional Sarees" loading="lazy" />
+                <img className="category-img traditional" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_912a1562_aus7nx.jpg" alt="Casual Sarees" loading="lazy" />
               </div>
               <div className="category-label">TRADITIONAL</div>
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img className="category-img special" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.25_78377178_xhcdlv.jpg" alt="Special Occasions Sarees" loading="lazy" />
+                <img className="category-img special" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_577863cb_ruqp76.jpg" alt="Traditional Sarees" loading="lazy" />
               </div>
               <div className="category-label">SPECIAL OCCASIONS</div>
             </div>
