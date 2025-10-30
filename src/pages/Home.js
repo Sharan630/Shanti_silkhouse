@@ -459,76 +459,60 @@ const Home = () => {
         <div className="container">
           <h2 className="celebrations-title">STYLED FOR YOUR CELEBRATIONS</h2>
           <div className="celebrations-collage">
-            {}
+            {/* Collage Images (updated to use Cloudinary links) */}
             <div className="collage-image top-left">
-              <img 
-                src="https://images.unsplash.com/photo-1641699862936-be9f49b1c38d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2lsayUyMHNhcmVlfGVufDB8fDB8fHww&fm=jpg&q=60&w=3000" 
-                alt="Three Women in Traditional Sarees" 
-                loading="lazy" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.style.backgroundColor = '#e0e0e0';
-                }}
+              <img
+                 src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839823/WhatsApp_Image_2025-10-30_at_21.22.30_bc24e22f_e2mrff.jpg"
+                alt="Styled Saree - Top Left"
+                loading="lazy"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.backgroundColor = '#e0e0e0'; }}
               />
             </div>
             <div className="collage-image top-center">
-              <img 
-                src="https://m.media-amazon.com/images/I/61LCZqnH4vL._UY1100_.jpg" 
-                alt="Woman in Green Saree on Stairs" 
-                loading="lazy" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.style.backgroundColor = '#e0e0e0';
-                }}
+              <img
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839823/WhatsApp_Image_2025-10-30_at_21.22.31_eb04a1b8_hfjpk3.jpg"
+                alt="Styled Saree - Top Center"
+                loading="lazy"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.backgroundColor = '#e0e0e0'; }}
               />
             </div>
             <div className="collage-image top-right">
-              <img 
-                src="https://5.imimg.com/data5/SELLER/Default/2021/9/BH/RR/QD/135844775/whatsapp-image-2021-09-04-at-17-51-28.jpeg" 
-                alt="Woman in Light Saree with Patterns" 
-                loading="lazy" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.style.backgroundColor = '#e0e0e0';
-                }}
+              <img
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839823/WhatsApp_Image_2025-10-30_at_21.22.31_adc8123f_vhgkbg.jpg"
+                alt="Styled Saree - Top Right"
+                loading="lazy"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.backgroundColor = '#e0e0e0'; }}
               />
             </div>
-            
-            {}
             <div className="collage-image middle-left">
-              <img 
-                src="https://images.unsplash.com/photo-1618901185975-d59f7091bcfe?fm=jpg&q=80&w=400&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tYW4lMjBpbiUyMHNhcmVlfGVufDB8fDB8fHww" 
-                alt="Woman in Golden Saree" 
-                loading="lazy" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.style.backgroundColor = '#e0e0e0';
-                }}
+              <img
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839823/WhatsApp_Image_2025-10-30_at_21.22.32_44cd13d3_rnrt65.jpg"
+                alt="Styled Saree - Middle Left"
+                loading="lazy"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.backgroundColor = '#e0e0e0'; }}
               />
             </div>
             <div className="collage-image center-focal">
-              <img 
-                src="https://cliosilks.com/cdn/shop/files/Cliojune_250082-4.jpg?v=1754382236&width=3072" 
-                alt="Woman with Colorful Saree - Central Focal" 
-                loading="lazy" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.style.backgroundColor = '#e0e0e0';
-                }}
+              <img
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839824/WhatsApp_Image_2025-10-30_at_21.22.33_b79bb662_ljepcr.jpg"
+                alt="Styled Saree - Center Focal"
+                loading="lazy"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.backgroundColor = '#e0e0e0'; }}
               />
             </div>
-            {}
             <div className="collage-image bottom-left">
-              <img 
-                src="https://www.stylesgap.com/wp-content/uploads/2019/11/Indian-Wedding-Formal-Saree-Latest-Designs-18.jpg" 
-                alt="Woman with Fruits" 
-                loading="lazy" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.style.backgroundColor = '#e0e0e0';
-                }}
+              <img
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839823/WhatsApp_Image_2025-10-30_at_21.22.32_c04e8ef1_wo0qvk.jpg"
+                alt="Styled Saree - Bottom Left"
+                loading="lazy"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.backgroundColor = '#e0e0e0'; }}
               />
-              
             </div>
           </div>
         </div>
