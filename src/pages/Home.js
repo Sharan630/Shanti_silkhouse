@@ -339,31 +339,31 @@ const Home = () => {
           <div className="category-grid">
             <div className="category-card">
               <div className="category-image">
-                <img src="https://swtantra.com/cdn/shop/articles/WhatsApp_Image_2021-03-04_at_12.59.28_PM.jpg?v=1615369851&width=2048" alt="Formal Sarees" loading="lazy" />
+                <img className="category-img formal" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_a9979924_oz0ydd.jpg" alt="Formal Sarees" loading="lazy" />
               </div>
               <div className="category-label">FORMAL</div>
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img src="https://cdn.shopify.com/s/files/1/0049/3649/9315/files/koskii-beige-stonework-georgette-designer-saree-saus0040039_beige_1_4_large.jpg?v=1748425051" alt="Party Sarees" loading="lazy" />
+                <img className="category-img party" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.25_7b5df568_facggo.jpg" alt="Party Sarees" loading="lazy" />
               </div>
               <div className="category-label">PARTY</div>
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img src="https://yuvti.co.in/cdn/shop/files/2_710522df-d28e-446f-8b19-8686e257c0e6.jpg?v=1692789305&width=2048" alt="Casual Sarees" loading="lazy" />
+                <img className="category-img casual" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_912a1562_aus7nx.jpg" alt="Casual Sarees" loading="lazy" />
               </div>
               <div className="category-label">CASUAL</div>
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img src="https://i.pinimg.com/736x/aa/01/7b/aa017b415ae2bec923e2cfa834b8b8d1.jpg" alt="Traditional Sarees" loading="lazy" />
+                <img className="category-img traditional" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_577863cb_ruqp76.jpg" alt="Traditional Sarees" loading="lazy" />
               </div>
               <div className="category-label">TRADITIONAL</div>
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img src="https://images.unsplash.com/photo-1618901185975-d59f7091bcfe?fm=jpg&q=60&w=500&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d29tYW4lMjBpbiUyMHNhcmVlfGVufDB8fDB8fHww" alt="Special Occasions Sarees" loading="lazy" />
+                <img className="category-img special" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.25_78377178_xhcdlv.jpg" alt="Special Occasions Sarees" loading="lazy" />
               </div>
               <div className="category-label">SPECIAL OCCASIONS</div>
             </div>
