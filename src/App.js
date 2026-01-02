@@ -16,6 +16,10 @@ import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import RefundPolicy from './pages/RefundPolicy';
+import ShippingPolicy from './pages/ShippingPolicy';
 import './App.css';
 
 function App() {
@@ -38,6 +42,10 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/policies/terms-of-service" element={<TermsOfService />} />
+                <Route path="/policies/refund-policy" element={<RefundPolicy />} />
+                <Route path="/policies/shipping-policy" element={<ShippingPolicy />} />
               </Routes>
             </main>
             <Footer />

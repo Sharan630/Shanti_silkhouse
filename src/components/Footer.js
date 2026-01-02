@@ -86,9 +86,10 @@ const Footer = () => {
           <div className="footer-bottom-content">
             <p>&copy; 2025 Shanti Silk House. All rights reserved.</p>
             <div className="footer-bottom-links">
-              <a href="/#about">Privacy Policy</a>
-              <a href="/#about">Terms of Service</a>
-              <a href="/#about">Shipping Policy</a>
+              <Link to="/policies/privacy-policy" className="footer-link">Privacy Policy</Link>
+              <Link to="/policies/terms-of-service" className="footer-link">Terms of Service</Link>
+              <Link to="/policies/refund-policy" className="footer-link">Refund & Return Policy</Link>
+              <Link to="/policies/shipping-policy" className="footer-link">Shipping Policy</Link>
             </div>
           </div>
         </div>
