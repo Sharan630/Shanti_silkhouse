@@ -51,7 +51,7 @@ const Header = () => {
       } else if (searchTerm.includes('bridal') || searchTerm.includes('wedding') || searchTerm.includes('bride') || searchTerm.includes('marriage')) {
         navigate('/collection/bridal-sarees');
       } else if (searchTerm.includes('cotton') || searchTerm.includes('cotton saree')) {
-        navigate('/collection/silk-sarees'); // Default to silk for cotton searches
+        navigate('/collection/silk-sarees'); 
       } else if (searchTerm.includes('georgette') || searchTerm.includes('chiffon')) {
         navigate('/collection/designer-sarees');
       } else {

@@ -80,6 +80,17 @@ const Footer = () => {
               </div>
             </div>
           </div>
+
+          {}
+          <div className="footer-section">
+            <h4>USER POLICY</h4>
+            <ul className="footer-links">
+              <li><Link to="/policies/privacy-policy" className="footer-link">Privacy Policy</Link></li>
+              <li><Link to="/policies/terms-of-service" className="footer-link">Terms of Service</Link></li>
+              <li><Link to="/policies/refund-policy" className="footer-link">Refund & Return Policy</Link></li>
+              <li><Link to="/policies/shipping-policy" className="footer-link">Shipping Policy</Link></li>
+            </ul>
+          </div>
         </div>
 
         <div className="footer-bottom">
