@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiFilter, FiGrid, FiList, FiStar, FiHeart, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
@@ -8,6 +8,7 @@ import axios from 'axios';
 import './ProductList.css';
 
 const ProductList = () => {
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('featured');
   const [priceRange, setPriceRange] = useState([0, 100000]);
@@ -227,7 +228,7 @@ const ProductList = () => {
             {}
             <div className={`products-container ${viewMode}`}>
               {products.map(product => (
-                <div key={product.id} className="product-item">
+                <div key={product.id} className="product-item" onClick={() => navigate(`/product/${product.id}`)} style={{ cursor: 'pointer' }}>
                   <div className="product-image">
                     <img src={product.image} alt={product.name} />
                     <div className="product-actions">
@@ -238,17 +239,18 @@ const ProductList = () => {
                         rel="noreferrer"
                         aria-label="Chat on WhatsApp"
                         title="Chat on WhatsApp"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <FaWhatsapp />
                       </a>
-                      <button className="action-btn wishlist" type="button" aria-label="Add to wishlist">
+                      <button className="action-btn wishlist" type="button" aria-label="Add to wishlist" onClick={(e) => e.stopPropagation()}>
                         <FiHeart />
                       </button>
                       <button 
                         className="action-btn cart" 
                         type="button" 
                         aria-label="Add to cart"
-                        onClick={() => handleAddToCart(product)}
+                        onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
                       >
                         <FiShoppingCart />
                       </button>
@@ -257,7 +259,7 @@ const ProductList = () => {
                           className="action-btn delete" 
                           type="button" 
                           aria-label="Delete product"
-                          onClick={() => handleDeleteProduct(product.id)}
+                          onClick={(e) => { e.stopPropagation(); handleDeleteProduct(product.id); }}
                           title="Delete product (Admin only)"
                         >
                           <FiTrash2 />
@@ -268,7 +270,7 @@ const ProductList = () => {
                       <span>Sale</span>
                     </div>
                   </div>
-                  <div className="product-info">
+                  <div className="product-info" onClick={(e) => e.stopPropagation()}>
                     <h3>{product.name}</h3>
                     <div className="product-rating">
                       <div className="stars">

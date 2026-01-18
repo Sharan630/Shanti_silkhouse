@@ -18,7 +18,7 @@ const RefundPolicy = () => {
           <section>
             <h2>Our Commitment to Your Satisfaction</h2>
             <p>
-              At Shnatisilks, we want you to be completely satisfied with your purchase. We understand that sometimes products may not meet your expectations, and we have established a clear and fair refund and return policy to address your concerns.
+              At ShantiSilks, we want you to be completely satisfied with your purchase. We understand that sometimes products may not meet your expectations, and we have established a clear and fair refund and return policy to address your concerns.
             </p>
           </section>
 
@@ -43,7 +43,7 @@ const RefundPolicy = () => {
               To initiate a return, please follow these steps:
             </p>
             <ol>
-              <li>Contact our customer service team at help@shnatisilks.com or call us at +91 90664 14414 with your order number.</li>
+              <li>Contact our customer service team at help@ShantiSilks.com or call us at +91 90664 14414 with your order number.</li>
               <li>Provide a reason for the return and, if applicable, photos of the item showing any defects or issues.</li>
               <li>Our team will review your request and provide you with a Return Authorization (RA) number and return instructions.</li>
               <li>Pack the item securely in its original packaging (if available) and include the RA number on the package.</li>
@@ -117,7 +117,7 @@ const RefundPolicy = () => {
               If you have any questions about our Refund & Return Policy, please contact us:
             </p>
             <ul>
-              <li>Email: help@shnatisilks.com</li>
+              <li>Email: help@ShantiSilks.com</li>
               <li>Phone: +91 90664 14414</li>
               <li>Address: 3H5Q+X3C, 1st Main Rd, CQAL Layout, Sahakar Nagar, Byatarayanapura, Bengaluru, Karnataka</li>
             </ul>

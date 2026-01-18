@@ -63,7 +63,7 @@ const Cart = () => {
       <div className="container">
         {}
         <div className="page-header">
-          <Link to="/products" className="back-btn">
+          <Link to="/collection/silk-sarees" className="back-btn">
             <FiArrowLeft />
             Continue Shopping
           </Link>
@@ -86,7 +86,7 @@ const Cart = () => {
             <FiShoppingBag className="empty-icon" />
             <h2>Your cart is empty</h2>
             <p>Looks like you haven't added any items to your cart yet.</p>
-            <Link to="/products" className="btn-primary">
+            <Link to="/collection/silk-sarees" className="btn-primary">
               Start Shopping
             </Link>
           </div>
@@ -182,7 +182,7 @@ const Cart = () => {
               >
                 {user ? "CHECKOUT" : "LOGIN TO CHECKOUT"}
               </Link>
-              <Link to="/products" className="view-cart-btn">
+              <Link to="/collection/silk-sarees" className="view-cart-btn">
                 CONTINUE SHOPPING
               </Link>
             </div>

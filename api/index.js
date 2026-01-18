@@ -13,12 +13,14 @@ const productRoutes = require('./products');
 const adminRoutes = require('./admin');
 const uploadRoutes = require('./upload');
 const cartRoutes = require('./cart');
+const ordersRoutes = require('./orders');
 const testRoutes = require('./test');
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', ordersRoutes);
 app.use('/api/test', testRoutes);
 
 app.get('/api/health', (req, res) => {

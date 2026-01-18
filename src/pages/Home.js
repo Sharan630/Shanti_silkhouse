@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiArrowRight, FiStar, FiTruck, FiShield, FiHeart, FiChevronLeft, FiChevronRight, FiShare2, FiArrowUp, FiVideo, FiMessageCircle } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
@@ -9,6 +9,7 @@ import axios from 'axios';
 import './Home.css';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedPriceFilter, setSelectedPriceFilter] = useState('10k');
   const { addToCart } = useCart();
@@ -257,7 +258,12 @@ const Home = () => {
           ) : (
             <div className="arrivals-grid">
               {newArrivals.map(product => (
-                <div key={product.id} className="arrival-item">
+                <div 
+                  key={product.id} 
+                  className="arrival-item"
+                  onClick={() => navigate(`/product/${product.id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="arrival-image">
                     <ImageCarousel 
                       images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
@@ -279,13 +285,17 @@ const Home = () => {
                           rel="noreferrer"
                           aria-label="Chat on WhatsApp"
                           title="Chat on WhatsApp"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <FaWhatsapp />
                         </a>
                         <button 
                           type="button" 
                           className={`icon-btn like ${isInWishlist(product.id) ? 'liked' : ''}`}
-                          onClick={() => toggleWishlist(product)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleWishlist(product);
+                          }}
                           aria-label="Add to wishlist" 
                           title="Add to wishlist"
                         >
@@ -296,7 +306,10 @@ const Home = () => {
                     <button 
                       type="button" 
                       className="btn-primary card-btn add-to-cart"
-                      onClick={() => handleAddToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
                     >
                       ADD TO CART
                     </button>
@@ -403,7 +416,7 @@ const Home = () => {
               </div>
             ) : (
               celebrateProducts.slice(0, 8).map(product => (
-                <div key={product.id} className="gift-product-card">
+                <div key={product.id} className="gift-product-card" onClick={() => navigate(`/product/${product.id}`)} style={{ cursor: 'pointer' }}>
                   <div className="gift-product-image">
                     <ImageCarousel 
                       images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
@@ -425,13 +438,14 @@ const Home = () => {
                           rel="noreferrer"
                           aria-label="Chat on WhatsApp"
                           title="Chat on WhatsApp"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <FaWhatsapp />
                         </a>
                         <button 
                           type="button" 
                           className={`icon-btn like ${isInWishlist(product.id) ? 'liked' : ''}`}
-                          onClick={() => toggleWishlist(product)}
+                          onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
                           aria-label="Add to wishlist" 
                           title="Add to wishlist"
                         >
@@ -442,7 +456,7 @@ const Home = () => {
                     <button 
                       type="button" 
                       className="btn-primary card-btn add-to-cart"
-                      onClick={() => handleAddToCart(product)}
+                      onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
                     >
                       ADD TO CART
                     </button>

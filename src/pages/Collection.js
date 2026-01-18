@@ -304,7 +304,7 @@ const Collection = () => {
               </div>
             ) : (
               filteredProducts.map(product => (
-                <div key={product.id} className="product-card">
+                <div key={product.id} className="product-card" onClick={() => navigate(`/product/${product.id}`)} style={{ cursor: 'pointer' }}>
                   <div className="product-image-container">
                     <ImageCarousel 
                       images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
@@ -338,13 +338,14 @@ const Collection = () => {
                         rel="noreferrer"
                         aria-label="Chat on WhatsApp"
                         title="Chat on WhatsApp"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <FaWhatsapp />
                       </a>
                       <button 
                         type="button" 
                         className={`icon-btn like ${isInWishlist(product.id) ? 'liked' : ''}`}
-                        onClick={() => toggleWishlist(product)}
+                        onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
                         aria-label="Add to wishlist" 
                         title="Add to wishlist"
                       >
@@ -352,14 +353,14 @@ const Collection = () => {
                       </button>
                     </div>
                     {product.stock_quantity === 0 ? (
-                      <button className="add-to-cart-btn out-of-stock" disabled>
+                      <button className="add-to-cart-btn out-of-stock" disabled onClick={(e) => e.stopPropagation()}>
                         OUT OF STOCK
                       </button>
                     ) : (
                       <button 
                         type="button" 
                         className="add-to-cart-btn"
-                        onClick={() => handleAddToCart(product)}
+                        onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
                       >
                         ADD TO CART
                       </button>

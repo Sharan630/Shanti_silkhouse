@@ -16,7 +16,7 @@ const TermsOfService = () => {
           <h1>Terms of service</h1>
           
           <section>
-            <h2>Welcome to Shnatisilks: Your Guide to Our Site</h2>
+            <h2>Welcome to ShantiSilks: Your Guide to Our Site</h2>
             <p>
               By browsing and using our website, you agree to these Terms and Conditions and our Privacy Policy. They outline our relationship with you, the user, as the owner of the website. Your use of this website is subject to the following:
             </p>
@@ -63,7 +63,7 @@ const TermsOfService = () => {
           <section>
             <h2>Pricing and Payment</h2>
             <p>
-              All prices listed on our website are in the currency specified and are subject to change without notice. Shnatisilks has the right to refuse or cancel any orders for that product (unless it's already dispatched).
+              All prices listed on our website are in the currency specified and are subject to change without notice. ShantiSilks has the right to refuse or cancel any orders for that product (unless it's already dispatched).
             </p>
             <p>
               In such cases, we may contact you for instructions or cancel your order and notify you.
@@ -89,7 +89,7 @@ const TermsOfService = () => {
           <section>
             <h2>Legal Jurisdiction</h2>
             <p>
-              This User Agreement is governed by the laws of India. Any disputes arising from transactions on the Shnatisilks website will be settled in the courts of Chennai.
+              This User Agreement is governed by the laws of India. Any disputes arising from transactions on the ShantiSilks website will be settled in the courts of Chennai.
             </p>
           </section>
 
@@ -99,7 +99,7 @@ const TermsOfService = () => {
               <li><strong>Chat Records:</strong> Conversations on our chat window may be recorded and used as proof.</li>
               <li><strong>No Abusive Language:</strong> Please use respectful language in chat.</li>
               <li><strong>No Cross-Selling/Advice:</strong> The chat window is for resolving basic issues related to buying our products, not for cross-selling, solicitation, or investment advice.</li>
-              <li><strong>Service Discontinuation:</strong> Shnatisilks can discontinue the chat facility at any time, at its own discretion.</li>
+              <li><strong>Service Discontinuation:</strong> ShantiSilks can discontinue the chat facility at any time, at its own discretion.</li>
             </ul>
           </section>
         </div>

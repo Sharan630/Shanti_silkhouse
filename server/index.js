@@ -7,6 +7,7 @@ const productRoutes = require('./routes/products');
 const adminRoutes = require('./routes/admin');
 const uploadRoutes = require('./routes/upload');
 const cartRoutes = require('./routes/cart');
+const ordersRoutes = require('./routes/orders');
 const { initializeDatabase } = require('./models/database');
 const envPath = path.join(__dirname, 'config.env');
 dotenv.config({ path: envPath });
@@ -25,6 +26,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', ordersRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running!' });
 });

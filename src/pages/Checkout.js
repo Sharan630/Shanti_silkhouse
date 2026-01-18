@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiMail, FiPhone, FiMapPin, FiCreditCard, FiLock, FiCheck } from 'react-icons/fi';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 import './Checkout.css';
 
 const Checkout = () => {
+  const navigate = useNavigate();
+  const { cartItems, getCartTotals, loading: cartLoading, clearCart } = useCart();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -15,29 +21,76 @@ const Checkout = () => {
     zipCode: '',
     paymentMethod: 'card'
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
-  const [orderSummary] = useState({
-    items: [
-      { name: "Royal Silk Saree", price: 25000, quantity: 1 },
-      { name: "Designer Cotton Saree", price: 12000, quantity: 2 },
-      { name: "Party Wear Saree", price: 18000, quantity: 1 }
-    ],
-    subtotal: 67000,
-    shipping: 0,
-    total: 67000
-  });
+  // Get real cart totals
+  const orderSummary = getCartTotals();
+
+  // Pre-fill form with user data if available
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        email: user.email || '',
+        firstName: user.firstName || user.first_name || '',
+        lastName: user.lastName || user.last_name || '',
+        phone: user.phone || ''
+      }));
+    }
+  }, [user]);
+
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (!cartLoading && cartItems.length === 0) {
+      navigate('/cart');
+    }
+  }, [cartItems, cartLoading, navigate]);
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setMessage('');
 
-    console.log('Order submitted:', formData);
+    if (!user) {
+      setError('Please log in to place an order');
+      setTimeout(() => navigate('/login'), 2000);
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      setError('Your cart is empty');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      const response = await axios.post('/api/orders', formData);
+      
+      setMessage(response.data.message || 'Order placed successfully!');
+      
+      // Clear cart after successful order
+      await clearCart();
+      
+      // Redirect to home or order confirmation page after a delay
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Failed to place order. Please try again.';
+      setError(errorMessage);
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -266,9 +319,37 @@ const Checkout = () => {
               </div>
 
               {}
-              <button type="submit" className="btn-primary place-order-btn">
+              {error && (
+                <div style={{ 
+                  padding: '15px', 
+                  background: '#fee', 
+                  color: '#c33', 
+                  borderRadius: '8px', 
+                  marginBottom: '20px' 
+                }}>
+                  {error}
+                </div>
+              )}
+              
+              {message && (
+                <div style={{ 
+                  padding: '15px', 
+                  background: '#efe', 
+                  color: '#3c3', 
+                  borderRadius: '8px', 
+                  marginBottom: '20px' 
+                }}>
+                  {message}
+                </div>
+              )}
+
+              <button 
+                type="submit" 
+                className="btn-primary place-order-btn"
+                disabled={submitting || cartItems.length === 0}
+              >
                 <FiCheck />
-                Place Order - ₹{orderSummary.total.toLocaleString()}
+                {submitting ? 'Placing Order...' : `Place Order - ₹${orderSummary.total.toLocaleString()}`}
               </button>
             </form>
           </div>
@@ -278,34 +359,51 @@ const Checkout = () => {
             <div className="order-summary">
               <h2>Order Summary</h2>
               
-              <div className="order-items">
-                {orderSummary.items.map((item, index) => (
-                  <div key={index} className="order-item">
-                    <div className="item-info">
-                      <h4>{item.name}</h4>
-                      <span>Qty: {item.quantity}</span>
+              {cartLoading ? (
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <p>Loading cart...</p>
+                </div>
+              ) : cartItems.length === 0 ? (
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <p>Your cart is empty</p>
+                  <Link to="/collection/silk-sarees" className="btn-primary" style={{ marginTop: '15px', display: 'inline-block' }}>
+                    Continue Shopping
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <div className="order-items">
+                    {cartItems.map((item) => (
+                      <div key={item.id} className="order-item">
+                        <div className="item-info">
+                          <h4>{item.name || 'Product'}</h4>
+                          <span>Qty: {item.quantity}</span>
+                        </div>
+                        <div className="item-price">
+                          ₹{((item.price || 0) * item.quantity).toLocaleString()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="order-totals">
+                    <div className="total-row">
+                      <span>Subtotal</span>
+                      <span>₹{orderSummary.subtotal.toLocaleString()}</span>
                     </div>
-                    <div className="item-price">
-                      ₹{(item.price * item.quantity).toLocaleString()}
+                    <div className="total-row">
+                      <span>Shipping</span>
+                      <span className={orderSummary.shipping === 0 ? "free-shipping" : ""}>
+                        {orderSummary.shipping === 0 ? "FREE" : `₹${orderSummary.shipping.toLocaleString()}`}
+                      </span>
+                    </div>
+                    <div className="total-row total">
+                      <span>Total</span>
+                      <span>₹{orderSummary.total.toLocaleString()}</span>
                     </div>
                   </div>
-                ))}
-              </div>
-
-              <div className="order-totals">
-                <div className="total-row">
-                  <span>Subtotal</span>
-                  <span>₹{orderSummary.subtotal.toLocaleString()}</span>
-                </div>
-                <div className="total-row">
-                  <span>Shipping</span>
-                  <span className="free-shipping">FREE</span>
-                </div>
-                <div className="total-row total">
-                  <span>Total</span>
-                  <span>₹{orderSummary.total.toLocaleString()}</span>
-                </div>
-              </div>
+                </>
+              )}
 
               <div className="order-features">
                 <div className="feature">

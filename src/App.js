@@ -6,8 +6,8 @@ import { WishlistProvider } from './contexts/WishlistContext';
 import Marquee from './components/Marquee';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
-import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import Collection from './pages/Collection';
 import Cart from './pages/Cart';
@@ -27,13 +27,13 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
+          <ScrollToTop />
           <div className="App">
             <Marquee />
             <Header />
             <main>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/products" element={<ProductList />} />
                 <Route path="/collection/:collectionName" element={<Collection />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />

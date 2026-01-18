@@ -92,7 +92,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           ) : cartItems.length === 0 ? (
             <div className="cart-empty">
               <p>Your cart is empty</p>
-              <Link to="/products" className="btn-secondary" onClick={onClose}>
+              <Link to="/collection/silk-sarees" className="btn-secondary" onClick={onClose}>
                 Continue Shopping
               </Link>
             </div>

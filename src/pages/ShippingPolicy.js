@@ -18,7 +18,7 @@ const ShippingPolicy = () => {
           <section>
             <h2>Shipping Information</h2>
             <p>
-              At Shnatisilks, we are committed to delivering your orders safely and on time. This Shipping Policy outlines our shipping methods, timelines, and terms to ensure a smooth delivery experience.
+              At ShantiSilks, we are committed to delivering your orders safely and on time. This Shipping Policy outlines our shipping methods, timelines, and terms to ensure a smooth delivery experience.
             </p>
           </section>
 
@@ -102,7 +102,7 @@ const ShippingPolicy = () => {
               <li>Restrictions in the delivery area</li>
             </ul>
             <p>
-              If you need to change your delivery address after placing an order, please contact us immediately at help@shnatisilks.com or call +91 90664 14414. Address changes can only be made before the order is dispatched.
+              If you need to change your delivery address after placing an order, please contact us immediately at help@ShantiSilks.com or call +91 90664 14414. Address changes can only be made before the order is dispatched.
             </p>
           </section>
 
@@ -148,7 +148,7 @@ const ShippingPolicy = () => {
           <section>
             <h2>International Shipping</h2>
             <p>
-              International shipping is currently not available. We are working on expanding our services to international customers. Please contact us at help@shnatisilks.com for updates on international shipping availability.
+              International shipping is currently not available. We are working on expanding our services to international customers. Please contact us at help@ShantiSilks.com for updates on international shipping availability.
             </p>
           </section>
 
@@ -168,7 +168,7 @@ const ShippingPolicy = () => {
               If you have any questions or concerns about shipping, please contact us:
             </p>
             <ul>
-              <li>Email: help@shnatisilks.com</li>
+              <li>Email: help@ShantiSilks.com</li>
               <li>Phone: +91 90664 14414</li>
               <li>Address: 3H5Q+X3C, 1st Main Rd, CQAL Layout, Sahakar Nagar, Byatarayanapura, Bengaluru, Karnataka</li>
             </ul>
