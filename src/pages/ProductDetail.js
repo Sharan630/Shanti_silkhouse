@@ -285,7 +285,7 @@ const ProductDetail = () => {
           <div className="product-images">
             <ImageCarousel 
               images={product.images}
-              autoPlay={true}
+              autoPlay={false}
               interval={2000}
               showThumbnails={true}
               showControls={true}
