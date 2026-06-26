@@ -14,7 +14,8 @@ const AdminPanel = () => {
   const { admin, adminLogin, logout } = useAuth();
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [loading, setLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [dashboardData, setDashboardData] = useState({
@@ -98,7 +99,7 @@ const AdminPanel = () => {
   };
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setSubmitLoading(true);
     setError('');
 
     try {
@@ -133,12 +134,12 @@ const AdminPanel = () => {
     } catch (error) {
       setError(error.response?.data?.message || 'Error saving product');
     }
-    setLoading(false);
+    setSubmitLoading(false);
   };
   const handleImageUpload = async (files) => {
     if (!files || files.length === 0) return;
     
-    setLoading(true);
+    setUploadLoading(true);
     setError('');
     
     const formData = new FormData();
@@ -178,7 +179,7 @@ const AdminPanel = () => {
         setError('Error uploading images. Please try again.');
       }
     } finally {
-      setLoading(false);
+      setUploadLoading(false);
     }
   };
   const removeImage = (index) => {
@@ -799,9 +800,9 @@ const AdminPanel = () => {
                   accept="image/*"
                   onChange={(e) => handleImageUpload(e.target.files)}
                   className="file-input"
-                  disabled={loading}
+                  disabled={uploadLoading}
                 />
-                {loading && (
+                {uploadLoading && (
                   <div style={{ marginTop: '10px', color: '#d4af37', fontWeight: '600' }}>
                     Uploading images... Please wait.
                   </div>
@@ -826,8 +827,8 @@ const AdminPanel = () => {
               </div>
 
               <div className="form-actions">
-                <button type="submit" disabled={loading} className="btn-primary">
-                  {loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
+                <button type="submit" disabled={submitLoading} className="btn-primary">
+                  {submitLoading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
                 </button>
                 {editingProduct && (
                   <button

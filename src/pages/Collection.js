@@ -309,7 +309,7 @@ const Collection = () => {
                     <ImageCarousel 
                       images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
                       autoPlay={true}
-                      interval={2000}
+                      interval={4000}
                       showThumbnails={false}
                       showControls={false}
                       className="product-card-carousel"
