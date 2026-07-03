@@ -6,7 +6,8 @@ import {
   FiEye, FiSearch, FiFilter,
   FiDownload, FiUpload, FiSettings, FiBarChart2,
   FiPackage, FiTruck, FiCheckCircle, FiXCircle,
-  FiPlus, FiRefreshCw, FiCalendar, FiClock
+  FiPlus, FiRefreshCw, FiCalendar, FiClock,
+  FiMail, FiLock
 } from 'react-icons/fi';
 import './AdminPanel.css';
 
@@ -16,6 +17,7 @@ const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [uploadLoading, setUploadLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [dashboardData, setDashboardData] = useState({
@@ -318,23 +320,29 @@ const AdminPanel = () => {
             {error && <div className="error-message">{error}</div>}
             <div className="form-group">
               <label>Email</label>
-              <input
-                type="email"
-                value={loginData.email}
-                onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                required
-                placeholder="admin@saree.com"
-              />
+              <div className="input-wrapper">
+                <FiMail className="input-icon" />
+                <input
+                  type="email"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                  required
+                  placeholder="admin@saree.com"
+                />
+              </div>
             </div>
             <div className="form-group">
               <label>Password</label>
-              <input
-                type="password"
-                value={loginData.password}
-                onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                required
-                placeholder="Enter your password"
-              />
+              <div className="input-wrapper">
+                <FiLock className="input-icon" />
+                <input
+                  type="password"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                  required
+                  placeholder="Enter your password"
+                />
+              </div>
             </div>
             <button type="submit" disabled={loading} className="login-btn">
               {loading ? 'Logging in...' : 'Login'}

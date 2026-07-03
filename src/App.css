@@ -22,6 +22,10 @@ main {
   animation: slideUp 0.8s ease-out;
 }
 
+main.admin-main {
+  margin-top: 0;
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;

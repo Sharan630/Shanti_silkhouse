@@ -22,11 +22,11 @@ const Home = () => {
 
   const handleAddToCart = async (product) => {
     const result = await addToCart(product.id, 1, null, null, product);
-    
+
     if (result.success) {
       setMessage('Item added to cart successfully!');
       setTimeout(() => setMessage(''), 3000);
-      
+
       window.dispatchEvent(new CustomEvent('openCartSidebar'));
     } else {
       setMessage(result.message);
@@ -52,13 +52,13 @@ const Home = () => {
     try {
       setLoadingCelebrate(true);
       const response = await axios.get(`/api/products/celebrate?priceFilter=${priceFilter}`);
-      
+
       const products = response.data.products || [];
       console.log(`Received ${products.length} products from API`);
-      
+
       const limitedProducts = products.slice(0, 8);
       console.log(`Setting ${limitedProducts.length} products in state`);
-      
+
       setCelebrateProducts(limitedProducts);
     } catch (error) {
       console.error('Error fetching celebrate products:', error);
@@ -119,7 +119,7 @@ const Home = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => 
+      setCurrentSlide((prevSlide) =>
         prevSlide === carouselSlides.length - 1 ? 0 : prevSlide + 1
       );
     }, 5000);
@@ -176,14 +176,14 @@ const Home = () => {
 
   return (
     <div className="home">
-      {}
+      { }
       {message && (
         <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
           {message}
         </div>
       )}
-      
-      {}
+
+      { }
       <div className="side-utilities">
         <button className="utility-btn" title="Share" type="button" aria-label="Share this page">
           <FiShare2 />
@@ -199,15 +199,15 @@ const Home = () => {
         </button>
       </div>
 
-      {}
+      { }
       <section className="carousel-section">
         <div className="carousel-container">
           <div className="carousel-slides" style={{ transform: `translateX(-${currentSlide * 20}%)` }}>
             {carouselSlides.map((slide, index) => (
               <div key={slide.id} className="carousel-slide">
                 <div className="slide-image">
-                  <img 
-                    src={slide.image} 
+                  <img
+                    src={slide.image}
                     alt={slide.title}
                     loading={index === 0 ? "eager" : "lazy"}
                     style={{ objectPosition: slide.position || 'center center' }}
@@ -215,21 +215,21 @@ const Home = () => {
                       e.target.style.display = 'none';
                     }}
                   />
-                 
+
                 </div>
               </div>
             ))}
           </div>
-          
-          {}
+
+          { }
           <button className="carousel-nav prev" type="button" aria-label="Previous slide" onClick={prevSlide}>
             <FiChevronLeft />
           </button>
           <button className="carousel-nav next" type="button" aria-label="Next slide" onClick={nextSlide}>
             <FiChevronRight />
           </button>
-          
-          {}
+
+          { }
           <div className="carousel-dots">
             {carouselSlides.map((_, index) => (
               <button
@@ -258,14 +258,14 @@ const Home = () => {
           ) : (
             <div className="arrivals-grid">
               {newArrivals.map(product => (
-                <div 
-                  key={product.id} 
+                <div
+                  key={product.id}
                   className="arrival-item"
                   onClick={() => navigate(`/product/${product.id}`)}
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="arrival-image">
-                    <ImageCarousel 
+                    <ImageCarousel
                       images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
                       autoPlay={true}
                       interval={4000}
@@ -275,12 +275,17 @@ const Home = () => {
                     />
                   </div>
                   <div className="arrival-info">
-                    <div className="arrival-top">
-                      <div className="arrival-price">₹{product.price.toLocaleString()}</div>
+                    <div className="arrival-title">{product.name || 'Silk Saree'}</div>
+                    <div className="arrival-price">₹{product.price.toLocaleString()}</div>
+                    <div className="arrival-actions-wrapper">
                       <div className="arrival-actions">
                         <a
                           className="icon-btn whatsapp"
-                          href={`https://wa.me/919591128327?text=${encodeURIComponent('Hi! I am interested in ' + product.name + ' priced at ₹' + product.price.toLocaleString())}`}
+                          href={`https://wa.me/919591128327?text=${encodeURIComponent(
+                            'Hi! I am interested in ' + product.name +
+                            ' priced at ₹' + product.price.toLocaleString() +
+                            '\n' + window.location.origin + '/product/' + (product.slug || product.id)
+                          )}`}
                           target="_blank"
                           rel="noreferrer"
                           aria-label="Chat on WhatsApp"
@@ -289,22 +294,22 @@ const Home = () => {
                         >
                           <FaWhatsapp />
                         </a>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className={`icon-btn like ${isInWishlist(product.id) ? 'liked' : ''}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleWishlist(product);
                           }}
-                          aria-label="Add to wishlist" 
+                          aria-label="Add to wishlist"
                           title="Add to wishlist"
                         >
                           <FiHeart />
                         </button>
                       </div>
                     </div>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn-primary card-btn add-to-cart"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -323,7 +328,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      
+
       <section className="collection-showcase">
         <div className="container">
           <div className="showcase-stage">
@@ -345,14 +350,14 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      { }
       <section className="shop-by-category">
         <div className="container">
           <h2 className="category-title">SHOP BY CATEGORY</h2>
           <div className="category-grid">
             <div className="category-card">
               <div className="category-image">
-                <img className="category-img formal"  src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.25_78377178_xhcdlv.jpg" alt="Special Occasions Sarees" loading="lazy" />
+                <img className="category-img formal" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.25_78377178_xhcdlv.jpg" alt="Special Occasions Sarees" loading="lazy" />
               </div>
               <div className="category-label">FORMAL</div>
             </div>
@@ -364,7 +369,7 @@ const Home = () => {
             </div>
             <div className="category-card">
               <div className="category-image">
-                <img className="category-img casual"src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_a9979924_oz0ydd.jpg" alt="Formal Sarees" loading="lazy" />"
+                <img className="category-img casual" src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761843271/WhatsApp_Image_2025-10-30_at_21.48.26_a9979924_oz0ydd.jpg" alt="Formal Sarees" loading="lazy" />"
               </div>
               <div className="category-label">CASUAL</div>
             </div>
@@ -384,7 +389,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      { }
       <section className="celebrate-gift-section">
         <div className="container">
           <h2 className="celebrate-title">CELEBRATE & GIFT SAREES</h2>
@@ -418,7 +423,7 @@ const Home = () => {
               celebrateProducts.slice(0, 8).map(product => (
                 <div key={product.id} className="gift-product-card" onClick={() => navigate(`/product/${product.id}`)} style={{ cursor: 'pointer' }}>
                   <div className="gift-product-image">
-                    <ImageCarousel 
+                    <ImageCarousel
                       images={product.images && product.images.length > 0 ? product.images : ['https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761476953/Screenshot_2025-10-26_163521_xzl1r4.svg']}
                       autoPlay={true}
                       interval={4000}
@@ -428,12 +433,13 @@ const Home = () => {
                     />
                   </div>
                   <div className="gift-product-info">
-                    <div className="gift-product-top">
-                      <div className="gift-product-price">₹{product.price.toLocaleString()}</div>
+                    <div className="gift-product-title">{product.name || 'Silk Saree'}</div>
+                    <div className="gift-product-price">₹{product.price.toLocaleString()}</div>
+                    <div className="gift-product-actions-wrapper">
                       <div className="gift-product-actions">
                         <a
                           className="icon-btn whatsapp"
-                          href={`https://wa.me/919591128327?text=${encodeURIComponent(`${product.image || (product.images && product.images[0])}\n\nHi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price?.toLocaleString() || 'N/A'}.\nView product: https://www.shantisilkhouse.com/products/${product.id}\nPlease provide more details.`)}`}
+                          href={`https://wa.me/919591128327?text=${encodeURIComponent(`${product.image || (product.images && product.images[0])}\n\nHi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price?.toLocaleString() || 'N/A'}.\nView product: ${window.location.origin}/product/${product.slug || product.id}\nPlease provide more details.`)}`}
                           target="_blank"
                           rel="noreferrer"
                           aria-label="Chat on WhatsApp"
@@ -442,19 +448,19 @@ const Home = () => {
                         >
                           <FaWhatsapp />
                         </a>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className={`icon-btn like ${isInWishlist(product.id) ? 'liked' : ''}`}
                           onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
-                          aria-label="Add to wishlist" 
+                          aria-label="Add to wishlist"
                           title="Add to wishlist"
                         >
                           <FiHeart />
                         </button>
                       </div>
                     </div>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn-primary card-btn add-to-cart"
                       onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
                     >
@@ -468,7 +474,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      { }
       <section className="styled-celebrations">
         <div className="container">
           <h2 className="celebrations-title">STYLED FOR YOUR CELEBRATIONS</h2>
@@ -476,7 +482,7 @@ const Home = () => {
             {/* Collage Images (updated to use Cloudinary links) */}
             <div className="collage-image top-left">
               <img
-                 src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839823/WhatsApp_Image_2025-10-30_at_21.22.30_bc24e22f_e2mrff.jpg"
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761839823/WhatsApp_Image_2025-10-30_at_21.22.30_bc24e22f_e2mrff.jpg"
                 alt="Styled Saree - Top Left"
                 loading="lazy"
                 style={{ objectFit: 'cover', width: '100%', height: '100%' }}
@@ -532,15 +538,15 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      { }
       <section id="about" className="about-shanti-silks">
         <div className="container">
           <h2 className="celebrations-title">ABOUT SHANTI SILKS</h2>
           <div className="about-content">
             <div className="about-image">
-              <img 
-                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761814287/Screenshot_2025-10-30_142049_nl2sci.png" 
-                alt="Shanti Silk House Logo" 
+              <img
+                src="https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761814287/Screenshot_2025-10-30_142049_nl2sci.png"
+                alt="Shanti Silk House Logo"
                 loading="lazy"
                 onError={(e) => {
                   e.target.style.display = 'none';
@@ -552,24 +558,24 @@ const Home = () => {
               <h2 className="about-title">Shanti Silk House - Weaving Tradition, Draping Dreams</h2>
               <div className="about-paragraphs">
                 <p>
-                  Shanti Silk House is a women-led brand born from a deep love for India's rich weaving heritage. 
-                  Founded by a passionate female entrepreneur Darshini Gowda, her journey began with a dream – 
+                  Shanti Silk House is a women-led brand born from a deep love for India's rich weaving heritage.
+                  Founded by a passionate female entrepreneur Darshini Gowda, her journey began with a dream –
                   to celebrate traditional sarees while keeping the essence of Indian culture alive in every thread.
                 </p>
                 <p>
-                  Each saree at Shanti Silk House is handpicked and handcrafted by skilled artisans across India. 
-                  From the luxurious Kanchipuram silks to the intricate Banarasi weaves, every piece tells a story 
+                  Each saree at Shanti Silk House is handpicked and handcrafted by skilled artisans across India.
+                  From the luxurious Kanchipuram silks to the intricate Banarasi weaves, every piece tells a story
                   of timeless craftsmanship and grace.
                 </p>
                 <p>
-                  We believe a saree is more than just attire – it's an emotion, a legacy, and a symbol of empowerment. 
-                  Our mission is to preserve tradition while blending it beautifully with modern elegance, making every 
+                  We believe a saree is more than just attire – it's an emotion, a legacy, and a symbol of empowerment.
+                  Our mission is to preserve tradition while blending it beautifully with modern elegance, making every
                   woman feel confident, proud, and connected to her roots.
                 </p>
                 <div className="contact-details">
                   <p><strong>Visit us at:</strong> 3H5Q+X3C, 1st Main Rd, CQAL Layout, Sahakar Nagar, Byatarayanapura, Bengaluru, Karnataka</p>
                   <p><strong>Call us:</strong> +91 95911 28327</p>
-                  <p><strong>WhatsApp:</strong> <a href="https://wa.me/919591128327" target="_blank" rel="noopener noreferrer" style={{color: '#25D366', textDecoration: 'none'}}>+91 95911 28327</a></p>
+                  <p><strong>WhatsApp:</strong> <a href="https://wa.me/919591128327" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', textDecoration: 'none' }}>+91 95911 28327</a></p>
                 </div>
               </div>
             </div>
@@ -577,7 +583,7 @@ const Home = () => {
         </div>
       </section>
 
-      {}
+      { }
       <section className="newsletter">
         <div className="container">
           <div className="newsletter-content">

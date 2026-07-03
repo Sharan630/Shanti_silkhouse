@@ -316,6 +316,7 @@ const Collection = () => {
                     />
                   </div>
                   <div className="product-info">
+                    <div className="product-title">{product.name || 'Silk Saree'}</div>
                     <div className="product-pricing-section">
                       <div className="product-prices">
                         {product.originalPrice && parseFloat(product.originalPrice) > parseFloat(product.price) ? (
@@ -328,12 +329,11 @@ const Collection = () => {
                         )}
                       </div>
                     </div>
-                    <div className="product-title">{product.name || 'Silk Saree'}</div>
                     <div className="product-description">{product.description || 'Pure Silk Saree'}</div>
                     <div className="product-actions-right">
                       <a
                         className="icon-btn whatsapp"
-                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`${product.image || (product.images && product.images[0])}\n\nHi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price ? parseFloat(product.price).toLocaleString() : 'N/A'}.\nView product: https://www.shantisilkhouse.com/products/${product.id}\nPlease provide more details.`)}`}
+                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`${product.image || (product.images && product.images[0])}\n\nHi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price ? parseFloat(product.price).toLocaleString() : 'N/A'}.\nView product: ${window.location.origin}/product/${product.slug || product.id}\nPlease provide more details.`)}`}
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Chat on WhatsApp"

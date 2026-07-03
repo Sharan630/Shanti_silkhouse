@@ -1,22 +1,18 @@
-/* Image Carousel Styles */
 .image-carousel {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 15px;
-  background: #f8f9fa;
+  border-radius: 0;
+  background: transparent;
 }
 
-/* Main Image Container */
 .carousel-main-image {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 400px;
   overflow: hidden;
-  border-radius: 15px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
 }
 
 .image-container {
@@ -24,6 +20,8 @@
   width: 100%;
   height: 100%;
 }
+
+
 
 .carousel-image {
   position: absolute;
@@ -36,6 +34,8 @@
   transform: translateX(100%);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
+  background: none;
+  animation: none;
 }
 
 .carousel-image.active {
@@ -47,6 +47,11 @@
 .carousel-image.prev {
   transform: translateX(-100%);
   opacity: 0;
+}
+
+.carousel-image[src] {
+  background: none;
+  animation: none;
 }
 
 /* Navigation Controls */
@@ -169,7 +174,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .carousel-main-image {
-    min-height: 300px;
+    height: 100%;
   }
 
   .carousel-control {
@@ -209,7 +214,7 @@
 
 @media (max-width: 480px) {
   .carousel-main-image {
-    min-height: 250px;
+    height: 100%;
   }
 
   .carousel-control {
@@ -243,25 +248,4 @@
 .image-carousel * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Loading state */
-.carousel-image {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-.carousel-image[src] {
-  background: none;
-  animation: none;
 }

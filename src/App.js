@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
@@ -23,15 +23,18 @@ import ShippingPolicy from './pages/ShippingPolicy';
 import './App.css';
 
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
           <ScrollToTop />
           <div className="App">
-            <Marquee />
-            <Header />
-            <main>
+            {!isAdminRoute && <Marquee />}
+            {!isAdminRoute && <Header />}
+            <main className={isAdminRoute ? 'admin-main' : ''}>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/collection/:collectionName" element={<Collection />} />
@@ -48,7 +51,7 @@ function App() {
                 <Route path="/policies/shipping-policy" element={<ShippingPolicy />} />
               </Routes>
             </main>
-            <Footer />
+            {!isAdminRoute && <Footer />}
           </div>
         </WishlistProvider>
       </CartProvider>

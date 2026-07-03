@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FiStar, FiHeart, FiShoppingCart, FiTruck, FiShield, FiRefreshCw, FiMinus, FiPlus, FiShare2, FiVideo } from 'react-icons/fi';
+import { FiStar, FiHeart, FiShoppingCart, FiTruck, FiShield, FiRefreshCw, FiMinus, FiPlus, FiShare2, FiVideo, FiArrowLeft } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -272,12 +272,17 @@ const ProductDetail = () => {
   return (
     <div className="product-detail">
       <div className="container">
-        <div className="breadcrumb">
-          <Link to="/">Home</Link>
-          <span>/</span>
-          <Link to="/collection/silk-sarees">Collection</Link>
-          <span>/</span>
-          <span>{product.name}</span>
+        <div className="product-navigation-top">
+          <button onClick={() => navigate(-1)} className="back-button-modern">
+            <FiArrowLeft /> Back to previous
+          </button>
+          <div className="breadcrumb">
+            <Link to="/">Home</Link>
+            <span>/</span>
+            <Link to="/collection/silk-sarees">Collection</Link>
+            <span>/</span>
+            <span>{product.name}</span>
+          </div>
         </div>
 
         <div className="product-detail-content">

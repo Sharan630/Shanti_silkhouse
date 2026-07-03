@@ -59,9 +59,11 @@ const ImageCarousel = ({ images, autoPlay = true, interval = 4000, showThumbnail
     return (
       <div className={`image-carousel ${className}`}>
         <div className="carousel-main-image">
+
           <img 
             src={images[0]} 
             alt="Product" 
+            className="carousel-image active"
             loading="lazy"
             onError={(e) => {
               e.target.src = 'https://res.cloudinary.com/dbaiaiwkk/image/upload/v1761813953/Screenshot_2025-10-30_141450_dkxgox.png';
@@ -77,6 +79,7 @@ const ImageCarousel = ({ images, autoPlay = true, interval = 4000, showThumbnail
       {/* Main Image Container */}
       <div className="carousel-main-image">
         <div className="image-container">
+
           {images.map((image, index) => (
             <img
               key={index}
