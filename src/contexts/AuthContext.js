@@ -121,9 +121,11 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('wishlist');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
     setAdmin(null);
+    window.dispatchEvent(new Event('userLogout'));
   };
 
   const value = {

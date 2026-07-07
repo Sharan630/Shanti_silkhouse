@@ -381,6 +381,44 @@ router.put('/orders/:id/payment-status', authenticateAdmin, async (req, res) => 
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+router.get('/orders/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const orderResult = await pool.query(
+      `SELECT o.*, u.first_name, u.last_name, u.email 
+       FROM orders o 
+       JOIN users u ON o.user_id = u.id 
+       WHERE o.id = $1`,
+      [id]
+    );
+
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const order = orderResult.rows[0];
+
+    const itemsResult = await pool.query(
+      `SELECT oi.*, p.name as product_name, p.images 
+       FROM order_items oi 
+       JOIN products p ON oi.product_id = p.id 
+       WHERE oi.order_id = $1`,
+      [id]
+    );
+
+    res.json({
+      order: {
+        ...order,
+        items: itemsResult.rows
+      }
+    });
+  } catch (error) {
+    console.error('Get order details error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 router.get('/users', authenticateAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 10, search = '' } = req.query;

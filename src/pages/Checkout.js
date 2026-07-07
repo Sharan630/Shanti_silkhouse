@@ -48,6 +48,13 @@ const Checkout = () => {
     }
   }, [cartItems, cartLoading, navigate]);
 
+  // Redirect if guest
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { from: '/checkout' } });
+    }
+  }, [user, navigate]);
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,

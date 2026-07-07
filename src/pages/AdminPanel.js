@@ -55,6 +55,10 @@ const AdminPanel = () => {
   const [orderFilter, setOrderFilter] = useState('all');
   const [users, setUsers] = useState([]);
   const [userSearch, setUserSearch] = useState('');
+  const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [orderModalLoading, setOrderModalLoading] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -242,9 +246,26 @@ const AdminPanel = () => {
       fetchOrders();
       fetchDashboardData();
     } catch (error) {
+      console.error("Payment status update failed:", error.response?.data || error.message);
       setError('Error updating order payment status');
     }
   };
+  const handleViewOrder = async (orderId) => {
+    setOrderModalLoading(true);
+    setIsOrderModalOpen(true);
+    setError('');
+    try {
+      const response = await axios.get(`/api/admin/orders/${orderId}`);
+      setSelectedOrderDetails(response.data.order);
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      setError('Failed to fetch order details');
+      setIsOrderModalOpen(false);
+    } finally {
+      setOrderModalLoading(false);
+    }
+  };
+
   const handleToggleProductStatus = async (productId, isActive) => {
     try {
       console.log('Toggling product status for ID:', productId, 'Current status:', isActive);
@@ -1078,6 +1099,20 @@ const AdminPanel = () => {
                     <td>{new Date(order.created_at).toLocaleDateString()}</td>
                     <td>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <button 
+                          onClick={() => handleViewOrder(order.id)}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          View Details
+                        </button>
                         <select 
                           value={order.status} 
                           onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
@@ -1188,6 +1223,112 @@ const AdminPanel = () => {
               <h3>Customer Insights</h3>
               <p>Customer behavior and demographics analysis.</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Order Details Modal */}
+      {isOrderModalOpen && (
+        <div className="modal-overlay" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', 
+          justifyContent: 'center', alignItems: 'center', zIndex: 1000
+        }} onClick={() => setIsOrderModalOpen(false)}>
+          <div className="modal-content" style={{
+            backgroundColor: 'white', padding: '20px', borderRadius: '8px', 
+            width: '90%', maxWidth: '700px', maxHeight: '90vh', overflowY: 'auto'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0 }}>Order Details</h2>
+              <button onClick={() => setIsOrderModalOpen(false)} style={{
+                background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer'
+              }}>&times;</button>
+            </div>
+            
+            {orderModalLoading ? (
+              <p>Loading order details...</p>
+            ) : selectedOrderDetails ? (
+              <div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                  <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px' }}>
+                    <h3 style={{ marginTop: 0, borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>Customer Info</h3>
+                    <p><strong>Name:</strong> {selectedOrderDetails.first_name} {selectedOrderDetails.last_name}</p>
+                    <p><strong>Email:</strong> {selectedOrderDetails.email}</p>
+                    <p><strong>Phone:</strong> {selectedOrderDetails.phone_number || 'N/A'}</p>
+                  </div>
+                  
+                  <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px' }}>
+                    <h3 style={{ marginTop: 0, borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>Order Info</h3>
+                    <p><strong>Order ID:</strong> #{selectedOrderDetails.id}</p>
+                    <p><strong>Date:</strong> {new Date(selectedOrderDetails.created_at).toLocaleString()}</p>
+                    <p>
+                      <strong>Status: </strong> 
+                      <span className={`status status-${selectedOrderDetails.status}`}>
+                        {selectedOrderDetails.status}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ backgroundColor: '#fff3cd', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid #ffeeba' }}>
+                  <h3 style={{ marginTop: 0, borderBottom: '1px solid #ffeeba', paddingBottom: '10px', color: '#856404' }}>Payment & Shipping</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ flex: 1, paddingRight: '15px' }}>
+                      <p><strong>Method:</strong> {selectedOrderDetails.payment_method === 'cod' ? 'Cash on Delivery' : selectedOrderDetails.payment_method}</p>
+                      <p>
+                        <strong>Status: </strong>
+                        <span className={`status status-${selectedOrderDetails.payment_status}`}>
+                          {selectedOrderDetails.payment_status === 'paid_on_delivery' ? 'Paid' : selectedOrderDetails.payment_status}
+                        </span>
+                      </p>
+                      {selectedOrderDetails.payment_method === 'cod' && selectedOrderDetails.payment_status === 'pending' && (
+                        <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#d4edda', color: '#155724', borderRadius: '4px', fontWeight: 'bold' }}>
+                          Collect ₹{selectedOrderDetails.total_amount.toLocaleString()} on delivery
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ flex: 1, borderLeft: '1px solid #ffeeba', paddingLeft: '15px' }}>
+                      <p><strong>Shipping Address:</strong></p>
+                      <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selectedOrderDetails.shipping_address}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 style={{ borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>Order Items</h3>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f1f1f1' }}>
+                        <th style={{ padding: '10px', textAlign: 'left', borderBottom: '1px solid #ddd' }}>Product</th>
+                        <th style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid #ddd' }}>Price</th>
+                        <th style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid #ddd' }}>Qty</th>
+                        <th style={{ padding: '10px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedOrderDetails.items?.map(item => (
+                        <tr key={item.id}>
+                          <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{item.product_name}</td>
+                          <td style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid #eee' }}>₹{Number(item.price).toLocaleString()}</td>
+                          <td style={{ padding: '10px', textAlign: 'center', borderBottom: '1px solid #eee' }}>{item.quantity}</td>
+                          <td style={{ padding: '10px', textAlign: 'right', borderBottom: '1px solid #eee' }}>₹{(Number(item.price) * item.quantity).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="3" style={{ padding: '15px 10px', textAlign: 'right', fontWeight: 'bold', fontSize: '1.1rem' }}>Total Amount:</td>
+                        <td style={{ padding: '15px 10px', textAlign: 'right', fontWeight: 'bold', fontSize: '1.1rem', color: '#d4af37' }}>
+                          ₹{Number(selectedOrderDetails.total_amount).toLocaleString()}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <p>Order details not found.</p>
+            )}
           </div>
         </div>
       )}

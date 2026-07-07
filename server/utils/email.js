@@ -80,9 +80,9 @@ const sendOrderConfirmationEmail = async (email, order, cartItems) => {
     `;
 
     const mailOptions = {
-      from: \`"Shanti Silk House" <\${process.env.EMAIL_USER}>\`,
+      from: `"Shanti Silk House" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: \`Order Confirmation - Order #\${order.id}\`,
+      subject: `Order Confirmation - Order #${order.id}`,
       html: htmlContent
     };
 
@@ -91,7 +91,7 @@ const sendOrderConfirmationEmail = async (email, order, cartItems) => {
     return true;
   } catch (error) {
     console.error('Error sending order confirmation email:', error);
-    return false;
+    throw error;
   }
 };
 

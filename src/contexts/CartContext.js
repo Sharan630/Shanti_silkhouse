@@ -271,11 +271,37 @@ export const CartProvider = ({ children }) => {
     };
   };
   useEffect(() => {
-    if (user) {
-      fetchCartItems();
-    } else {
-      loadLocalCart();
-    }
+    const syncCartOnLogin = async () => {
+      if (user) {
+        const localCartStr = localStorage.getItem('localCart');
+        if (localCartStr) {
+          try {
+            const localItems = JSON.parse(localCartStr);
+            if (localItems && localItems.length > 0) {
+              for (const item of localItems) {
+                try {
+                  await axios.post('/api/cart/add', {
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    size: item.size,
+                    color: item.color
+                  });
+                } catch (err) {
+                  console.error('Failed to merge item to backend cart:', err);
+                }
+              }
+              localStorage.removeItem('localCart');
+            }
+          } catch (e) {
+            console.error('Error parsing local cart during merge:', e);
+          }
+        }
+        fetchCartItems();
+      } else {
+        loadLocalCart();
+      }
+    };
+    syncCartOnLogin();
   }, [user]);
   useEffect(() => {
     if (!user) {

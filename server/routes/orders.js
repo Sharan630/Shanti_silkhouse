@@ -122,8 +122,19 @@ router.post('/', authenticateToken, async (req, res) => {
 
     await client.query('COMMIT');
 
+    console.log('\n--- EMAIL PIPELINE START ---');
+    console.log('Attempting to send order confirmation email to:', email);
+    
     // Send order confirmation email asynchronously (no need to block the response)
-    sendOrderConfirmationEmail(email, order, cartItems).catch(console.error);
+    sendOrderConfirmationEmail(email, order, cartItems)
+      .then(result => {
+        console.log('Email pipeline success result:', result);
+        console.log('--- EMAIL PIPELINE END ---\n');
+      })
+      .catch(err => {
+        console.error('Email pipeline encountered an error:', err);
+        console.log('--- EMAIL PIPELINE END ---\n');
+      });
 
     res.status(201).json({
       message: 'Order placed successfully',

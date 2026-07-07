@@ -200,6 +200,7 @@ const ProductDetail = () => {
     
     if (product.stock_quantity === 0) {
       setMessage('Product is out of stock');
+      setTimeout(() => setMessage(''), 5000);
       return;
     }
 
@@ -213,9 +214,11 @@ const ProductDetail = () => {
         window.dispatchEvent(new CustomEvent('openCartSidebar'));
       } else {
         setMessage(result.message || 'Failed to add to cart');
+        setTimeout(() => setMessage(''), 5000);
       }
     } catch (err) {
       setMessage('Error adding to cart');
+      setTimeout(() => setMessage(''), 5000);
     } finally {
       setIsAddingToCart(false);
     }
@@ -226,6 +229,7 @@ const ProductDetail = () => {
     
     if (product.stock_quantity === 0) {
       setMessage('Product is out of stock');
+      setTimeout(() => setMessage(''), 5000);
       return;
     }
     

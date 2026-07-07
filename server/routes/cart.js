@@ -73,47 +73,39 @@ router.post('/add', authenticateToken, async (req, res) => {
         message: `Only ${product.stock_quantity} items available in stock` 
       });
     }
-    const existingItem = await pool.query(`
-      SELECT * FROM cart 
-      WHERE user_id = $1 AND product_id = $2 AND size = $3 AND color = $4
-    `, [userId, productId, size || null, color || null]);
+    const upsertQuery = `
+      INSERT INTO cart (user_id, product_id, quantity, size, color)
+      VALUES ($1, $2, $3, $4, $5)
+      ON CONFLICT (user_id, product_id, size, color) 
+      DO UPDATE SET 
+        quantity = cart.quantity + EXCLUDED.quantity,
+        updated_at = CURRENT_TIMESTAMP
+      RETURNING *
+    `;
 
-    if (existingItem.rows.length > 0) {
+    const result = await pool.query(upsertQuery, [
+      userId, 
+      productId, 
+      quantity, 
+      size || null, 
+      color || null
+    ]);
 
-      const newQuantity = existingItem.rows[0].quantity + quantity;
-      
-      if (newQuantity > product.stock_quantity) {
-        return res.status(400).json({ 
-          message: `Cannot add more items. Only ${product.stock_quantity} available in stock` 
-        });
-      }
+    const cartItem = result.rows[0];
 
-      await pool.query(`
-        UPDATE cart 
-        SET quantity = $1, updated_at = CURRENT_TIMESTAMP 
-        WHERE id = $2
-      `, [newQuantity, existingItem.rows[0].id]);
-
-      res.json({ 
-        message: 'Cart updated successfully',
-        cartItem: {
-          id: existingItem.rows[0].id,
-          quantity: newQuantity
-        }
-      });
-    } else {
-
-      const result = await pool.query(`
-        INSERT INTO cart (user_id, product_id, quantity, size, color)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING *
-      `, [userId, productId, quantity, size || null, color || null]);
-
-      res.status(201).json({ 
-        message: 'Item added to cart successfully',
-        cartItem: result.rows[0]
+    // If the new quantity exceeds stock, revert it back to the stock limit
+    if (cartItem.quantity > product.stock_quantity) {
+      await pool.query('UPDATE cart SET quantity = $1 WHERE id = $2', [product.stock_quantity, cartItem.id]);
+      cartItem.quantity = product.stock_quantity;
+      return res.status(400).json({ 
+        message: `Cannot add more items. Cart capped at maximum available stock (${product.stock_quantity})` 
       });
     }
+
+    res.status(200).json({ 
+      message: 'Item added to cart successfully',
+      cartItem
+    });
   } catch (error) {
     console.error('Add to cart error:', error);
     res.status(500).json({ message: 'Internal server error' });

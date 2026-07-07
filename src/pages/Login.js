@@ -26,7 +26,7 @@ const Login = () => {
       navigate('/', { replace: true });
     }
   }, [user, navigate]);
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || location.state?.from || '/';
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) {

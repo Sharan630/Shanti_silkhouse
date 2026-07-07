@@ -17,6 +17,15 @@ export const WishlistProvider = ({ children }) => {
     if (savedWishlist) {
       setWishlist(JSON.parse(savedWishlist));
     }
+
+    const handleLogout = () => {
+      setWishlist([]);
+    };
+    window.addEventListener('userLogout', handleLogout);
+    
+    return () => {
+      window.removeEventListener('userLogout', handleLogout);
+    };
   }, []);
   useEffect(() => {
     localStorage.setItem('wishlist', JSON.stringify(wishlist));
