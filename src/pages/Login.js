@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiEye, FiEyeOff, FiArrowLeft, FiMail, FiLock, FiUser } from 'react-icons/fi';
+import { FiEye, FiEyeOff, FiArrowLeft, FiMail, FiLock, FiUser, FiPhone } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import './Login.css';
 
 const Login = () => {
+  const [loginMethod, setLoginMethod] = useState('email');
   const [formData, setFormData] = useState({
     email: '',
+    phone: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -36,13 +38,19 @@ const Login = () => {
   const validateForm = () => {
     const errors = {};
     
-
-    if (!formData.email) {
-      errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Please enter a valid email address';
+    if (loginMethod === 'email') {
+      if (!formData.email) {
+        errors.email = 'Email is required';
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        errors.email = 'Please enter a valid email address';
+      }
+    } else {
+      if (!formData.phone) {
+        errors.phone = 'Phone number is required';
+      } else if (formData.phone.length < 10) {
+        errors.phone = 'Please enter a valid phone number';
+      }
     }
-    
 
     if (!formData.password) {
       errors.password = 'Password is required';
@@ -85,13 +93,14 @@ const Login = () => {
     setMessage('');
 
     try {
-      const result = await login(formData.email, formData.password);
+      const identifier = loginMethod === 'email' ? formData.email : formData.phone;
+      const result = await login(identifier, formData.password, loginMethod);
       
       if (result.success) {
 
-        if (rememberMe) {
+        if (rememberMe && loginMethod === 'email') {
           localStorage.setItem('rememberedEmail', formData.email);
-        } else {
+        } else if (!rememberMe) {
           localStorage.removeItem('rememberedEmail');
         }
         
@@ -148,26 +157,66 @@ const Login = () => {
           )}
 
           <form onSubmit={handleSubmit} className="login-form">
-            <div className="form-group">
-              <label htmlFor="email">Email Address</label>
-              <div className="input-container">
-                <FiMail className="input-icon" />
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your email"
-                  disabled={loading}
-                  className={validationErrors.email ? 'error' : ''}
-                />
-              </div>
-              {validationErrors.email && (
-                <span className="error-message">{validationErrors.email}</span>
-              )}
+            <div className="login-method-toggle">
+              <button 
+                type="button" 
+                className={`toggle-btn ${loginMethod === 'email' ? 'active' : ''}`}
+                onClick={() => setLoginMethod('email')}
+              >
+                Email
+              </button>
+              <button 
+                type="button" 
+                className={`toggle-btn ${loginMethod === 'phone' ? 'active' : ''}`}
+                onClick={() => setLoginMethod('phone')}
+              >
+                Phone
+              </button>
             </div>
+
+            {loginMethod === 'email' ? (
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <div className="input-container">
+                  <FiMail className="input-icon" />
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required={loginMethod === 'email'}
+                    placeholder="Enter your email"
+                    disabled={loading}
+                    className={validationErrors.email ? 'error' : ''}
+                  />
+                </div>
+                {validationErrors.email && (
+                  <span className="error-message">{validationErrors.email}</span>
+                )}
+              </div>
+            ) : (
+              <div className="form-group">
+                <label htmlFor="phone">Phone Number</label>
+                <div className="input-container">
+                  <FiPhone className="input-icon" />
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required={loginMethod === 'phone'}
+                    placeholder="Enter your phone number"
+                    disabled={loading}
+                    className={validationErrors.phone ? 'error' : ''}
+                  />
+                </div>
+                {validationErrors.phone && (
+                  <span className="error-message">{validationErrors.phone}</span>
+                )}
+              </div>
+            )}
 
             <div className="form-group">
               <label htmlFor="password">Password</label>

@@ -235,6 +235,16 @@ const AdminPanel = () => {
       setError('Error updating order status');
     }
   };
+  const handleUpdateOrderPaymentStatus = async (orderId, payment_status) => {
+    try {
+      await axios.put(`/api/admin/orders/${orderId}/payment-status`, { payment_status });
+      setSuccess('Order payment status updated successfully!');
+      fetchOrders();
+      fetchDashboardData();
+    } catch (error) {
+      setError('Error updating order payment status');
+    }
+  };
   const handleToggleProductStatus = async (productId, isActive) => {
     try {
       console.log('Toggling product status for ID:', productId, 'Current status:', isActive);
@@ -1025,6 +1035,7 @@ const AdminPanel = () => {
                   <th>Order ID</th>
                   <th>Customer</th>
                   <th>Total</th>
+                  <th>Payment</th>
                   <th>Status</th>
                   <th>Date</th>
                   <th>Actions</th>
@@ -1050,23 +1061,51 @@ const AdminPanel = () => {
                     </td>
                     <td>₹{order.total_amount.toLocaleString()}</td>
                     <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <span style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.85rem' }}>
+                          {order.payment_method === 'cod' ? 'COD' : order.payment_method}
+                        </span>
+                        <span className={`status status-${order.payment_status}`} style={{ fontSize: '0.75rem', padding: '2px 6px' }}>
+                          {order.payment_status === 'paid_on_delivery' ? 'Paid' : order.payment_status}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
                       <span className={`status status-${order.status}`}>
                         {order.status}
                       </span>
                     </td>
                     <td>{new Date(order.created_at).toLocaleDateString()}</td>
                     <td>
-                      <select 
-                        value={order.status} 
-                        onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                        className="status-select"
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="processing">Processing</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
-                      </select>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <select 
+                          value={order.status} 
+                          onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                          className="status-select"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="processing">Processing</option>
+                          <option value="shipped">Shipped</option>
+                          <option value="delivered">Delivered</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                        {order.payment_method === 'cod' && order.payment_status === 'pending' && (
+                          <button 
+                            onClick={() => handleUpdateOrderPaymentStatus(order.id, 'paid_on_delivery')}
+                            style={{ 
+                              padding: '6px', 
+                              backgroundColor: '#28a745', 
+                              color: 'white', 
+                              border: 'none', 
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontSize: '0.8rem'
+                            }}
+                          >
+                            Mark Paid
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

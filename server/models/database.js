@@ -62,6 +62,7 @@ const initializeDatabase = async () => {
           billing_address TEXT,
           payment_method VARCHAR(50),
           payment_status VARCHAR(50) DEFAULT 'pending',
+          phone_number VARCHAR(20),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )

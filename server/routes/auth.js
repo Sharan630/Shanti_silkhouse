@@ -47,11 +47,20 @@ router.post('/register', async (req, res) => {
 });
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const result = await pool.query(
-      'SELECT id, email, password, first_name, last_name FROM users WHERE email = $1',
-      [email]
-    );
+    const { email, phone, password } = req.body;
+    
+    let queryStr = '';
+    let queryParams = [];
+    
+    if (phone) {
+      queryStr = 'SELECT id, email, password, first_name, last_name, phone FROM users WHERE phone = $1';
+      queryParams = [phone];
+    } else {
+      queryStr = 'SELECT id, email, password, first_name, last_name, phone FROM users WHERE email = $1';
+      queryParams = [email];
+    }
+
+    const result = await pool.query(queryStr, queryParams);
 
     if (result.rows.length === 0) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -76,7 +85,8 @@ router.post('/login', async (req, res) => {
         id: user.id,
         email: user.email,
         firstName: user.first_name,
-        lastName: user.last_name
+        lastName: user.last_name,
+        phone: user.phone
       }
     });
   } catch (error) {

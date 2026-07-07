@@ -1,6 +1,7 @@
 const express = require('express');
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
+const { sendOrderConfirmationEmail } = require('../utils/email');
 
 const router = express.Router();
 
@@ -45,6 +46,21 @@ router.post('/', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
+    // Verify stock for all items before proceeding
+    for (const cartItem of cartItems) {
+      const stockCheck = await client.query(
+        'SELECT stock_quantity FROM products WHERE id = $1 FOR UPDATE',
+        [cartItem.product_id]
+      );
+      
+      if (stockCheck.rows.length === 0 || stockCheck.rows[0].stock_quantity < cartItem.quantity) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ 
+          message: `Not enough stock for ${cartItem.name}. Available: ${stockCheck.rows[0]?.stock_quantity || 0}`
+        });
+      }
+    }
+
     // Calculate totals
     const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
     const shipping = subtotal >= 2000 ? 0 : 200;
@@ -62,9 +78,10 @@ router.post('/', authenticateToken, async (req, res) => {
         shipping_address, 
         billing_address, 
         payment_method, 
-        payment_status
+        payment_status,
+        phone_number
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
     `, [
       userId,
@@ -73,12 +90,13 @@ router.post('/', authenticateToken, async (req, res) => {
       shippingAddress,
       shippingAddress,
       paymentMethod,
-      paymentMethod === 'cod' ? 'pending' : 'pending'
+      paymentMethod === 'cod' ? 'pending' : 'pending',
+      phone
     ]);
 
     const order = orderResult.rows[0];
 
-    // Create order items
+    // Create order items and decrement stock
     for (const cartItem of cartItems) {
       await client.query(`
         INSERT INTO order_items (order_id, product_id, quantity, price)
@@ -89,6 +107,12 @@ router.post('/', authenticateToken, async (req, res) => {
         cartItem.quantity,
         cartItem.price
       ]);
+
+      await client.query(`
+        UPDATE products 
+        SET stock_quantity = stock_quantity - $1 
+        WHERE id = $2
+      `, [cartItem.quantity, cartItem.product_id]);
     }
 
     // Clear cart after order creation
@@ -97,6 +121,9 @@ router.post('/', authenticateToken, async (req, res) => {
     `, [userId]);
 
     await client.query('COMMIT');
+
+    // Send order confirmation email asynchronously (no need to block the response)
+    sendOrderConfirmationEmail(email, order, cartItems).catch(console.error);
 
     res.status(201).json({
       message: 'Order placed successfully',

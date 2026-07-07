@@ -358,6 +358,29 @@ router.put('/orders/:id/status', authenticateAdmin, async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+router.put('/orders/:id/payment-status', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { payment_status } = req.body;
+
+    const result = await pool.query(
+      'UPDATE orders SET payment_status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *',
+      [payment_status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.json({
+      message: 'Order payment status updated successfully',
+      order: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update order payment status error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 router.get('/users', authenticateAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 10, search = '' } = req.query;
