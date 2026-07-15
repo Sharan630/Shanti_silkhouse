@@ -1,8 +1,62 @@
 const express = require('express');
 const { pool } = require('./database');
 const { authenticateToken } = require('./middleware');
+const Razorpay = require('razorpay');
+
+// Initialize Razorpay
+const razorpayKeyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder';
+const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || 'placeholder_secret';
+
+const razorpay = new Razorpay({
+  key_id: razorpayKeyId,
+  key_secret: razorpayKeySecret
+});
 
 const router = express.Router();
+
+// Create a Razorpay order
+router.post('/razorpay-order', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Calculate total amount from cart to prevent client-side tampering
+    const cartResult = await pool.query(`
+      SELECT c.*, p.name, p.price, p.id as product_id
+      FROM cart c
+      JOIN products p ON c.product_id = p.id
+      WHERE c.user_id = $1 AND p.is_active = true
+    `, [userId]);
+    
+    const cartItems = cartResult.rows;
+    
+    if (cartItems.length === 0) {
+      return res.status(400).json({ message: 'Cart is empty' });
+    }
+    
+    // Calculate totals
+    const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+    const shipping = subtotal >= 2000 ? 0 : 200;
+    const totalAmount = subtotal + shipping;
+    
+    // Create Razorpay order
+    const options = {
+      amount: Math.round(totalAmount * 100), // amount in paise
+      currency: 'INR',
+      receipt: `rcpt_${userId}_${Date.now()}`
+    };
+    
+    const order = await razorpay.orders.create(options);
+    
+    res.status(201).json({
+      id: order.id,
+      amount: order.amount,
+      currency: order.currency
+    });
+  } catch (error) {
+    console.error('Create Razorpay order error:', error);
+    res.status(500).json({ message: 'Failed to create payment order' });
+  }
+});
 
 // Create a new order
 router.post('/', authenticateToken, async (req, res) => {
