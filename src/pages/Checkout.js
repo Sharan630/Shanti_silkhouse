@@ -109,8 +109,13 @@ const Checkout = () => {
         }
 
         let razorpayOrder;
+        let razorpayKeyId;
         try {
-          const orderRes = await axios.post('/api/orders/razorpay-order');
+          const [keyRes, orderRes] = await Promise.all([
+            axios.get('/api/orders/razorpay-key'),
+            axios.post('/api/orders/razorpay-order')
+          ]);
+          razorpayKeyId = keyRes.data.keyId;
           razorpayOrder = orderRes.data;
         } catch (err) {
           const errMs = err.response?.data?.message || 'Failed to initiate online payment. Please try again.';
@@ -120,7 +125,7 @@ const Checkout = () => {
         }
 
         const options = {
-          key: process.env.REACT_APP_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+          key: razorpayKeyId,
           amount: razorpayOrder.amount,
           currency: razorpayOrder.currency || 'INR',
           name: 'Shanti Silk House',
