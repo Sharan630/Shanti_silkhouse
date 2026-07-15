@@ -50,7 +50,7 @@ const ShippingPolicy = () => {
               We offer various shipping options to suit your needs:
             </p>
             <ul>
-              <li><strong>Standard Shipping:</strong> 5-7 business days - Free for orders above ₹2,000</li>
+              <li><strong>Standard Shipping:</strong> 5-7 business days - Free on all orders</li>
               <li><strong>Express Shipping:</strong> 2-4 business days - Additional charges apply</li>
               <li><strong>Priority Shipping:</strong> 1-2 business days - Available in select cities, additional charges apply</li>
             </ul>
@@ -62,11 +62,10 @@ const ShippingPolicy = () => {
           <section>
             <h2>Shipping Charges</h2>
             <p>
-              Shipping charges are calculated based on the delivery location, weight of the package, and the shipping method selected:
+              Shipping is free on all orders within India:
             </p>
             <ul>
-              <li>Orders above ₹2,000: Free standard shipping within India</li>
-              <li>Orders below ₹2,000: Shipping charges as per the courier partner rates</li>
+              <li>All orders: Free standard shipping within India</li>
               <li>Express and Priority shipping: Additional charges will be displayed at checkout</li>
               <li>Cash on Delivery (COD): Additional COD charges may apply</li>
             </ul>

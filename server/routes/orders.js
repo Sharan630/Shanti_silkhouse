@@ -9,7 +9,7 @@ const router = express.Router();
 
 const calculateOrderTotal = (cartItems) => {
   const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
-  const shipping = subtotal >= 2000 ? 0 : 200;
+  const shipping = 0;
   return { subtotal, shipping, totalAmount: subtotal + shipping };
 };
 

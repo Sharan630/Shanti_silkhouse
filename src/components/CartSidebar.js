@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiX, FiMinus, FiPlus, FiTruck } from 'react-icons/fi';
+import { FiX, FiMinus, FiPlus } from 'react-icons/fi';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import './CartSidebar.css';
@@ -39,9 +39,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
     }
   };
 
-  const { subtotal, shipping, total, itemCount } = getCartTotals();
-  const freeShippingThreshold = 5000;
-  const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
+  const { subtotal, total, itemCount } = getCartTotals();
 
   if (!isOpen) return null;
 
@@ -59,22 +57,6 @@ const CartSidebar = ({ isOpen, onClose }) => {
             <FiX />
           </button>
         </div>
-
-        {}
-        {subtotal > 0 && subtotal < freeShippingThreshold && (
-          <div className="free-shipping-progress">
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${(subtotal / freeShippingThreshold) * 100}%` }}
-              ></div>
-            </div>
-            <p className="progress-text">
-              Only ₹{amountToFreeShipping.toLocaleString()} away from Free Shipping
-              <FiTruck className="truck-icon" />
-            </p>
-          </div>
-        )}
 
         {}
         {message && (

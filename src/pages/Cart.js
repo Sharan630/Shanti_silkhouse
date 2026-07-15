@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiMinus, FiPlus, FiX, FiShoppingBag, FiArrowLeft, FiTruck } from 'react-icons/fi';
+import { FiMinus, FiPlus, FiX, FiShoppingBag, FiArrowLeft } from 'react-icons/fi';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import './Cart.css';
@@ -52,11 +52,7 @@ const Cart = () => {
     }
   };
 
-  const { subtotal, originalTotal, savings, shipping, total, itemCount } = getCartTotals();
-
-  const freeShippingThreshold = 5000;
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
-  const progressPercentage = Math.min(100, ((freeShippingThreshold - remainingForFreeShipping) / freeShippingThreshold) * 100);
+  const { subtotal, originalTotal, savings, total, itemCount } = getCartTotals();
 
   return (
     <div className="cart">
@@ -102,22 +98,6 @@ const Cart = () => {
                 <FiX />
               </button>
             </div>
-
-            {}
-            {remainingForFreeShipping > 0 && (
-              <div className="free-shipping-progress">
-                <div className="progress-bar">
-                  <div 
-                    className="progress-fill" 
-                    style={{ width: `${progressPercentage}%` }}
-                  ></div>
-                  <FiTruck className="truck-icon" />
-                </div>
-                <p className="progress-text">
-                  Only ₹{remainingForFreeShipping.toLocaleString()} away from Free Shipping
-                </p>
-              </div>
-            )}
 
             {}
             <div className="cart-items-list">
