@@ -73,7 +73,28 @@ const AdminPanel = () => {
   const fetchDashboardData = async () => {
     try {
       const response = await axios.get('/api/admin/dashboard');
-      setDashboardData(response.data);
+      const data = response.data.stats ? { ...response.data.stats, ...response.data } : response.data;
+      setDashboardData({
+        totalUsers: Number(data.totalUsers) || 0,
+        totalProducts: Number(data.totalProducts) || 0,
+        activeProducts: Number(data.activeProducts) || 0,
+        totalOrders: Number(data.totalOrders) || 0,
+        totalRevenue: Number(data.totalRevenue) || 0,
+        monthlyRevenue: Number(data.monthlyRevenue) || 0,
+        revenueGrowth: Number(data.revenueGrowth) || 0,
+        avgOrderValue: Number(data.avgOrderValue) || 0,
+        recentOrders: data.recentOrders || [],
+        topProducts: data.topProducts || [],
+        lowStockProducts: data.lowStockProducts || [],
+        ordersByStatus: (data.ordersByStatus || []).map(s => ({
+          ...s,
+          count: Number(s.count)
+        })),
+        weeklyOrders: {
+          count: Number(data.weeklyOrders?.count) || 0,
+          revenue: Number(data.weeklyOrders?.revenue) || 0
+        }
+      });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
@@ -81,7 +102,13 @@ const AdminPanel = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get('/api/admin/products?limit=1000');
-      setProducts(response.data.products);
+      const parsedProducts = (response.data.products || []).map(product => ({
+        ...product,
+        price: Number(product.price),
+        stock_quantity: Number(product.stock_quantity),
+        images: typeof product.images === 'string' ? JSON.parse(product.images) : (product.images || [])
+      }));
+      setProducts(parsedProducts);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -89,16 +116,16 @@ const AdminPanel = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('/api/admin/orders');
-      setOrders(response.data.orders);
+      const response = await axios.get('/api/admin/orders?limit=500');
+      setOrders(response.data.orders || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
   };
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/api/admin/users');
-      setUsers(response.data.users);
+      const response = await axios.get('/api/admin/users?limit=500');
+      setUsers(response.data.users || []);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -231,16 +258,19 @@ const AdminPanel = () => {
   };
   const handleUpdateOrderStatus = async (orderId, status) => {
     try {
+      setOrders(prev => prev.map(order => order.id === orderId ? { ...order, status } : order));
       await axios.put(`/api/admin/orders/${orderId}/status`, { status });
       setSuccess('Order status updated successfully!');
       fetchOrders();
       fetchDashboardData();
     } catch (error) {
       setError('Error updating order status');
+      fetchOrders();
     }
   };
   const handleUpdateOrderPaymentStatus = async (orderId, payment_status) => {
     try {
+      setOrders(prev => prev.map(order => order.id === orderId ? { ...order, payment_status } : order));
       await axios.put(`/api/admin/orders/${orderId}/payment-status`, { payment_status });
       setSuccess('Order payment status updated successfully!');
       fetchOrders();
@@ -248,6 +278,7 @@ const AdminPanel = () => {
     } catch (error) {
       console.error("Payment status update failed:", error.response?.data || error.message);
       setError('Error updating order payment status');
+      fetchOrders();
     }
   };
   const handleViewOrder = async (orderId) => {
@@ -1040,6 +1071,8 @@ const AdminPanel = () => {
                 className="filter-select"
               >
                 <option value="all">All Orders</option>
+                <option value="placed">Placed</option>
+                <option value="confirmed">Confirmed</option>
                 <option value="pending">Pending</option>
                 <option value="processing">Processing</option>
                 <option value="shipped">Shipped</option>
@@ -1080,11 +1113,11 @@ const AdminPanel = () => {
                         <span>{order.email}</span>
                       </div>
                     </td>
-                    <td>₹{order.total_amount.toLocaleString()}</td>
+                    <td>₹{Number(order.total_amount).toLocaleString()}</td>
                     <td>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         <span style={{ fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.85rem' }}>
-                          {order.payment_method === 'cod' ? 'COD' : order.payment_method}
+                          {order.payment_method === 'cod' ? 'COD' : order.payment_method === 'online' ? 'Online' : order.payment_method}
                         </span>
                         <span className={`status status-${order.payment_status}`} style={{ fontSize: '0.75rem', padding: '2px 6px' }}>
                           {order.payment_status === 'paid_on_delivery' ? 'Paid' : order.payment_status}
@@ -1118,6 +1151,8 @@ const AdminPanel = () => {
                           onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
                           className="status-select"
                         >
+                          <option value="placed">Placed</option>
+                          <option value="confirmed">Confirmed</option>
                           <option value="pending">Pending</option>
                           <option value="processing">Processing</option>
                           <option value="shipped">Shipped</option>

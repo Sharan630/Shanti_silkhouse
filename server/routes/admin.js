@@ -3,6 +3,9 @@ const { pool } = require('../config/database');
 const { authenticateAdmin } = require('../middleware/auth');
 
 const router = express.Router();
+
+const PAID_REVENUE_FILTER = `status != 'cancelled' AND payment_status IN ('paid', 'paid_on_delivery')`;
+
 router.get('/dashboard', authenticateAdmin, async (req, res) => {
   let client;
   try {
@@ -19,17 +22,19 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const ordersResult = await client.query('SELECT COUNT(*) FROM orders');
     const totalOrders = parseInt(ordersResult.rows[0].count);
     const ordersByStatusResult = await client.query(`
-      SELECT status, COUNT(*) as count 
-      FROM orders 
+      SELECT status, COUNT(*)::int as count
+      FROM orders
       GROUP BY status
     `);
     const ordersByStatus = ordersByStatusResult.rows;
-    const revenueResult = await client.query('SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != \'cancelled\'');
-    const totalRevenue = parseFloat(revenueResult.rows[0].coalesce);
+    const revenueResult = await client.query(
+      `SELECT COALESCE(SUM(total_amount), 0) as total FROM orders WHERE ${PAID_REVENUE_FILTER}`
+    );
+    const totalRevenue = parseFloat(revenueResult.rows[0].total);
     const monthlyRevenueResult = await client.query(`
       SELECT COALESCE(SUM(total_amount), 0) as revenue 
       FROM orders 
-      WHERE status != 'cancelled' 
+      WHERE ${PAID_REVENUE_FILTER}
       AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
       AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
     `);
@@ -37,13 +42,13 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const lastMonthRevenueResult = await client.query(`
       SELECT COALESCE(SUM(total_amount), 0) as revenue 
       FROM orders 
-      WHERE status != 'cancelled' 
-      AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) - 1
-      AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+      WHERE ${PAID_REVENUE_FILTER}
+      AND created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
+      AND created_at < DATE_TRUNC('month', CURRENT_DATE)
     `);
     const lastMonthRevenue = parseFloat(lastMonthRevenueResult.rows[0].revenue);
     const revenueGrowth = lastMonthRevenue > 0 ? 
-      ((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1) : 0;
+      parseFloat(((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1)) : 0;
     const recentOrdersResult = await client.query(`
       SELECT o.*, u.first_name, u.last_name, u.email 
       FROM orders o 
@@ -53,12 +58,14 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     `);
     const recentOrders = recentOrdersResult.rows;
     const topProductsResult = await client.query(`
-      SELECT p.*, COUNT(oi.id) as order_count, SUM(oi.quantity) as total_quantity
+      SELECT p.id, p.name, p.price,
+             COUNT(oi.id)::int as order_count,
+             COALESCE(SUM(oi.quantity), 0)::int as total_quantity
       FROM products p
       LEFT JOIN order_items oi ON p.id = oi.product_id
       LEFT JOIN orders o ON oi.order_id = o.id AND o.status != 'cancelled'
-      GROUP BY p.id
-      ORDER BY order_count DESC
+      GROUP BY p.id, p.name, p.price
+      ORDER BY order_count DESC, total_quantity DESC
       LIMIT 5
     `);
     const topProducts = topProductsResult.rows;
@@ -70,7 +77,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     `);
     const lowStockProducts = lowStockResult.rows;
     const weeklyOrdersResult = await client.query(`
-      SELECT COUNT(*) as count, 
+      SELECT COUNT(*)::int as count, 
              COALESCE(SUM(total_amount), 0) as revenue
       FROM orders 
       WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
@@ -80,7 +87,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
     const avgOrderValueResult = await client.query(`
       SELECT COALESCE(AVG(total_amount), 0) as avg_value
       FROM orders 
-      WHERE status != 'cancelled'
+      WHERE ${PAID_REVENUE_FILTER}
     `);
     const avgOrderValue = parseFloat(avgOrderValueResult.rows[0].avg_value);
 
@@ -114,7 +121,7 @@ router.get('/dashboard', authenticateAdmin, async (req, res) => {
 });
 router.get('/products', authenticateAdmin, async (req, res) => {
   try {
-    const { page = 1, limit = 10, search = '' } = req.query;
+    const { page = 1, limit = 100, search = '' } = req.query;
     const offset = (page - 1) * limit;
 
     let query = 'SELECT * FROM products';
@@ -134,7 +141,10 @@ router.get('/products', authenticateAdmin, async (req, res) => {
     params.push(limit, offset);
 
     const result = await pool.query(query, params);
-    const products = result.rows;
+    const products = result.rows.map(product => ({
+      ...product,
+      images: typeof product.images === 'string' ? JSON.parse(product.images) : (product.images || [])
+    }));
     const countResult = await pool.query(countQuery, params.slice(0, paramCount));
     const totalProducts = parseInt(countResult.rows[0].count);
 
@@ -292,7 +302,7 @@ router.delete('/products/:id', authenticateAdmin, async (req, res) => {
 });
 router.get('/orders', authenticateAdmin, async (req, res) => {
   try {
-    const { page = 1, limit = 10, status } = req.query;
+    const { page = 1, limit = 500, status } = req.query;
     const offset = (page - 1) * limit;
 
     let query = `
@@ -421,7 +431,7 @@ router.get('/orders/:id', authenticateAdmin, async (req, res) => {
 
 router.get('/users', authenticateAdmin, async (req, res) => {
   try {
-    const { page = 1, limit = 10, search = '' } = req.query;
+    const { page = 1, limit = 500, search = '' } = req.query;
     const offset = (page - 1) * limit;
 
     let query = 'SELECT id, first_name, last_name, email, phone, created_at FROM users';
