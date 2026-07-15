@@ -68,6 +68,12 @@ const initializeDatabase = async () => {
         )
       `);
       await pool.query(`
+        ALTER TABLE orders 
+        ADD COLUMN IF NOT EXISTS razorpay_order_id VARCHAR(255),
+        ADD COLUMN IF NOT EXISTS razorpay_payment_id VARCHAR(255),
+        ADD COLUMN IF NOT EXISTS razorpay_signature VARCHAR(255);
+      `);
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS order_items (
           id SERIAL PRIMARY KEY,
           order_id INTEGER REFERENCES orders(id),

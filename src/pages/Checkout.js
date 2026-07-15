@@ -6,6 +6,16 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import './Checkout.css';
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, getCartTotals, loading: cartLoading, clearCart } = useCart();
@@ -82,17 +92,81 @@ const Checkout = () => {
     try {
       setSubmitting(true);
       
-      const response = await axios.post('/api/orders', formData);
-      
-      setMessage(response.data.message || 'Order placed successfully!');
-      
-      // Clear cart after successful order
-      await clearCart();
-      
-      // Redirect to home or order confirmation page after a delay
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
+      if (formData.paymentMethod === 'cod') {
+        const response = await axios.post('/api/orders', formData);
+        setMessage(response.data.message || 'Order placed successfully!');
+        await clearCart();
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        // Online Payment - Razorpay
+        const resScript = await loadRazorpayScript();
+        if (!resScript) {
+          setError('Razorpay SDK failed to load. Are you online?');
+          setSubmitting(false);
+          return;
+        }
+
+        let razorpayOrder;
+        try {
+          const orderRes = await axios.post('/api/orders/razorpay-order');
+          razorpayOrder = orderRes.data;
+        } catch (err) {
+          const errMs = err.response?.data?.message || 'Failed to initiate online payment. Please try again.';
+          setError(errMs);
+          setSubmitting(false);
+          return;
+        }
+
+        const options = {
+          key: process.env.REACT_APP_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+          amount: razorpayOrder.amount,
+          currency: razorpayOrder.currency || 'INR',
+          name: 'Shanti Silk House',
+          description: 'Purchase Saree(s)',
+          order_id: razorpayOrder.id,
+          prefill: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            contact: formData.phone,
+            method: formData.paymentMethod // card or upi
+          },
+          handler: async function (response) {
+            try {
+              const finalOrderData = {
+                ...formData,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              };
+              
+              const orderConfirmRes = await axios.post('/api/orders', finalOrderData);
+              setMessage(orderConfirmRes.data.message || 'Payment successful and order placed!');
+              await clearCart();
+              setTimeout(() => {
+                navigate('/');
+              }, 2000);
+            } catch (err) {
+              const errMs = err.response?.data?.message || 'Payment verified but order creation failed. Please contact support.';
+              setError(errMs);
+              setSubmitting(false);
+            }
+          },
+          theme: {
+            color: '#b03060'
+          },
+          modal: {
+            ondismiss: function () {
+              setSubmitting(false);
+              setError('Payment window closed by user.');
+            }
+          }
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+      }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to place order. Please try again.';
       setError(errorMessage);
