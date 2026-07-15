@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '30d' }
     );
 
     res.status(201).json({
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '30d' }
     );
 
     res.json({
@@ -101,7 +101,8 @@ router.get('/profile', authenticateToken, async (req, res) => {
         id: req.user.id,
         email: req.user.email,
         firstName: req.user.first_name,
-        lastName: req.user.last_name
+        lastName: req.user.last_name,
+        phone: req.user.phone
       }
     });
   } catch (error) {
@@ -130,7 +131,7 @@ router.post('/admin/login', async (req, res) => {
     const token = jwt.sign(
       { adminId: admin.id, email: admin.email, role: admin.role },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '30d' }
     );
 
     res.json({
