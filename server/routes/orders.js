@@ -89,7 +89,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verify Razorpay signature for online payments
-    if (paymentMethod === 'card' || paymentMethod === 'upi') {
+    if (paymentMethod === 'online') {
       if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
         await client.query('ROLLBACK');
         return res.status(400).json({ message: 'Payment verification details are required' });

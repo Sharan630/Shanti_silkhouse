@@ -29,7 +29,7 @@ const Checkout = () => {
     city: '',
     state: '',
     zipCode: '',
-    paymentMethod: 'card'
+    paymentMethod: 'online'
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
@@ -129,8 +129,7 @@ const Checkout = () => {
           prefill: {
             name: `${formData.firstName} ${formData.lastName}`,
             email: formData.email,
-            contact: formData.phone,
-            method: formData.paymentMethod // card or upi
+            contact: formData.phone
           },
           handler: async function (response) {
             try {
@@ -322,31 +321,15 @@ const Checkout = () => {
                     <input
                       type="radio"
                       name="paymentMethod"
-                      value="card"
-                      checked={formData.paymentMethod === 'card'}
+                      value="online"
+                      checked={formData.paymentMethod === 'online'}
                       onChange={handleInputChange}
                     />
                     <div className="payment-option-content">
                       <span className="payment-icon">💳</span>
                       <div>
-                        <h4>Credit/Debit Card</h4>
-                        <p>Pay securely with your card</p>
-                      </div>
-                    </div>
-                  </label>
-                  <label className="payment-option">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="upi"
-                      checked={formData.paymentMethod === 'upi'}
-                      onChange={handleInputChange}
-                    />
-                    <div className="payment-option-content">
-                      <span className="payment-icon">📱</span>
-                      <div>
-                        <h4>UPI Payment</h4>
-                        <p>Pay using UPI apps</p>
+                        <h4>Pay Online</h4>
+                        <p>Pay securely with Cards, UPI, Netbanking, or Wallets via Razorpay</p>
                       </div>
                     </div>
                   </label>
@@ -362,35 +345,11 @@ const Checkout = () => {
                       <span className="payment-icon">💰</span>
                       <div>
                         <h4>Cash on Delivery</h4>
-                        <p>Pay when you receive</p>
+                        <p>Pay when you receive the order</p>
                       </div>
                     </div>
                   </label>
                 </div>
-
-                {}
-                {formData.paymentMethod === 'card' && (
-                  <div className="card-details">
-                    <div className="form-group">
-                      <label>Card Number *</label>
-                      <input type="text" placeholder="1234 5678 9012 3456" required aria-required="true" aria-label="Card number" />
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Expiry Date *</label>
-                        <input type="text" placeholder="MM/YY" required aria-required="true" aria-label="Expiry date" />
-                      </div>
-                      <div className="form-group">
-                        <label>CVV *</label>
-                        <input type="text" placeholder="123" required aria-required="true" aria-label="CVV" />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label>Cardholder Name *</label>
-                      <input type="text" placeholder="John Doe" required aria-required="true" aria-label="Cardholder name" />
-                    </div>
-                  </div>
-                )}
               </div>
 
               {}
