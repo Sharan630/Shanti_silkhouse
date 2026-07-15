@@ -7,7 +7,7 @@ import {
   FiDownload, FiUpload, FiSettings, FiBarChart2,
   FiPackage, FiTruck, FiCheckCircle, FiXCircle,
   FiPlus, FiRefreshCw, FiCalendar, FiClock,
-  FiMail, FiLock
+  FiMail, FiLock, FiTrash2
 } from 'react-icons/fi';
 import './AdminPanel.css';
 
@@ -294,6 +294,41 @@ const AdminPanel = () => {
       setIsOrderModalOpen(false);
     } finally {
       setOrderModalLoading(false);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm(`Delete order #${orderId}? This will restore product stock and cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/admin/orders/${orderId}`);
+      setOrders(prev => prev.filter(order => order.id !== orderId));
+      if (selectedOrderDetails?.id === orderId) {
+        setIsOrderModalOpen(false);
+        setSelectedOrderDetails(null);
+      }
+      setSuccess('Order deleted successfully!');
+      fetchDashboardData();
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to delete order');
+    }
+  };
+
+  const handleDeleteUser = async (userId, userName) => {
+    if (!window.confirm(`Delete user "${userName}"? All their orders and cart items will also be permanently deleted.`)) {
+      return;
+    }
+
+    try {
+      const response = await axios.delete(`/api/admin/users/${userId}`);
+      setUsers(prev => prev.filter(user => user.id !== userId));
+      setSuccess(response.data.message || 'User deleted successfully!');
+      fetchOrders();
+      fetchDashboardData();
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to delete user');
     }
   };
 
@@ -1175,6 +1210,25 @@ const AdminPanel = () => {
                             Mark Paid
                           </button>
                         )}
+                        <button
+                          onClick={() => handleDeleteOrder(order.id)}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.8rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          <FiTrash2 size={12} />
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -1228,9 +1282,23 @@ const AdminPanel = () => {
                     <td>{user.phone || 'N/A'}</td>
                     <td>{new Date(user.created_at).toLocaleDateString()}</td>
                     <td>
-                      <button className="btn-view">
-                        <FiEye />
-                        View
+                      <button
+                        onClick={() => handleDeleteUser(user.id, `${user.first_name} ${user.last_name}`)}
+                        style={{
+                          padding: '8px 12px',
+                          backgroundColor: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}
+                      >
+                        <FiTrash2 size={14} />
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -1275,9 +1343,30 @@ const AdminPanel = () => {
           }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h2 style={{ margin: 0 }}>Order Details</h2>
-              <button onClick={() => setIsOrderModalOpen(false)} style={{
-                background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer'
-              }}>&times;</button>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                {selectedOrderDetails && (
+                  <button
+                    onClick={() => handleDeleteOrder(selectedOrderDetails.id)}
+                    style={{
+                      padding: '8px 12px',
+                      backgroundColor: '#dc3545',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <FiTrash2 size={14} />
+                    Delete Order
+                  </button>
+                )}
+                <button onClick={() => setIsOrderModalOpen(false)} style={{
+                  background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer'
+                }}>&times;</button>
+              </div>
             </div>
             
             {orderModalLoading ? (

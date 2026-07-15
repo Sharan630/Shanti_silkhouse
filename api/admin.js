@@ -399,6 +399,46 @@ router.put('/orders/:id/payment-status', authenticateAdmin, async (req, res) => 
   }
 });
 
+router.delete('/orders/:id', authenticateAdmin, async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const orderResult = await client.query('SELECT id FROM orders WHERE id = $1', [req.params.id]);
+
+    if (orderResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const itemsResult = await client.query(
+      'SELECT product_id, quantity FROM order_items WHERE order_id = $1',
+      [req.params.id]
+    );
+
+    for (const item of itemsResult.rows) {
+      await client.query(
+        'UPDATE products SET stock_quantity = stock_quantity + $1 WHERE id = $2',
+        [item.quantity, item.product_id]
+      );
+    }
+
+    await client.query('DELETE FROM order_items WHERE order_id = $1', [req.params.id]);
+    await client.query('DELETE FROM orders WHERE id = $1', [req.params.id]);
+
+    await client.query('COMMIT');
+
+    res.json({ message: 'Order deleted successfully' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Delete order error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  } finally {
+    client.release();
+  }
+});
+
 router.get('/orders/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -476,6 +516,59 @@ router.get('/users', authenticateAdmin, async (req, res) => {
   } catch (error) {
     console.error('Get admin users error:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.delete('/users/:id', authenticateAdmin, async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const userResult = await client.query('SELECT id FROM users WHERE id = $1', [req.params.id]);
+
+    if (userResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const ordersResult = await client.query(
+      'SELECT id FROM orders WHERE user_id = $1',
+      [req.params.id]
+    );
+
+    for (const order of ordersResult.rows) {
+      const itemsResult = await client.query(
+        'SELECT product_id, quantity FROM order_items WHERE order_id = $1',
+        [order.id]
+      );
+
+      for (const item of itemsResult.rows) {
+        await client.query(
+          'UPDATE products SET stock_quantity = stock_quantity + $1 WHERE id = $2',
+          [item.quantity, item.product_id]
+        );
+      }
+
+      await client.query('DELETE FROM order_items WHERE order_id = $1', [order.id]);
+    }
+
+    await client.query('DELETE FROM orders WHERE user_id = $1', [req.params.id]);
+    await client.query('DELETE FROM cart WHERE user_id = $1', [req.params.id]);
+    await client.query('DELETE FROM users WHERE id = $1', [req.params.id]);
+
+    await client.query('COMMIT');
+
+    res.json({
+      message: 'User deleted successfully',
+      deletedOrders: ordersResult.rows.length
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Delete user error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  } finally {
+    client.release();
   }
 });
 
