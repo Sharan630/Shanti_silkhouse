@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiShoppingCart, FiUser, FiSearch, FiLogOut, FiHeart, FiMenu } from 'react-icons/fi';
+import { FiShoppingCart, FiUser, FiSearch, FiLogOut, FiHeart, FiMenu, FiPackage } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
@@ -131,6 +131,16 @@ const Header = () => {
             <FiHeart />
             {wishlistCount > 0 && <span className="wishlist-count">{wishlistCount}</span>}
           </button>
+          {user && (
+            <button
+              className="action-btn orders-btn"
+              onClick={() => navigate('/my-orders')}
+              title="My Orders"
+              aria-label="My Orders"
+            >
+              <FiPackage />
+            </button>
+          )}
           <button 
             className="action-btn cart-btn"
             onClick={() => setShowCart(true)}
@@ -192,6 +202,16 @@ const Header = () => {
               <FiHeart />
               {wishlistCount > 0 && <span className="mobile-count">{wishlistCount}</span>}
             </button>
+            {user && (
+              <button
+                className="mobile-action-btn orders-btn"
+                onClick={() => navigate('/my-orders')}
+                title="My Orders"
+                aria-label="My Orders"
+              >
+                <FiPackage />
+              </button>
+            )}
             <button 
               className="mobile-action-btn cart-btn"
               onClick={() => setShowCart(true)}
@@ -341,6 +361,16 @@ const Header = () => {
                     <span className="mobile-user-greeting">Welcome back!</span>
                     <span className="mobile-user-name">{user.firstName}</span>
                   </div>
+                  <button
+                    onClick={() => {
+                      navigate('/my-orders');
+                      setShowMobileMenu(false);
+                    }}
+                    className="mobile-orders-btn"
+                  >
+                    <FiPackage />
+                    My Orders
+                  </button>
                   <button onClick={logout} className="mobile-logout-btn">
                     <FiLogOut />
                     Logout

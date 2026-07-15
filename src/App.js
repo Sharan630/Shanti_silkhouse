@@ -20,6 +20,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import RefundPolicy from './pages/RefundPolicy';
 import ShippingPolicy from './pages/ShippingPolicy';
+import MyOrders from './pages/MyOrders';
 import './App.css';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/my-orders" element={<MyOrders />} />
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
