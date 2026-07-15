@@ -1,8 +1,8 @@
 const Razorpay = require('razorpay');
 
 const getRazorpayKeys = () => ({
-  keyId: process.env.RAZORPAY_KEY_ID,
-  keySecret: process.env.RAZORPAY_KEY_SECRET
+  keyId: (process.env.RAZORPAY_KEY_ID || '').trim(),
+  keySecret: (process.env.RAZORPAY_KEY_SECRET || '').trim()
 });
 
 const isRazorpayConfigured = () => {

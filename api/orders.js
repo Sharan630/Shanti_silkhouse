@@ -62,7 +62,15 @@ router.post('/razorpay-order', authenticateToken, async (req, res) => {
       currency: order.currency
     });
   } catch (error) {
-    console.error('Create Razorpay order error:', error?.error?.description || error?.message || error);
+    const razorpayError = error?.error?.description || error?.message || error;
+    console.error('Create Razorpay order error:', razorpayError);
+
+    if (String(razorpayError).toLowerCase().includes('authentication')) {
+      return res.status(500).json({
+        message: 'Payment gateway authentication failed. Re-check RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in Vercel, then redeploy.'
+      });
+    }
+
     res.status(500).json({ message: 'Failed to create payment order' });
   }
 });
