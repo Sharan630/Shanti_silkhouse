@@ -6,6 +6,7 @@ import { useCart } from '../contexts/CartContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import ImageCarousel from '../components/ImageCarousel';
 import axios from 'axios';
+import { openWhatsApp, openWhatsAppVideoCall, shareContent, scrollToTop } from '../utils/contact';
 import './Home.css';
 
 const Home = () => {
@@ -144,6 +145,26 @@ const Home = () => {
   const prevSlide = () => {
     setCurrentSlide(currentSlide === 0 ? carouselSlides.length - 1 : currentSlide - 1);
   };
+
+  const handleSharePage = async () => {
+    const result = await shareContent({
+      title: 'Shanti Silk House',
+      text: 'Discover beautiful silk sarees at Shanti Silk House'
+    });
+    if (result.success && result.method !== 'share') {
+      setMessage('Link copied to clipboard!');
+      setTimeout(() => setMessage(''), 2500);
+    }
+  };
+
+  const handleWhatsAppContact = () => {
+    openWhatsApp('Hi! I would like to know more about sarees at Shanti Silk House.');
+  };
+
+  const handleVideoCall = () => {
+    openWhatsAppVideoCall();
+  };
+
   const showcaseSlides = [
     {
       id: 's1',
@@ -185,16 +206,16 @@ const Home = () => {
 
       { }
       <div className="side-utilities">
-        <button className="utility-btn" title="Share" type="button" aria-label="Share this page">
+        <button className="utility-btn" title="Share" type="button" aria-label="Share this page" onClick={handleSharePage}>
           <FiShare2 />
         </button>
-        <button className="utility-btn" title="Scroll to Top" type="button" aria-label="Scroll to top">
+        <button className="utility-btn" title="Scroll to Top" type="button" aria-label="Scroll to top" onClick={scrollToTop}>
           <FiArrowUp />
         </button>
-        <button className="utility-btn video-btn" title="Video Call" type="button" aria-label="Start video call shopping">
+        <button className="utility-btn video-btn" title="Video Call" type="button" aria-label="Start video call shopping" onClick={handleVideoCall}>
           <FiVideo />
         </button>
-        <button className="utility-btn whatsapp-btn" title="WhatsApp" type="button" aria-label="Contact on WhatsApp">
+        <button className="utility-btn whatsapp-btn" title="WhatsApp" type="button" aria-label="Contact on WhatsApp" onClick={handleWhatsAppContact}>
           <FiMessageCircle />
         </button>
       </div>

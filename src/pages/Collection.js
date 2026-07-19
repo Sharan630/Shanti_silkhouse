@@ -11,6 +11,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useWishlist } from '../contexts/WishlistContext';
 import ImageCarousel from '../components/ImageCarousel';
 import axios from 'axios';
+import { buildWhatsAppUrl, buildProductWhatsAppMessage, openWhatsApp, openWhatsAppVideoCall, shareContent, scrollToTop } from '../utils/contact';
 import './Collection.css';
 
 const Collection = () => {
@@ -114,6 +115,17 @@ const Collection = () => {
     } else {
       setMessage(result.message);
       setTimeout(() => setMessage(''), 5000);
+    }
+  };
+
+  const handleSharePage = async () => {
+    const result = await shareContent({
+      title: getCollectionTitle(getCategoryFromCollection(collectionName)),
+      text: `Browse ${getCollectionTitle(getCategoryFromCollection(collectionName))} at Shanti Silk House`
+    });
+    if (result.success && result.method !== 'share') {
+      setMessage('Link copied to clipboard!');
+      setTimeout(() => setMessage(''), 2500);
     }
   };
 
@@ -333,7 +345,7 @@ const Collection = () => {
                     <div className="product-actions-right">
                       <a
                         className="icon-btn whatsapp"
-                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`${product.image || (product.images && product.images[0])}\n\nHi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price ? parseFloat(product.price).toLocaleString() : 'N/A'}.\nView product: ${window.location.origin}/product/${product.slug || product.id}\nPlease provide more details.`)}`}
+                        href={buildWhatsAppUrl(buildProductWhatsAppMessage(product))}
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Chat on WhatsApp"
@@ -375,20 +387,20 @@ const Collection = () => {
 
       {}
       <div className="floating-actions">
-        <button className="floating-btn share-btn">
+        <button className="floating-btn share-btn" type="button" onClick={handleSharePage} aria-label="Share page">
           <FiShare2 />
         </button>
-        <button className="floating-btn scroll-btn">
+        <button className="floating-btn scroll-btn" type="button" onClick={scrollToTop} aria-label="Scroll to top">
           <FiArrowUp />
         </button>
         <div className="floating-group">
-          <button className="floating-btn video-btn">
+          <button className="floating-btn video-btn" type="button" onClick={() => openWhatsAppVideoCall()} aria-label="Video call on WhatsApp">
             <FiVideo />
           </button>
-          <button className="floating-btn whatsapp-btn">
+          <button className="floating-btn whatsapp-btn" type="button" onClick={() => openWhatsApp('Hi! I would like to know more about sarees at Shanti Silk House.')} aria-label="Contact on WhatsApp">
             <FaWhatsapp />
           </button>
-          <button className="floating-btn phone-btn">
+          <button className="floating-btn phone-btn" type="button" onClick={() => openWhatsApp('Hi! I would like to speak with Shanti Silk House.')} aria-label="Contact on WhatsApp">
             <FiPhone />
           </button>
         </div>

@@ -4,8 +4,15 @@ import { FiStar, FiHeart, FiShoppingCart, FiTruck, FiShield, FiRefreshCw, FiMinu
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useWishlist } from '../contexts/WishlistContext';
 import ImageCarousel from '../components/ImageCarousel';
 import axios from 'axios';
+import {
+  buildWhatsAppUrl,
+  buildProductWhatsAppMessage,
+  openWhatsAppVideoCall,
+  shareContent
+} from '../utils/contact';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -28,6 +35,7 @@ const ProductDetail = () => {
   
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   // Scroll to top when component mounts or product ID changes
   useEffect(() => {
@@ -249,6 +257,39 @@ const ProductDetail = () => {
     }
   };
 
+  const getWishlistProduct = () => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    images: product.images
+  });
+
+  const handleToggleWishlist = () => {
+    if (!product) return;
+    toggleWishlist(getWishlistProduct());
+    setMessage(isInWishlist(product.id) ? 'Removed from wishlist' : 'Added to wishlist!');
+    setTimeout(() => setMessage(''), 2500);
+  };
+
+  const handleShareProduct = async () => {
+    if (!product) return;
+    const result = await shareContent({
+      title: product.name,
+      text: `Check out ${product.name} at Shanti Silk House - ₹${product.price.toLocaleString()}`,
+      url: window.location.href
+    });
+
+    if (result.success && result.method !== 'share') {
+      setMessage('Product link copied!');
+      setTimeout(() => setMessage(''), 2500);
+    }
+  };
+
+  const handleVideoCall = () => {
+    if (!product) return;
+    openWhatsAppVideoCall(product);
+  };
+
   if (loading) {
     return <div className="product-detail"><div className="container"><div className="loading">Loading product...</div></div></div>;
   }
@@ -413,10 +454,20 @@ const ProductDetail = () => {
               
               <div className="action-buttons-row">
                 <div className="action-icons-row">
-                  <button className="action-icon wishlist" type="button" aria-label="Add to wishlist">
+                  <button
+                    className={`action-icon wishlist ${isInWishlist(product.id) ? 'liked' : ''}`}
+                    type="button"
+                    aria-label="Add to wishlist"
+                    onClick={handleToggleWishlist}
+                  >
                     <FiHeart />
                   </button>
-                  <button className="action-icon share" type="button" aria-label="Share product">
+                  <button
+                    className="action-icon share"
+                    type="button"
+                    aria-label="Share product"
+                    onClick={handleShareProduct}
+                  >
                     <FiShare2 />
                   </button>
                 </div>
@@ -456,12 +507,12 @@ const ProductDetail = () => {
                 <button className="btn-action-secondary" type="button">
                   View Similar
                 </button>
-                <button className="btn-action-secondary" type="button">
+                <button className="btn-action-secondary" type="button" onClick={handleVideoCall}>
                   <FiVideo /> Video Call
                 </button>
                 <a
                   className="btn-action-secondary whatsapp-link"
-                  href={`https://wa.me/919591128327?text=${encodeURIComponent(`${(product.images && product.images[selectedImage]) || product.images[0]}\n\nHi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price?.toLocaleString() || 'N/A'}.\nView product: ${window.location.href}\nPlease provide more details.`)}`}
+                  href={buildWhatsAppUrl(buildProductWhatsAppMessage(product))}
                   target="_blank"
                   rel="noreferrer"
                 >

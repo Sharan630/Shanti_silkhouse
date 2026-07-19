@@ -397,6 +397,12 @@
   color: #d4af37;
 }
 
+.action-icon.wishlist.liked {
+  border-color: #e53935;
+  color: #e53935;
+  background: #fff5f5;
+}
+
 .btn-add-to-cart {
   flex: 1;
   padding: 15px 30px;

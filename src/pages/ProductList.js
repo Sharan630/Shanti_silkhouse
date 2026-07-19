@@ -4,7 +4,9 @@ import { FiFilter, FiGrid, FiList, FiStar, FiHeart, FiShoppingCart, FiTrash2 } f
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useWishlist } from '../contexts/WishlistContext';
 import axios from 'axios';
+import { buildWhatsAppUrl, buildProductWhatsAppMessage } from '../utils/contact';
 import './ProductList.css';
 
 const ProductList = () => {
@@ -14,6 +16,7 @@ const ProductList = () => {
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const { addToCart } = useCart();
   const { admin } = useAuth();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [message, setMessage] = useState('');
 
   const handleAddToCart = async (product) => {
@@ -234,7 +237,7 @@ const ProductList = () => {
                     <div className="product-actions">
                       <a
                         className="action-btn whatsapp"
-                        href={`https://wa.me/919591128327?text=${encodeURIComponent(`${product?.image || (product.images && product.images[0])}\n\nHi! I am interested in ${product?.name || 'this saree'} priced at Rs ${product?.price?.toLocaleString() || 'N/A'}.\nView product: ${window.location.origin}/product/${product.slug || product.id}\nPlease provide more details.`)}`}
+                        href={buildWhatsAppUrl(buildProductWhatsAppMessage(product))}
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Chat on WhatsApp"
@@ -243,7 +246,12 @@ const ProductList = () => {
                       >
                         <FaWhatsapp />
                       </a>
-                      <button className="action-btn wishlist" type="button" aria-label="Add to wishlist" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        className={`action-btn wishlist ${isInWishlist(product.id) ? 'liked' : ''}`}
+                        type="button"
+                        aria-label="Add to wishlist"
+                        onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
+                      >
                         <FiHeart />
                       </button>
                       <button 
